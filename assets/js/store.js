@@ -1,6 +1,6 @@
 (function () {
   const KEYS = {
-    services: 'novalyte.services.v1',
+    services: 'novalyte.services.v2',
     orders: 'novalyte.orders.v1',
     invest: 'novalyte.totalInvest.v1',
     investments: 'novalyte.investments.v1',

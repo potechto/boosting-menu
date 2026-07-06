@@ -74,6 +74,12 @@
     orderDetailsBody: document.getElementById('orderDetailsBody')
   };
 
+  let activePanel = 'dashboard';
+  let servicePage = 1;
+  let orderPage = 1;
+  const servicePageSize = 8;
+  const orderPageSize = 10;
+
   const statusLabels = {
     active: 'Active',
     pending: 'Pending',
@@ -102,6 +108,7 @@
     els.loginView.classList.add('hidden');
     els.dashboardView.classList.remove('hidden');
     renderAll();
+    if (window.NovalyteShowAdminPanel) window.NovalyteShowAdminPanel(activePanel || 'dashboard');
   }
 
   function showLogin() {
@@ -111,6 +118,58 @@
 
   function sanitize(text) {
     return String(text ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
+  }
+
+  function platformIcon(platform) {
+    const map = { Facebook: 'f', Instagram: '◎', TikTok: '♪', YouTube: '▶', Telegram: '✈' };
+    return map[platform] || '•';
+  }
+
+  function platformBadge(platform) {
+    const key = String(platform || '').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    return `<span class="platform-pill platform-${key}"><span class="platform-mini-icon">${sanitize(platformIcon(platform))}</span>${sanitize(platform)}</span>`;
+  }
+
+  function ensurePagination(id, afterElement) {
+    let el = document.getElementById(id);
+    if (!el && afterElement) {
+      el = document.createElement('div');
+      el.id = id;
+      el.className = 'pagination-bar admin-pagination';
+      afterElement.insertAdjacentElement('afterend', el);
+    }
+    return el;
+  }
+
+  function setupAdminPanels() {
+    const navLinks = [...document.querySelectorAll('.sidebar-nav a[href^="#"]')];
+    function showPanel(panel) {
+      activePanel = panel || 'dashboard';
+      const dashboard = document.getElementById('dashboard');
+      const stats = document.getElementById('statsGrid');
+      const services = document.getElementById('services');
+      const investments = document.getElementById('investments');
+      const orders = document.getElementById('orders');
+      [dashboard, stats, services, investments, orders].forEach(el => el && el.classList.add('hidden'));
+      if (activePanel === 'dashboard') {
+        dashboard && dashboard.classList.remove('hidden');
+        stats && stats.classList.remove('hidden');
+      }
+      if (activePanel === 'services') services && services.classList.remove('hidden');
+      if (activePanel === 'investments') investments && investments.classList.remove('hidden');
+      if (activePanel === 'orders') orders && orders.classList.remove('hidden');
+      navLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === `#${activePanel}`));
+      requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    }
+    navLinks.forEach(link => {
+      link.addEventListener('click', event => {
+        const target = link.getAttribute('href').replace('#', '');
+        if (!['dashboard', 'services', 'investments', 'orders'].includes(target)) return;
+        event.preventDefault();
+        showPanel(target);
+      });
+    });
+    window.NovalyteShowAdminPanel = showPanel;
   }
 
   function platformOptions() {
@@ -195,14 +254,39 @@
     });
   }
 
+  function renderAdminServicesPagination(total) {
+    const wrapper = els.servicesTable.closest('.table-wrap');
+    const pager = ensurePagination('adminServicesPagination', wrapper);
+    if (!pager) return;
+    const pages = Math.max(1, Math.ceil(total / servicePageSize));
+    servicePage = Math.min(servicePage, pages);
+    if (pages <= 1) {
+      pager.innerHTML = '';
+      return;
+    }
+    const start = (servicePage - 1) * servicePageSize + 1;
+    const end = Math.min(total, servicePage * servicePageSize);
+    pager.innerHTML = `
+      <div class="page-summary">Showing ${Store.formatNumber(start)}-${Store.formatNumber(end)} of ${Store.formatNumber(total)} services</div>
+      <div class="page-buttons">
+        <button class="btn small" type="button" data-admin-service-page="prev" ${servicePage === 1 ? 'disabled' : ''}>Previous</button>
+        <span class="page-chip">Page ${servicePage} / ${pages}</span>
+        <button class="btn small" type="button" data-admin-service-page="next" ${servicePage === pages ? 'disabled' : ''}>Next</button>
+      </div>
+    `;
+  }
+
   function renderServicesTable() {
     const services = filteredServices();
+    renderAdminServicesPagination(services.length);
     if (!services.length) {
       els.servicesTable.innerHTML = '<tr><td colspan="8"><div class="empty-state">No service found.</div></td></tr>';
       return;
     }
 
-    els.servicesTable.innerHTML = services.map(service => {
+    const start = (servicePage - 1) * servicePageSize;
+    const paged = services.slice(start, start + servicePageSize);
+    els.servicesTable.innerHTML = paged.map(service => {
       const revenue = (Number(service.clientRate) || 0) - (Number(service.providerRate) || 0);
       const statusText = service.archived ? 'Archived' : service.visible === false ? 'Hidden' : 'Visible';
       const statusClass = service.archived ? 'archived' : service.visible === false ? 'is-hidden' : 'visible';
@@ -217,7 +301,7 @@
             <span class="service-desc">${sanitize(service.category)} · ${sanitize(service.avgTime || 'Varies')}</span>
           </td>
           <td data-label="Provider ID"><span class="id-chip">${sanitize(service.providerId)}</span></td>
-          <td data-label="Platform">${sanitize(service.platform)}</td>
+          <td data-label="Platform">${platformBadge(service.platform)}</td>
           <td data-label="Provider Rate">${Store.formatMoney(service.providerRate)} / ${Store.formatNumber(service.rateUnit)}</td>
           <td data-label="Client Rate"><strong>${Store.formatMoney(service.clientRate)}</strong> / ${Store.formatNumber(service.rateUnit)}</td>
           <td data-label="Revenue/unit"><strong>${Store.formatMoney(revenue)}</strong></td>
@@ -248,14 +332,39 @@
     }).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }
 
+  function renderAdminOrdersPagination(total) {
+    const wrapper = els.ordersTable.closest('.table-wrap');
+    const pager = ensurePagination('adminOrdersPagination', wrapper);
+    if (!pager) return;
+    const pages = Math.max(1, Math.ceil(total / orderPageSize));
+    orderPage = Math.min(orderPage, pages);
+    if (pages <= 1) {
+      pager.innerHTML = '';
+      return;
+    }
+    const start = (orderPage - 1) * orderPageSize + 1;
+    const end = Math.min(total, orderPage * orderPageSize);
+    pager.innerHTML = `
+      <div class="page-summary">Showing ${Store.formatNumber(start)}-${Store.formatNumber(end)} of ${Store.formatNumber(total)} orders</div>
+      <div class="page-buttons">
+        <button class="btn small" type="button" data-admin-order-page="prev" ${orderPage === 1 ? 'disabled' : ''}>Previous</button>
+        <span class="page-chip">Page ${orderPage} / ${pages}</span>
+        <button class="btn small" type="button" data-admin-order-page="next" ${orderPage === pages ? 'disabled' : ''}>Next</button>
+      </div>
+    `;
+  }
+
   function renderOrdersTable() {
     const orders = filteredOrders();
+    renderAdminOrdersPagination(orders.length);
     if (!orders.length) {
       els.ordersTable.innerHTML = '<tr><td colspan="10"><div class="empty-state">No orders yet.</div></td></tr>';
       return;
     }
 
-    els.ordersTable.innerHTML = orders.map(order => {
+    const start = (orderPage - 1) * orderPageSize;
+    const paged = orders.slice(start, start + orderPageSize);
+    els.ordersTable.innerHTML = paged.map(order => {
       const status = order.status || 'active';
       const payment = order.paymentStatus || 'paid';
       const actionButton = status === 'voided'
@@ -563,7 +672,7 @@
         const visible = input.type === 'text';
         input.type = visible ? 'password' : 'text';
         btn.classList.toggle('active', !visible);
-        btn.textContent = visible ? '👁' : '🙈';
+        btn.textContent = '👁';
         btn.setAttribute('aria-label', visible ? 'Show field' : 'Hide field');
       });
     });
@@ -620,8 +729,33 @@
       renderAll();
     });
 
-    [els.adminServiceSearch, els.adminPlatformFilter, els.adminArchiveFilter].forEach(el => el.addEventListener('input', renderServicesTable));
-    [els.orderSearch, els.orderStatusFilter, els.paymentStatusFilter].forEach(el => el.addEventListener('input', renderOrdersTable));
+    [els.adminServiceSearch, els.adminPlatformFilter, els.adminArchiveFilter].forEach(el => el.addEventListener('input', () => {
+      servicePage = 1;
+      renderServicesTable();
+    }));
+    [els.orderSearch, els.orderStatusFilter, els.paymentStatusFilter].forEach(el => el.addEventListener('input', () => {
+      orderPage = 1;
+      renderOrdersTable();
+    }));
+
+    document.addEventListener('click', event => {
+      const servicePager = event.target.closest('[data-admin-service-page]');
+      if (servicePager) {
+        const total = filteredServices().length;
+        const pages = Math.max(1, Math.ceil(total / servicePageSize));
+        if (servicePager.dataset.adminServicePage === 'prev') servicePage = Math.max(1, servicePage - 1);
+        if (servicePager.dataset.adminServicePage === 'next') servicePage = Math.min(pages, servicePage + 1);
+        renderServicesTable();
+      }
+      const orderPager = event.target.closest('[data-admin-order-page]');
+      if (orderPager) {
+        const total = filteredOrders().length;
+        const pages = Math.max(1, Math.ceil(total / orderPageSize));
+        if (orderPager.dataset.adminOrderPage === 'prev') orderPage = Math.max(1, orderPage - 1);
+        if (orderPager.dataset.adminOrderPage === 'next') orderPage = Math.min(pages, orderPage + 1);
+        renderOrdersTable();
+      }
+    });
 
     els.addServiceBtn.addEventListener('click', () => fillServiceForm(null));
     els.servicesTable.addEventListener('click', event => {
@@ -713,6 +847,7 @@
   function init() {
     Store.getServices();
     Store.getInvestments();
+    setupAdminPanels();
     bindEvents();
     if (isLoggedIn()) showDashboard();
     else showLogin();

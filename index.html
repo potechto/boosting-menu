@@ -21,6 +21,7 @@
       <nav class="nav-actions" aria-label="Primary navigation">
         <a class="btn ghost" href="#services">Services</a>
         <a class="btn ghost" href="#calculator">Calculator</a>
+        <a class="btn ghost" href="https://www.facebook.com/messages/t/707867809081709" target="_blank" rel="noopener">Messenger</a>
         
       </nav>
     </div>
@@ -98,9 +99,11 @@
               <label>Generated inquiry message</label>
               <div class="input client-message" id="orderMessage">Select a service first.</div>
             </div>
-            <div class="modal-actions">
+            <div class="modal-actions order-actions">
               <button class="btn" id="copyOrderBtn" type="button">Copy message</button>
+              <button class="btn primary" id="proceedOrderBtn" type="button">Proceed / Order via Messenger</button>
             </div>
+            <p class="service-desc messenger-note">Proceed copies your order message first, then opens our Messenger chat. Paste the copied message there to send your order details.</p>
           </div>
         </div>
       </div>
@@ -135,6 +138,7 @@
 
         <div style="height:16px"></div>
         <div class="cards-grid" id="servicesGrid"></div>
+        <div class="pagination-bar" id="servicePagination" aria-label="Services pagination"></div>
         <div class="empty-state hidden" id="emptyServices">No visible service found. Try another search/filter.</div>
       </div>
     </section>

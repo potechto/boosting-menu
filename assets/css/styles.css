@@ -1247,3 +1247,176 @@ button:disabled,
     width: 100% !important;
   }
 }
+
+/* v1.2 navigation, pagination, platform icons, messenger CTA polish */
+.password-field input::-ms-reveal,
+.password-field input::-ms-clear {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.password-field input::-webkit-credentials-auto-fill-button,
+.password-field input::-webkit-textfield-decoration-container {
+  visibility: hidden;
+  display: none !important;
+  pointer-events: none;
+}
+
+.eye-btn {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.btn[disabled],
+button[disabled] {
+  cursor: not-allowed;
+  opacity: 0.52;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.platform-icon,
+.platform-mini-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  color: #06111c;
+  background: var(--brand);
+  box-shadow: 0 0 20px rgba(112, 225, 255, 0.16);
+  font-weight: 900;
+}
+
+.platform-mini-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 0.78rem;
+}
+
+.platform-icon svg {
+  width: 15px;
+  height: 15px;
+  fill: currentColor;
+}
+
+.platform-facebook .platform-icon,
+.platform-facebook .platform-mini-icon { background: #60a5fa; color: #06111c; }
+.platform-instagram .platform-icon,
+.platform-instagram .platform-mini-icon { background: linear-gradient(135deg, #f97316, #ec4899, #8b5cf6); color: white; }
+.platform-tiktok .platform-icon,
+.platform-tiktok .platform-mini-icon { background: linear-gradient(135deg, #5eead4, #f472b6); color: #020617; }
+.platform-youtube .platform-icon,
+.platform-youtube .platform-mini-icon { background: #ef4444; color: white; }
+.platform-telegram .platform-icon,
+.platform-telegram .platform-mini-icon { background: #38bdf8; color: #06111c; }
+
+.order-actions {
+  justify-content: stretch;
+}
+
+.order-actions .btn {
+  flex: 1 1 220px;
+}
+
+.messenger-note {
+  margin-top: 12px;
+  flex: 0;
+}
+
+.warning-notice {
+  border-color: rgba(245, 158, 11, 0.48) !important;
+  background: rgba(245, 158, 11, 0.12) !important;
+}
+
+.pagination-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: rgba(15, 23, 42, 0.52);
+}
+
+.page-summary {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.page-buttons {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.page-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: #dbeafe;
+  background: rgba(2, 6, 23, 0.42);
+  font-weight: 800;
+  font-size: 0.86rem;
+}
+
+.admin-main > .hidden {
+  display: none !important;
+}
+
+.sidebar-nav a.active,
+.sidebar-nav button.active {
+  color: var(--text);
+  background: linear-gradient(135deg, rgba(112, 225, 255, 0.12), rgba(167, 139, 250, 0.10));
+  border-color: rgba(112, 225, 255, 0.30);
+}
+
+.sidebar-nav a[href="index.html"] {
+  margin-top: 8px;
+  border-color: rgba(167, 139, 250, 0.22);
+}
+
+.admin-pagination {
+  margin: 14px 0 0;
+}
+
+@media (min-width: 1300px) {
+  .shell {
+    width: min(1280px, calc(100% - 48px));
+  }
+}
+
+@media (max-width: 720px) {
+  .pagination-bar,
+  .page-buttons,
+  .page-buttons .btn {
+    width: 100%;
+  }
+
+  .page-buttons {
+    justify-content: space-between;
+  }
+
+  .page-chip {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .order-actions .btn {
+    width: 100%;
+  }
+
+  .platform-pill {
+    max-width: 100%;
+    white-space: normal;
+  }
+}

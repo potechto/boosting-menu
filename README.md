@@ -62,3 +62,23 @@ git push origin main
 ```
 
 GitHub Pages will redeploy from `main` automatically.
+
+## v1.2 Cleanup Notes
+
+Added after internal review:
+
+- Admin dashboard now behaves like navigation panels instead of showing everything in one long screen.
+- Admin services table and order table now have pagination controls.
+- Password/PIN fields keep one custom eye viewer button only.
+- Client calculator now has a Proceed / Order via Messenger button.
+- Proceed copies the generated order text, then opens the Messenger chat page.
+- Public services now use hardcoded platform icons/badges for Facebook, TikTok, Instagram, YouTube, and Telegram.
+- Seed services were expanded from the draft provider screenshots. Provider rates remain internal/admin-only; client rates remain editable from the admin side.
+
+Messenger chat target:
+
+```text
+https://www.facebook.com/messages/t/707867809081709
+```
+
+Important: Messenger does not reliably support auto-sending a prefilled message from a static GitHub Pages site. The safe flow is: copy generated order text automatically, open Messenger, then paste/send.
