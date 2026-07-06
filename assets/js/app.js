@@ -19,7 +19,6 @@
     categoryIcon: document.getElementById('categoryIcon'),
     selectedServiceId: document.getElementById('selectedServiceId'),
     serviceDashboard: document.getElementById('serviceDashboard'),
-    serviceAnalytics: document.getElementById('serviceAnalytics'),
     orderMessage: document.getElementById('orderMessage'),
     copyOrderBtn: document.getElementById('copyOrderBtn'),
     proceedOrderBtn: document.getElementById('proceedOrderBtn'),
@@ -174,7 +173,6 @@
   function renderDashboard(service) {
     if (!service) {
       els.serviceDashboard.innerHTML = '<div class="status-line"><span>✓</span> Select a service to view details.</div>';
-      els.serviceAnalytics.textContent = 'Service analytics will appear here after choosing a service.';
       els.averageTimeField.textContent = 'Select a service';
       els.selectedServiceId.textContent = 'ID';
       return;
@@ -193,12 +191,6 @@
       <div class="status-line"><span>✓</span><strong>${sanitize(item.label)}:</strong> ${sanitize(item.value)}</div>
     `).join('');
 
-    els.serviceAnalytics.innerHTML = `
-      <p><strong>${sanitize(service.name)}</strong></p>
-      <p>Rate: <strong>${Store.formatMoney(service.clientRate)}</strong> per ${Store.formatNumber(service.rateUnit)}</p>
-      <p>Average time: <strong>${sanitize(service.avgTime || 'Varies')}</strong></p>
-      <p>${sanitize(service.description || service.tag || 'No extra provider note yet.')}</p>
-    `;
   }
 
   function renderCalculator() {
@@ -298,6 +290,27 @@
     }
   }
 
+  function setupAutoScrollbars() {
+    const scrollTargets = new Set([document.documentElement, document.body]);
+    document.querySelectorAll('.table-wrap, .client-message, .message-preview-panel .client-message, .modal-body, .provider-calculator-card, .admin-main, .panel-scroll, [data-auto-scrollbar]').forEach(el => scrollTargets.add(el));
+
+    scrollTargets.forEach(el => {
+      let timer = null;
+      const markScrolling = () => {
+        el.classList.add('is-scrolling');
+        document.documentElement.classList.add('is-scrolling-global');
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          el.classList.remove('is-scrolling');
+          document.documentElement.classList.remove('is-scrolling-global');
+        }, 850);
+      };
+      el.addEventListener('scroll', markScrolling, { passive: true });
+      el.addEventListener('wheel', markScrolling, { passive: true });
+      el.addEventListener('touchmove', markScrolling, { passive: true });
+    });
+  }
+
   function bindEvents() {
     [els.serviceSearch, els.platformFilter, els.categoryFilter].forEach(el => el.addEventListener('input', () => {
       resetServicePage();
@@ -358,6 +371,7 @@
   }
 
   function init() {
+    setupAutoScrollbars();
     Store.getServices();
     fillFilters();
     fillCalculatorServices(false);

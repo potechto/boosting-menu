@@ -108,7 +108,7 @@ This update changes the public client page into a service-provider style order p
 - Category dropdown similar to the provider panel format.
 - Service dropdown with service ID, name, and visible client rate.
 - Service Dashboard block with status, ID, min, and max.
-- Service Analytics block with rate, average time, and notes.
+- Service Dashboard block with status, service ID, min/max, and average time.
 - Average time field.
 - Link/username field.
 - Quantity field.
@@ -127,3 +127,11 @@ Copy-Item ".\Resources\icons\tiktok.png" ".\assets\icons\social\tiktok.png" -For
 Copy-Item ".\Resources\icons\twitter.png" ".\assets\icons\social\twitter.png" -Force
 Copy-Item ".\Resources\icons\youtube.png" ".\assets\icons\social\youtube.png" -Force
 ```
+
+
+## v1.6 Cleanup
+
+- Removed public Service Analytics block from the client order panel.
+- Service Dashboard now uses a full-width dark panel that matches the site theme.
+- Added auto-hiding scrollbar behavior for visible scroll areas. Scrollbars appear while scrolling and fade after.
+- Kept provider-style Category → Service → Link → Quantity → Charge → New Order flow.
