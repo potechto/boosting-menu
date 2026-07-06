@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Novalyte Admin Dashboard</title>
+  <meta name="description" content="Novalyte admin dashboard for pricing control and income tracking.">
+  <link rel="icon" href="assets/icons/novalyte.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <main class="login-page" id="loginView">
+    <section class="login-card">
+      <div class="lock-visual">🔐</div>
+      <h1>Admin Login</h1>
+      <p>Access price control, order creation, investment tracker, and revenue dashboard.</p>
+      <form id="loginForm" class="form-grid">
+        <div class="field full">
+          <label for="loginUser">Username</label>
+          <input class="input" id="loginUser" autocomplete="username" required placeholder="Username">
+        </div>
+        <div class="field full">
+          <label for="loginPass">Password</label>
+          <input class="input" id="loginPass" type="password" autocomplete="current-password" required placeholder="Password">
+        </div>
+        <div class="field full">
+          <label for="loginPin">PIN</label>
+          <input class="input" id="loginPin" type="password" inputmode="numeric" required placeholder="4-digit PIN">
+        </div>
+        <div class="field full">
+          <label class="checkbox-line"><input type="checkbox" id="showPassword"> Show password and PIN</label>
+        </div>
+        <button class="btn primary full" type="submit">Enter Dashboard</button>
+      </form>
+      <div class="login-footnote">Prototype protection only. Use Supabase/Auth before real public launch.</div>
+    </section>
+  </main>
+
+  <div class="admin-layout hidden" id="dashboardView">
+    <aside class="sidebar">
+      <a class="brand" href="admin.html">
+        <span class="logo-mark">N</span>
+        <span>
+          <span class="brand-title">Novalyte Admin</span>
+          <span class="brand-subtitle">Pricing + Order Tracker</span>
+        </span>
+      </a>
+      <nav class="sidebar-nav" aria-label="Admin navigation">
+        <a href="#dashboard" class="active">Dashboard</a>
+        <a href="#services">Services</a>
+        <a href="#orders">Orders</a>
+        <a href="index.html">Client View</a>
+        <button type="button" id="logoutBtn">Logout</button>
+      </nav>
+      <div class="notice">Admin edits save in this browser using localStorage. Shared multi-device access needs Supabase/Firebase.</div>
+    </aside>
+
+    <main class="admin-main">
+      <section id="dashboard" class="page-title">
+        <span class="eyebrow">Internal dashboard</span>
+        <h1>Price control + <span class="gradient-text">income tracker</span></h1>
+        <p>Track provider charges, client sales, revenue, total investment, voided orders, and editable client-facing prices.</p>
+      </section>
+
+      <section class="stats-grid" id="statsGrid"></section>
+
+      <section class="card">
+        <div class="section-head">
+          <div>
+            <h2>Investment Tracker</h2>
+            <p>Set or add the amount invested so the dashboard can estimate available funds.</p>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="field">
+            <label for="investAmount">Total Invest</label>
+            <input class="input" id="investAmount" type="number" min="0" step="0.01" placeholder="Example: 1000">
+          </div>
+          <div class="field">
+            <label for="addInvestAmount">Add Investment</label>
+            <input class="input" id="addInvestAmount" type="number" min="0" step="0.01" placeholder="Example: 500">
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn" type="button" id="saveInvestBtn">Save Total Invest</button>
+          <button class="btn primary" type="button" id="addInvestBtn">Add to Invest</button>
+        </div>
+      </section>
+
+      <section class="section" id="services">
+        <div class="section-head">
+          <div>
+            <h2>Service Price Control</h2>
+            <p>Edit provider price, client price, visibility, min/max, delivery time, and descriptions.</p>
+          </div>
+        </div>
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <input class="input" id="adminServiceSearch" type="search" placeholder="Search services..." style="min-width:min(420px,100%)">
+            <select class="select" id="adminPlatformFilter" style="width:auto;min-width:180px"></select>
+          </div>
+          <div class="toolbar-right">
+            <button class="btn" type="button" id="addServiceBtn">Add Service</button>
+            <button class="btn" type="button" id="exportBackupBtn">Export Backup</button>
+            <label class="btn" for="importBackupInput">Import Backup</label>
+            <input id="importBackupInput" class="hidden" type="file" accept="application/json">
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Service</th>
+                <th>Provider ID</th>
+                <th>Platform</th>
+                <th>Provider Rate</th>
+                <th>Client Rate</th>
+                <th>Revenue/unit</th>
+                <th>Visible</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="servicesTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section" id="orders">
+        <div class="section-head">
+          <div>
+            <h2>Order History</h2>
+            <p>Voided orders stay in history but are not counted in totals. Undo void restores them.</p>
+          </div>
+        </div>
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <input class="input" id="orderSearch" type="search" placeholder="Search order, client, service..." style="min-width:min(420px,100%)">
+            <select class="select" id="orderStatusFilter" style="width:auto;min-width:180px">
+              <option value="all">All orders</option>
+              <option value="active">Active only</option>
+              <option value="voided">Voided only</option>
+            </select>
+          </div>
+          <div class="toolbar-right">
+            <button class="btn" type="button" id="exportOrdersCsvBtn">Export Orders CSV</button>
+            <button class="btn danger" type="button" id="resetDemoBtn">Reset Demo Data</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Client</th>
+                <th>Service</th>
+                <th>Quantity</th>
+                <th>Provider Charge</th>
+                <th>Client Charge</th>
+                <th>Revenue</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTable"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="serviceModal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <h2 id="serviceModalTitle">Edit Service</h2>
+          <p class="service-desc">Changes update the service list. Old orders keep their original snapshot prices.</p>
+        </div>
+        <button class="btn small" type="button" data-close-modal="serviceModal">Close</button>
+      </div>
+      <form id="serviceForm" class="form-grid">
+        <input type="hidden" id="serviceEditId">
+        <div class="field">
+          <label for="serviceName">Service Name</label>
+          <input class="input" id="serviceName" required>
+        </div>
+        <div class="field">
+          <label for="serviceProviderId">Provider Service ID</label>
+          <input class="input" id="serviceProviderId" required>
+        </div>
+        <div class="field">
+          <label for="servicePlatform">Platform</label>
+          <input class="input" id="servicePlatform" required placeholder="Facebook">
+        </div>
+        <div class="field">
+          <label for="serviceCategory">Category</label>
+          <input class="input" id="serviceCategory" required placeholder="Reactions">
+        </div>
+        <div class="field">
+          <label for="serviceProviderRate">Provider Rate</label>
+          <input class="input" id="serviceProviderRate" type="number" min="0" step="0.01" required>
+        </div>
+        <div class="field">
+          <label for="serviceClientRate">Client Visible Rate</label>
+          <input class="input" id="serviceClientRate" type="number" min="0" step="0.01" required>
+        </div>
+        <div class="field">
+          <label for="serviceRateUnit">Rate Unit</label>
+          <input class="input" id="serviceRateUnit" type="number" min="1" step="1" required placeholder="1000">
+        </div>
+        <div class="field">
+          <label for="serviceAvgTime">Average Time</label>
+          <input class="input" id="serviceAvgTime" placeholder="0-24 hours">
+        </div>
+        <div class="field">
+          <label for="serviceMin">Minimum</label>
+          <input class="input" id="serviceMin" type="number" min="0" step="1" required>
+        </div>
+        <div class="field">
+          <label for="serviceMax">Maximum</label>
+          <input class="input" id="serviceMax" type="number" min="0" step="1" required>
+        </div>
+        <div class="field">
+          <label for="serviceTag">Tag</label>
+          <input class="input" id="serviceTag" placeholder="Fast & popular">
+        </div>
+        <div class="field">
+          <label>Visibility</label>
+          <label class="checkbox-line"><input type="checkbox" id="serviceVisible"> Show to clients</label>
+        </div>
+        <div class="field full">
+          <label for="serviceDescription">Description</label>
+          <textarea class="textarea" id="serviceDescription"></textarea>
+        </div>
+        <div class="notice full" id="serviceRevenuePreview">Revenue preview: ₱0.00</div>
+        <div class="modal-actions full">
+          <button class="btn" type="button" data-close-modal="serviceModal">Cancel</button>
+          <button class="btn primary" type="submit">Save Service</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="orderModal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <h2>Create Order</h2>
+          <p class="service-desc">Service type auto-fills from the selected service. Charges and revenue update live.</p>
+        </div>
+        <button class="btn small" type="button" data-close-modal="orderModal">Close</button>
+      </div>
+      <form id="orderForm" class="form-grid">
+        <input type="hidden" id="orderServiceId">
+        <div class="field full">
+          <label for="orderServiceName">Service Type</label>
+          <input class="input" id="orderServiceName" readonly>
+        </div>
+        <div class="field">
+          <label for="orderClientName">Client Name / Reference</label>
+          <input class="input" id="orderClientName" placeholder="Optional">
+        </div>
+        <div class="field">
+          <label for="orderQuantity">Quantity</label>
+          <input class="input" id="orderQuantity" type="number" min="0" step="1" required value="1000">
+        </div>
+        <div class="field full">
+          <label for="orderTarget">Target Link / Username</label>
+          <input class="input" id="orderTarget" placeholder="Optional">
+        </div>
+        <div class="notice full" id="orderCalcPreview">Enter quantity to compute charge and revenue.</div>
+        <div class="field full">
+          <label for="orderNotes">Notes</label>
+          <textarea class="textarea" id="orderNotes" placeholder="Optional notes"></textarea>
+        </div>
+        <div class="modal-actions full">
+          <button class="btn" type="button" data-close-modal="orderModal">Cancel</button>
+          <button class="btn primary" type="submit">Save Order</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>

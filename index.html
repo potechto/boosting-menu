@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Novalyte Boosting Menu</title>
+  <meta name="description" content="Client-facing Novalyte boosting service menu with live price calculator.">
+  <link rel="icon" href="assets/icons/novalyte.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="#top" aria-label="Novalyte home">
+        <span class="logo-mark">N</span>
+        <span>
+          <span class="brand-title">Novalyte</span>
+          <span class="brand-subtitle">Boosting Service Menu</span>
+        </span>
+      </a>
+      <nav class="nav-actions" aria-label="Primary navigation">
+        <a class="btn ghost" href="#services">Services</a>
+        <a class="btn ghost" href="#calculator">Calculator</a>
+        <a class="btn primary" href="admin.html">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="shell hero-grid">
+        <div>
+          <span class="eyebrow">⚡ Fast pricing preview for clients</span>
+          <h1>Choose your <span class="gradient-text">boosting service</span> faster.</h1>
+          <p>
+            Browse available services, check the final client rate, enter quantity, and generate an order message. Provider costs stay hidden from viewers.
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#calculator">Try calculator</a>
+            <a class="btn" href="#services">View services</a>
+          </div>
+        </div>
+        <aside class="hero-panel" aria-label="Service summary">
+          <div class="panel-content">
+            <span class="eyebrow">Live Menu</span>
+            <h2>Clean client view.</h2>
+            <p class="service-desc">Clients only see final selling prices edited from admin. Use the admin page to update services, rates, and visibility.</p>
+            <div class="metric-list">
+              <div class="metric-line"><span>Visible services</span><strong id="visibleServiceCount">0</strong></div>
+              <div class="metric-line"><span>Platforms</span><strong id="platformCount">0</strong></div>
+              <div class="metric-line"><span>Pricing basis</span><strong>Per service</strong></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="calculator">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <h2>Price Calculator</h2>
+            <p>Select platform, service, and quantity to preview the estimated client charge.</p>
+          </div>
+        </div>
+
+        <div class="calculator-grid">
+          <div class="control-panel">
+            <div class="form-grid">
+              <div class="field">
+                <label for="calcPlatform">Platform</label>
+                <select class="select" id="calcPlatform"></select>
+              </div>
+              <div class="field">
+                <label for="calcService">Service</label>
+                <select class="select" id="calcService"></select>
+              </div>
+              <div class="field">
+                <label for="calcQuantity">Quantity</label>
+                <input class="input" id="calcQuantity" type="number" min="0" step="1" value="1000" placeholder="Example: 1000">
+              </div>
+              <div class="field">
+                <label for="calcLink">Target Link / Username</label>
+                <input class="input" id="calcLink" type="text" placeholder="Paste link or username here">
+              </div>
+            </div>
+            <div class="notice" id="calcNotice" style="margin-top:14px;">Choose a service to see minimum, maximum, and delivery estimate.</div>
+          </div>
+
+          <div class="card">
+            <div class="total-box">
+              <span class="label">Estimated client charge</span>
+              <div class="amount" id="clientTotal">₱0.00</div>
+              <div class="mini-meta" id="calcMeta"></div>
+            </div>
+            <div style="height:14px"></div>
+            <div class="field">
+              <label>Generated inquiry message</label>
+              <div class="input client-message" id="orderMessage">Select a service first.</div>
+            </div>
+            <div class="modal-actions">
+              <button class="btn" id="copyOrderBtn" type="button">Copy message</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="services">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <h2>Available Services</h2>
+            <p>Search by service name, platform, category, or service ID.</p>
+          </div>
+        </div>
+
+        <div class="control-panel">
+          <div class="controls-grid">
+            <div class="field">
+              <label for="serviceSearch">Search</label>
+              <input class="input" id="serviceSearch" type="search" placeholder="Search Facebook, TikTok, Reactions, service ID...">
+            </div>
+            <div class="field">
+              <label for="platformFilter">Platform</label>
+              <select class="select" id="platformFilter"></select>
+            </div>
+            <div class="field">
+              <label for="categoryFilter">Category</label>
+              <select class="select" id="categoryFilter"></select>
+            </div>
+            <button class="btn" id="clearFilters" type="button">Clear</button>
+          </div>
+        </div>
+
+        <div style="height:16px"></div>
+        <div class="cards-grid" id="servicesGrid"></div>
+        <div class="empty-state hidden" id="emptyServices">No visible service found. Try another search/filter.</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">
+      Novalyte prototype. Rates are estimates and may change depending on availability and provider status.
+    </div>
+  </footer>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
