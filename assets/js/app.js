@@ -25,7 +25,7 @@
   }
 
   function visibleServices() {
-    return Store.getServices().filter(service => service.visible !== false);
+    return Store.getServices().filter(service => service.visible !== false && service.archived !== true);
   }
 
   function unique(list, key) {
@@ -152,7 +152,7 @@
           <span>Max: <strong>${Store.formatNumber(service.max)}</strong></span>
         </div>
         <div class="price-row">
-          <span>Client Rate</span>
+          <span>Rate</span>
           <strong>${Store.formatMoney(service.clientRate)} / ${Store.formatNumber(service.rateUnit)}</strong>
         </div>
         <button class="btn primary small" type="button" data-use-service="${service.id}">Calculate this</button>

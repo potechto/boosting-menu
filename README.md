@@ -1,88 +1,64 @@
 # Novalyte Boosting Menu + Admin Tracker
 
-First working prototype for a client-facing boosting service menu and an internal admin dashboard.
+Static GitHub Pages prototype for a client-facing service menu and an internal admin tracker.
 
-## Included Pages
+## Live pages
 
-- `index.html` - public/client menu with service search, filters, and live price calculator.
-- `admin.html` - admin login, price control, order creation, income tracker, void/undo void, import/export.
+- Client page: `index.html`
+- Admin page: `admin.html`
 
-## Current Prototype Features
+## v1.1 cleanup features
 
-### Client Side
+- Responsive client-facing service menu
+- Admin login with password/PIN eye viewer
+- Presentable modals for service editing, order creation, void confirmation, and order details
+- Provider price stays inside admin only
+- Client visible price controls public pricing
+- Create order button per service
+- Order price snapshot per order
+- Automatic provider charge, client charge, and revenue calculation
+- Investment log with notes
+- Dashboard totals for invest, provider charges, client sales, revenue, available fund, paid sales, receivables, and order counts
+- Order status: Active, Pending, Processing, Completed, Cancelled, Voided
+- Payment status: Paid, Partial, Unpaid
+- Void and undo void workflow
+- Archive/restore services without deleting records
+- Export/import JSON backup
+- Export orders CSV
 
-- Search services by platform, category, name, or provider ID.
-- View final client-facing price only.
-- Quantity calculator.
-- Generated inquiry/order message with copy button.
-- Responsive layout for mobile and desktop.
+## Important security note
 
-### Admin Side
+This is still a static GitHub Pages prototype. The admin login is only a front-end gate. Do not store real sensitive provider pricing, private client data, or production financial records here until a real backend is connected.
 
-- Login gate with username, password, and PIN.
-- Total Invest tracker.
-- Total Orders / Provider Charges tracker.
-- Total Client Sales tracker.
-- Total Revenue tracker.
-- Available Fund Estimate.
-- Service price editor.
-- Provider rate and client rate control.
-- Service visibility control.
-- Create Order button per service.
-- Auto-computed provider charge, client charge, and revenue.
-- Order history.
-- Void and Undo Void order actions.
-- Export backup JSON.
-- Import backup JSON.
-- Export orders CSV.
+Recommended next upgrade:
 
-## Important Security Note
+- Supabase Auth for real login
+- Supabase database for shared services, orders, investment logs, and admin access
+- Row-level security rules
 
-This version is a static GitHub Pages prototype. The admin login is only a simple front-end gate. It is not secure for real sensitive data because anyone with technical knowledge can inspect static files.
+## Terminal workflow
 
-For real shared access among admins, upgrade to:
+Work in:
 
-- Supabase Auth or Firebase Auth for login.
-- Supabase/Firebase database for services, orders, and investment data.
-- Row-level security rules so only admins can read internal provider prices and order logs.
-
-## Local Use
-
-Open `index.html` or `admin.html` in your browser.
-
-Admin edits are saved in the same browser using `localStorage`.
-
-## GitHub Pages Deployment
-
-1. Create a new GitHub repository, for example `boosting-menu`.
-2. Upload all files in this folder.
-3. Go to repository Settings.
-4. Open Pages.
-5. Choose `Deploy from branch`.
-6. Select `main` branch and `/root` folder.
-7. Save.
-
-Your public URL will look like:
-
-```text
-https://yourusername.github.io/boosting-menu/
+```powershell
+cd "C:\Users\Ralph John\OneDrive\Desktop\ME FILES\BOOSTING"
 ```
 
-## VS Code Git Commands
+Normal update flow:
 
-Run these inside the project folder:
-
-```bash
-git init
+```powershell
+git status
 git add .
-git commit -m "Initial Novalyte boosting menu"
-git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/boosting-menu.git
-git push -u origin main
+git commit -m "Update v1.1 cleanup"
+git push origin v1.1-cleanup
 ```
 
-Replace `YOUR_USERNAME` with your GitHub username.
+When v1.1 is approved:
 
-## Recommended Next Upgrade
+```powershell
+git checkout main
+git merge v1.1-cleanup
+git push origin main
+```
 
-After confirming the design and workflow, connect the admin side to Supabase so all admins can access the same live data from different devices.
+GitHub Pages will redeploy from `main` automatically.

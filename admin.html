@@ -10,10 +10,15 @@
 </head>
 <body>
   <main class="login-page" id="loginView">
-    <section class="login-card">
-      <div class="lock-visual">🔐</div>
-      <h1>Admin Login</h1>
-      <p>Access price control, order creation, investment tracker, and revenue dashboard.</p>
+    <section class="login-card elevated-card">
+      <div class="login-brand-row">
+        <div class="lock-visual">N</div>
+        <div>
+          <span class="eyebrow">Protected workspace</span>
+          <h1>Admin Login</h1>
+        </div>
+      </div>
+      <p>Access service pricing, provider costs, order tracking, investment logs, and revenue dashboard.</p>
       <form id="loginForm" class="form-grid">
         <div class="field full">
           <label for="loginUser">Username</label>
@@ -21,18 +26,22 @@
         </div>
         <div class="field full">
           <label for="loginPass">Password</label>
-          <input class="input" id="loginPass" type="password" autocomplete="current-password" required placeholder="Password">
+          <div class="password-field">
+            <input class="input" id="loginPass" type="password" autocomplete="current-password" required placeholder="Password">
+            <button class="eye-btn" type="button" data-toggle-password="loginPass" aria-label="Show password">👁</button>
+          </div>
         </div>
         <div class="field full">
-          <label for="loginPin">PIN</label>
-          <input class="input" id="loginPin" type="password" inputmode="numeric" required placeholder="4-digit PIN">
+          <label for="loginPin">Security PIN</label>
+          <div class="password-field">
+            <input class="input" id="loginPin" type="password" inputmode="numeric" required placeholder="4-digit PIN" maxlength="8">
+            <button class="eye-btn" type="button" data-toggle-password="loginPin" aria-label="Show PIN">👁</button>
+          </div>
         </div>
-        <div class="field full">
-          <label class="checkbox-line"><input type="checkbox" id="showPassword"> Show password and PIN</label>
-        </div>
+        <div class="login-alert hidden full" id="loginAlert"></div>
         <button class="btn primary full" type="submit">Enter Dashboard</button>
       </form>
-      <div class="login-footnote">Prototype protection only. Use Supabase/Auth before real public launch.</div>
+      <div class="login-footnote">Prototype protection only. Use Supabase/Auth before storing sensitive production data.</div>
     </section>
   </main>
 
@@ -48,65 +57,53 @@
       <nav class="sidebar-nav" aria-label="Admin navigation">
         <a href="#dashboard" class="active">Dashboard</a>
         <a href="#services">Services</a>
+        <a href="#investments">Investments</a>
         <a href="#orders">Orders</a>
         <a href="index.html">Client View</a>
         <button type="button" id="logoutBtn">Logout</button>
       </nav>
-      <div class="notice">Admin edits save in this browser using localStorage. Shared multi-device access needs Supabase/Firebase.</div>
+      <div class="notice sidebar-note">Admin data currently saves in this browser via localStorage. Shared multi-device access needs Supabase/Firebase.</div>
     </aside>
 
     <main class="admin-main">
-      <section id="dashboard" class="page-title">
+      <section id="dashboard" class="page-title admin-hero-card">
         <span class="eyebrow">Internal dashboard</span>
         <h1>Price control + <span class="gradient-text">income tracker</span></h1>
-        <p>Track provider charges, client sales, revenue, total investment, voided orders, and editable client-facing prices.</p>
+        <p>Control client-facing prices, protect provider costs, create order records, track investment, and void/restore mistakes cleanly.</p>
+        <div class="quick-links">
+          <a class="btn small" href="#services">Manage Services</a>
+          <a class="btn small" href="#orders">View Orders</a>
+          <button class="btn small" type="button" id="exportBackupBtn">Export Backup</button>
+          <label class="btn small" for="importBackupInput">Import Backup</label>
+          <input id="importBackupInput" class="hidden" type="file" accept="application/json">
+        </div>
       </section>
 
       <section class="stats-grid" id="statsGrid"></section>
-
-      <section class="card">
-        <div class="section-head">
-          <div>
-            <h2>Investment Tracker</h2>
-            <p>Set or add the amount invested so the dashboard can estimate available funds.</p>
-          </div>
-        </div>
-        <div class="form-grid">
-          <div class="field">
-            <label for="investAmount">Total Invest</label>
-            <input class="input" id="investAmount" type="number" min="0" step="0.01" placeholder="Example: 1000">
-          </div>
-          <div class="field">
-            <label for="addInvestAmount">Add Investment</label>
-            <input class="input" id="addInvestAmount" type="number" min="0" step="0.01" placeholder="Example: 500">
-          </div>
-        </div>
-        <div class="modal-actions">
-          <button class="btn" type="button" id="saveInvestBtn">Save Total Invest</button>
-          <button class="btn primary" type="button" id="addInvestBtn">Add to Invest</button>
-        </div>
-      </section>
 
       <section class="section" id="services">
         <div class="section-head">
           <div>
             <h2>Service Price Control</h2>
-            <p>Edit provider price, client price, visibility, min/max, delivery time, and descriptions.</p>
+            <p>Provider price is internal. Client visible price is the only price shown on the public page.</p>
           </div>
+          <button class="btn primary" type="button" id="addServiceBtn">Add Service</button>
         </div>
-        <div class="toolbar">
+        <div class="toolbar control-panel compact-panel">
           <div class="toolbar-left">
-            <input class="input" id="adminServiceSearch" type="search" placeholder="Search services..." style="min-width:min(420px,100%)">
+            <input class="input" id="adminServiceSearch" type="search" placeholder="Search services, platform, ID..." style="min-width:min(420px,100%)">
             <select class="select" id="adminPlatformFilter" style="width:auto;min-width:180px"></select>
+            <select class="select" id="adminArchiveFilter" style="width:auto;min-width:170px">
+              <option value="active">Active services</option>
+              <option value="all">All services</option>
+              <option value="archived">Archived only</option>
+            </select>
           </div>
           <div class="toolbar-right">
-            <button class="btn" type="button" id="addServiceBtn">Add Service</button>
-            <button class="btn" type="button" id="exportBackupBtn">Export Backup</button>
-            <label class="btn" for="importBackupInput">Import Backup</label>
-            <input id="importBackupInput" class="hidden" type="file" accept="application/json">
+            <span class="service-desc">Tip: edit prices here, create orders from each row.</span>
           </div>
         </div>
-        <div class="table-wrap">
+        <div class="table-wrap responsive-table">
           <table>
             <thead>
               <tr>
@@ -116,7 +113,7 @@
                 <th>Provider Rate</th>
                 <th>Client Rate</th>
                 <th>Revenue/unit</th>
-                <th>Visible</th>
+                <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -125,20 +122,75 @@
         </div>
       </section>
 
+      <section class="section" id="investments">
+        <div class="section-head">
+          <div>
+            <h2>Investment Tracker</h2>
+            <p>Add every cash-in or reload entry so available fund estimates remain clean and traceable.</p>
+          </div>
+        </div>
+        <div class="card investment-card">
+          <div class="form-grid">
+            <div class="field">
+              <label for="addInvestAmount">Investment Amount</label>
+              <input class="input" id="addInvestAmount" type="number" min="0" step="0.01" placeholder="Example: 1000">
+            </div>
+            <div class="field">
+              <label for="addInvestNote">Note</label>
+              <input class="input" id="addInvestNote" type="text" placeholder="Example: Initial fund / Reload">
+            </div>
+            <div class="field">
+              <label for="investAmount">Override Total Invest</label>
+              <input class="input" id="investAmount" type="number" min="0" step="0.01" placeholder="Use only for corrections">
+            </div>
+            <div class="field button-field">
+              <label>&nbsp;</label>
+              <div class="split-actions">
+                <button class="btn primary" type="button" id="addInvestBtn">Add Investment</button>
+                <button class="btn warning" type="button" id="saveInvestBtn">Override Total</button>
+              </div>
+            </div>
+          </div>
+          <div class="table-wrap mini-table-wrap">
+            <table class="mini-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Amount</th>
+                  <th>Note</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="investmentsTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
       <section class="section" id="orders">
         <div class="section-head">
           <div>
             <h2>Order History</h2>
-            <p>Voided orders stay in history but are not counted in totals. Undo void restores them.</p>
+            <p>Voided and cancelled orders remain in history but are excluded from totals. Undo void restores them.</p>
           </div>
         </div>
-        <div class="toolbar">
+        <div class="toolbar control-panel compact-panel">
           <div class="toolbar-left">
-            <input class="input" id="orderSearch" type="search" placeholder="Search order, client, service..." style="min-width:min(420px,100%)">
+            <input class="input" id="orderSearch" type="search" placeholder="Search client, contact, service, link..." style="min-width:min(420px,100%)">
             <select class="select" id="orderStatusFilter" style="width:auto;min-width:180px">
-              <option value="all">All orders</option>
-              <option value="active">Active only</option>
-              <option value="voided">Voided only</option>
+              <option value="all">All statuses</option>
+              <option value="active">Active</option>
+              <option value="pending">Pending</option>
+              <option value="processing">Processing</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+              <option value="voided">Voided</option>
+            </select>
+            <select class="select" id="paymentStatusFilter" style="width:auto;min-width:180px">
+              <option value="all">All payments</option>
+              <option value="paid">Paid</option>
+              <option value="partial">Partial</option>
+              <option value="unpaid">Unpaid</option>
             </select>
           </div>
           <div class="toolbar-right">
@@ -146,18 +198,19 @@
             <button class="btn danger" type="button" id="resetDemoBtn">Reset Demo Data</button>
           </div>
         </div>
-        <div class="table-wrap">
+        <div class="table-wrap responsive-table">
           <table>
             <thead>
               <tr>
                 <th>Date</th>
                 <th>Client</th>
                 <th>Service</th>
-                <th>Quantity</th>
-                <th>Provider Charge</th>
-                <th>Client Charge</th>
+                <th>Qty</th>
+                <th>Provider</th>
+                <th>Client</th>
                 <th>Revenue</th>
                 <th>Status</th>
+                <th>Payment</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -168,12 +221,13 @@
     </main>
   </div>
 
-  <div class="modal-backdrop" id="serviceModal">
-    <div class="modal-card">
+  <div class="modal-backdrop" id="serviceModal" role="dialog" aria-modal="true">
+    <div class="modal-card wide-modal">
       <div class="modal-head">
         <div>
+          <span class="eyebrow">Service manager</span>
           <h2 id="serviceModalTitle">Edit Service</h2>
-          <p class="service-desc">Changes update the service list. Old orders keep their original snapshot prices.</p>
+          <p class="service-desc">Old orders keep their original snapshot prices even after pricing changes.</p>
         </div>
         <button class="btn small" type="button" data-close-modal="serviceModal">Close</button>
       </div>
@@ -181,11 +235,11 @@
         <input type="hidden" id="serviceEditId">
         <div class="field">
           <label for="serviceName">Service Name</label>
-          <input class="input" id="serviceName" required>
+          <input class="input" id="serviceName" required placeholder="Facebook Reactions PH">
         </div>
         <div class="field">
           <label for="serviceProviderId">Provider Service ID</label>
-          <input class="input" id="serviceProviderId" required>
+          <input class="input" id="serviceProviderId" required placeholder="FB-1001">
         </div>
         <div class="field">
           <label for="servicePlatform">Platform</label>
@@ -220,16 +274,17 @@
           <input class="input" id="serviceMax" type="number" min="0" step="1" required>
         </div>
         <div class="field">
-          <label for="serviceTag">Tag</label>
+          <label for="serviceTag">Client Tag</label>
           <input class="input" id="serviceTag" placeholder="Fast & popular">
         </div>
-        <div class="field">
+        <div class="field visibility-field">
           <label>Visibility</label>
           <label class="checkbox-line"><input type="checkbox" id="serviceVisible"> Show to clients</label>
+          <label class="checkbox-line"><input type="checkbox" id="serviceArchived"> Archived</label>
         </div>
         <div class="field full">
           <label for="serviceDescription">Description</label>
-          <textarea class="textarea" id="serviceDescription"></textarea>
+          <textarea class="textarea" id="serviceDescription" placeholder="Short client-friendly description"></textarea>
         </div>
         <div class="notice full" id="serviceRevenuePreview">Revenue preview: ₱0.00</div>
         <div class="modal-actions full">
@@ -240,12 +295,13 @@
     </div>
   </div>
 
-  <div class="modal-backdrop" id="orderModal">
-    <div class="modal-card">
+  <div class="modal-backdrop" id="orderModal" role="dialog" aria-modal="true">
+    <div class="modal-card wide-modal">
       <div class="modal-head">
         <div>
+          <span class="eyebrow">Create order</span>
           <h2>Create Order</h2>
-          <p class="service-desc">Service type auto-fills from the selected service. Charges and revenue update live.</p>
+          <p class="service-desc">Service type auto-fills. Charges, client sales, and revenue update live.</p>
         </div>
         <button class="btn small" type="button" data-close-modal="orderModal">Close</button>
       </div>
@@ -253,30 +309,86 @@
         <input type="hidden" id="orderServiceId">
         <div class="field full">
           <label for="orderServiceName">Service Type</label>
-          <input class="input" id="orderServiceName" readonly>
+          <input class="input readonly-input" id="orderServiceName" readonly>
         </div>
         <div class="field">
           <label for="orderClientName">Client Name / Reference</label>
-          <input class="input" id="orderClientName" placeholder="Optional">
+          <input class="input" id="orderClientName" placeholder="Example: Juan / Client A">
+        </div>
+        <div class="field">
+          <label for="orderClientContact">Client Contact</label>
+          <input class="input" id="orderClientContact" placeholder="Messenger, FB link, phone, etc.">
         </div>
         <div class="field">
           <label for="orderQuantity">Quantity</label>
           <input class="input" id="orderQuantity" type="number" min="0" step="1" required value="1000">
         </div>
+        <div class="field">
+          <label for="orderStatus">Order Status</label>
+          <select class="select" id="orderStatus">
+            <option value="active">Active</option>
+            <option value="pending">Pending</option>
+            <option value="processing">Processing</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="orderPaymentStatus">Payment Status</label>
+          <select class="select" id="orderPaymentStatus">
+            <option value="paid">Paid</option>
+            <option value="partial">Partial</option>
+            <option value="unpaid">Unpaid</option>
+          </select>
+        </div>
         <div class="field full">
           <label for="orderTarget">Target Link / Username</label>
-          <input class="input" id="orderTarget" placeholder="Optional">
+          <input class="input" id="orderTarget" placeholder="Paste target link or username">
         </div>
-        <div class="notice full" id="orderCalcPreview">Enter quantity to compute charge and revenue.</div>
+        <div class="calc-preview full" id="orderCalcPreview">Enter quantity to compute charge and revenue.</div>
         <div class="field full">
           <label for="orderNotes">Notes</label>
-          <textarea class="textarea" id="orderNotes" placeholder="Optional notes"></textarea>
+          <textarea class="textarea" id="orderNotes" placeholder="Optional notes, provider reminders, or client instructions"></textarea>
         </div>
         <div class="modal-actions full">
           <button class="btn" type="button" data-close-modal="orderModal">Cancel</button>
           <button class="btn primary" type="submit">Save Order</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="voidModal" role="dialog" aria-modal="true">
+    <div class="modal-card small-modal">
+      <div class="modal-head">
+        <div>
+          <span class="eyebrow">Void order</span>
+          <h2>Confirm Void</h2>
+          <p class="service-desc">This removes the order from totals but keeps it in history. You can undo void later.</p>
+        </div>
+        <button class="btn small" type="button" data-close-modal="voidModal">Close</button>
+      </div>
+      <input type="hidden" id="voidOrderId">
+      <div class="field full">
+        <label for="voidReason">Void Reason</label>
+        <textarea class="textarea" id="voidReason" placeholder="Example: cancelled by client / wrong service / duplicate order"></textarea>
+      </div>
+      <div class="modal-actions full">
+        <button class="btn" type="button" data-close-modal="voidModal">Cancel</button>
+        <button class="btn warning" type="button" id="confirmVoidBtn">Void Order</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="orderDetailsModal" role="dialog" aria-modal="true">
+    <div class="modal-card small-modal">
+      <div class="modal-head">
+        <div>
+          <span class="eyebrow">Order details</span>
+          <h2>Snapshot</h2>
+        </div>
+        <button class="btn small" type="button" data-close-modal="orderDetailsModal">Close</button>
+      </div>
+      <div id="orderDetailsBody" class="details-grid"></div>
     </div>
   </div>
 

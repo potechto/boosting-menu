@@ -13,15 +13,18 @@
     loginUser: document.getElementById('loginUser'),
     loginPass: document.getElementById('loginPass'),
     loginPin: document.getElementById('loginPin'),
-    showPassword: document.getElementById('showPassword'),
+    loginAlert: document.getElementById('loginAlert'),
     logoutBtn: document.getElementById('logoutBtn'),
     statsGrid: document.getElementById('statsGrid'),
     investAmount: document.getElementById('investAmount'),
     addInvestAmount: document.getElementById('addInvestAmount'),
+    addInvestNote: document.getElementById('addInvestNote'),
+    investmentsTable: document.getElementById('investmentsTable'),
     saveInvestBtn: document.getElementById('saveInvestBtn'),
     addInvestBtn: document.getElementById('addInvestBtn'),
     adminServiceSearch: document.getElementById('adminServiceSearch'),
     adminPlatformFilter: document.getElementById('adminPlatformFilter'),
+    adminArchiveFilter: document.getElementById('adminArchiveFilter'),
     servicesTable: document.getElementById('servicesTable'),
     addServiceBtn: document.getElementById('addServiceBtn'),
     exportBackupBtn: document.getElementById('exportBackupBtn'),
@@ -30,6 +33,7 @@
     resetDemoBtn: document.getElementById('resetDemoBtn'),
     orderSearch: document.getElementById('orderSearch'),
     orderStatusFilter: document.getElementById('orderStatusFilter'),
+    paymentStatusFilter: document.getElementById('paymentStatusFilter'),
     ordersTable: document.getElementById('ordersTable'),
     serviceModal: document.getElementById('serviceModal'),
     serviceForm: document.getElementById('serviceForm'),
@@ -47,6 +51,7 @@
     serviceMax: document.getElementById('serviceMax'),
     serviceTag: document.getElementById('serviceTag'),
     serviceVisible: document.getElementById('serviceVisible'),
+    serviceArchived: document.getElementById('serviceArchived'),
     serviceDescription: document.getElementById('serviceDescription'),
     serviceRevenuePreview: document.getElementById('serviceRevenuePreview'),
     orderModal: document.getElementById('orderModal'),
@@ -54,10 +59,34 @@
     orderServiceId: document.getElementById('orderServiceId'),
     orderServiceName: document.getElementById('orderServiceName'),
     orderClientName: document.getElementById('orderClientName'),
+    orderClientContact: document.getElementById('orderClientContact'),
     orderQuantity: document.getElementById('orderQuantity'),
+    orderStatus: document.getElementById('orderStatus'),
+    orderPaymentStatus: document.getElementById('orderPaymentStatus'),
     orderTarget: document.getElementById('orderTarget'),
     orderCalcPreview: document.getElementById('orderCalcPreview'),
-    orderNotes: document.getElementById('orderNotes')
+    orderNotes: document.getElementById('orderNotes'),
+    voidModal: document.getElementById('voidModal'),
+    voidOrderId: document.getElementById('voidOrderId'),
+    voidReason: document.getElementById('voidReason'),
+    confirmVoidBtn: document.getElementById('confirmVoidBtn'),
+    orderDetailsModal: document.getElementById('orderDetailsModal'),
+    orderDetailsBody: document.getElementById('orderDetailsBody')
+  };
+
+  const statusLabels = {
+    active: 'Active',
+    pending: 'Pending',
+    processing: 'Processing',
+    completed: 'Completed',
+    cancelled: 'Cancelled',
+    voided: 'Voided'
+  };
+
+  const paymentLabels = {
+    paid: 'Paid',
+    partial: 'Partial',
+    unpaid: 'Unpaid'
   };
 
   function isLoggedIn() {
@@ -81,7 +110,7 @@
   }
 
   function sanitize(text) {
-    return String(text ?? '').replace(/[&<>"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[char]));
+    return String(text ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
   }
 
   function platformOptions() {
@@ -89,18 +118,26 @@
     return [...new Set(services.map(item => item.platform).filter(Boolean))].sort();
   }
 
+  function dateText(value) {
+    return value ? new Date(value).toLocaleString('en-PH', { dateStyle: 'medium', timeStyle: 'short' }) : '-';
+  }
+
   function renderStats() {
     const totals = Store.getTotals();
-    const fundClass = totals.availableFund < 0 ? 'bad' : totals.availableFund < totals.invest * 0.25 ? 'warn' : 'good';
+    const fundClass = totals.availableFund < 0 ? 'bad' : totals.availableFund < Math.max(totals.invest * 0.25, 1) ? 'warn' : 'good';
     const stats = [
       { label: 'TOTAL INVEST', value: Store.formatMoney(totals.invest), className: '' },
       { label: 'TOTAL ORDERS / PROVIDER CHARGES', value: Store.formatMoney(totals.providerCharges), className: '' },
       { label: 'TOTAL CLIENT SALES', value: Store.formatMoney(totals.clientSales), className: '' },
       { label: 'TOTAL REVENUE', value: Store.formatMoney(totals.revenue), className: 'good' },
       { label: 'AVAILABLE FUND ESTIMATE', value: Store.formatMoney(totals.availableFund), className: fundClass },
-      { label: 'ACTIVE ORDERS', value: Store.formatNumber(totals.activeCount), className: '' },
-      { label: 'VOIDED ORDERS', value: Store.formatNumber(totals.voidedCount), className: totals.voidedCount ? 'warn' : '' },
-      { label: 'ALL ORDER RECORDS', value: Store.formatNumber(totals.allCount), className: '' }
+      { label: 'PAID SALES', value: Store.formatMoney(totals.paidSales), className: 'good' },
+      { label: 'RECEIVABLES', value: Store.formatMoney(totals.receivables), className: totals.receivables ? 'warn' : '' },
+      { label: 'ACTIVE RECORDS', value: Store.formatNumber(totals.activeCount), className: '' },
+      { label: 'COMPLETED', value: Store.formatNumber(totals.completedCount), className: 'good' },
+      { label: 'PROCESSING', value: Store.formatNumber(totals.processingCount), className: '' },
+      { label: 'VOIDED', value: Store.formatNumber(totals.voidedCount), className: totals.voidedCount ? 'warn' : '' },
+      { label: 'ALL RECORDS', value: Store.formatNumber(totals.allCount), className: '' }
     ];
 
     els.statsGrid.innerHTML = stats.map(item => `
@@ -110,6 +147,23 @@
       </article>
     `).join('');
     els.investAmount.value = totals.invest || '';
+  }
+
+  function renderInvestments() {
+    const entries = Store.getInvestments();
+    if (!entries.length) {
+      els.investmentsTable.innerHTML = '<tr><td colspan="4"><div class="empty-state">No investment entries yet.</div></td></tr>';
+      return;
+    }
+
+    els.investmentsTable.innerHTML = entries.map(entry => `
+      <tr>
+        <td>${sanitize(dateText(entry.createdAt))}</td>
+        <td><strong>${Store.formatMoney(entry.amount)}</strong></td>
+        <td>${sanitize(entry.note || 'No note')}</td>
+        <td><button class="btn small danger" type="button" data-remove-investment="${entry.id}">Remove</button></td>
+      </tr>
+    `).join('');
   }
 
   function fillAdminFilters() {
@@ -129,12 +183,15 @@
   function filteredServices() {
     const search = els.adminServiceSearch.value.trim().toLowerCase();
     const platform = els.adminPlatformFilter.value || 'all';
+    const archive = els.adminArchiveFilter.value || 'active';
 
     return Store.getServices().filter(service => {
+      const archived = service.archived === true;
       const text = `${service.name} ${service.platform} ${service.category} ${service.providerId} ${service.description} ${service.tag}`.toLowerCase();
       const matchesSearch = !search || text.includes(search);
       const matchesPlatform = platform === 'all' || service.platform === platform;
-      return matchesSearch && matchesPlatform;
+      const matchesArchive = archive === 'all' || (archive === 'active' && !archived) || (archive === 'archived' && archived);
+      return matchesSearch && matchesPlatform && matchesArchive;
     });
   }
 
@@ -147,22 +204,29 @@
 
     els.servicesTable.innerHTML = services.map(service => {
       const revenue = (Number(service.clientRate) || 0) - (Number(service.providerRate) || 0);
+      const statusText = service.archived ? 'Archived' : service.visible === false ? 'Hidden' : 'Visible';
+      const statusClass = service.archived ? 'archived' : service.visible === false ? 'is-hidden' : 'visible';
+      const archiveAction = service.archived
+        ? `<button class="btn small success" type="button" data-archive-service="${service.id}" data-archive-value="false">Restore</button>`
+        : `<button class="btn small danger" type="button" data-archive-service="${service.id}" data-archive-value="true">Archive</button>`;
+
       return `
         <tr>
-          <td>
+          <td data-label="Service">
             <strong>${sanitize(service.name)}</strong><br>
             <span class="service-desc">${sanitize(service.category)} · ${sanitize(service.avgTime || 'Varies')}</span>
           </td>
-          <td><span class="id-chip">${sanitize(service.providerId)}</span></td>
-          <td>${sanitize(service.platform)}</td>
-          <td>${Store.formatMoney(service.providerRate)} / ${Store.formatNumber(service.rateUnit)}</td>
-          <td><strong>${Store.formatMoney(service.clientRate)}</strong> / ${Store.formatNumber(service.rateUnit)}</td>
-          <td><strong>${Store.formatMoney(revenue)}</strong></td>
-          <td><span class="status-pill ${service.visible === false ? 'is-hidden' : 'visible'}">${service.visible === false ? 'Hidden' : 'Visible'}</span></td>
-          <td>
+          <td data-label="Provider ID"><span class="id-chip">${sanitize(service.providerId)}</span></td>
+          <td data-label="Platform">${sanitize(service.platform)}</td>
+          <td data-label="Provider Rate">${Store.formatMoney(service.providerRate)} / ${Store.formatNumber(service.rateUnit)}</td>
+          <td data-label="Client Rate"><strong>${Store.formatMoney(service.clientRate)}</strong> / ${Store.formatNumber(service.rateUnit)}</td>
+          <td data-label="Revenue/unit"><strong>${Store.formatMoney(revenue)}</strong></td>
+          <td data-label="Status"><span class="status-pill ${statusClass}">${statusText}</span></td>
+          <td data-label="Actions">
             <div class="actions-cell">
-              <button class="btn small primary" type="button" data-create-order="${service.id}">Create Order</button>
+              <button class="btn small primary" type="button" data-create-order="${service.id}" ${service.archived ? 'disabled' : ''}>Create Order</button>
               <button class="btn small" type="button" data-edit-service="${service.id}">Edit</button>
+              ${archiveAction}
             </div>
           </td>
         </tr>
@@ -173,42 +237,51 @@
   function filteredOrders() {
     const search = els.orderSearch.value.trim().toLowerCase();
     const status = els.orderStatusFilter.value;
+    const payment = els.paymentStatusFilter.value;
 
     return Store.getOrders().filter(order => {
-      const text = `${order.clientName} ${order.serviceName} ${order.providerId} ${order.platform} ${order.target} ${order.notes}`.toLowerCase();
+      const text = `${order.clientName} ${order.clientContact} ${order.serviceName} ${order.providerId} ${order.platform} ${order.target} ${order.notes} ${order.voidReason}`.toLowerCase();
       const matchesSearch = !search || text.includes(search);
       const matchesStatus = status === 'all' || order.status === status;
-      return matchesSearch && matchesStatus;
+      const matchesPayment = payment === 'all' || order.paymentStatus === payment;
+      return matchesSearch && matchesStatus && matchesPayment;
     }).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }
 
   function renderOrdersTable() {
     const orders = filteredOrders();
     if (!orders.length) {
-      els.ordersTable.innerHTML = '<tr><td colspan="9"><div class="empty-state">No orders yet.</div></td></tr>';
+      els.ordersTable.innerHTML = '<tr><td colspan="10"><div class="empty-state">No orders yet.</div></td></tr>';
       return;
     }
 
     els.ordersTable.innerHTML = orders.map(order => {
-      const date = order.createdAt ? new Date(order.createdAt).toLocaleString('en-PH', { dateStyle: 'medium', timeStyle: 'short' }) : '-';
-      const status = order.status === 'voided' ? 'voided' : 'active';
+      const status = order.status || 'active';
+      const payment = order.paymentStatus || 'paid';
       const actionButton = status === 'voided'
         ? `<button class="btn small success" type="button" data-undo-void="${order.id}">Undo Void</button>`
         : `<button class="btn small warning" type="button" data-void-order="${order.id}">Void</button>`;
       return `
         <tr>
-          <td>${sanitize(date)}</td>
-          <td>${sanitize(order.clientName || 'No client ref')}</td>
-          <td>
+          <td data-label="Date">${sanitize(dateText(order.createdAt))}</td>
+          <td data-label="Client">
+            <strong>${sanitize(order.clientName || 'No client ref')}</strong><br>
+            <span class="service-desc">${sanitize(order.clientContact || 'No contact')}</span>
+          </td>
+          <td data-label="Service">
             <strong>${sanitize(order.serviceName)}</strong><br>
             <span class="service-desc">${sanitize(order.providerId)} · ${sanitize(order.platform)}</span>
           </td>
-          <td>${Store.formatNumber(order.quantity)}</td>
-          <td>${Store.formatMoney(order.providerCharge)}</td>
-          <td><strong>${Store.formatMoney(order.clientCharge)}</strong></td>
-          <td><strong>${Store.formatMoney(order.revenue)}</strong></td>
-          <td><span class="status-pill ${status}">${status === 'voided' ? 'Voided' : 'Active'}</span></td>
-          <td><div class="actions-cell">${actionButton}</div></td>
+          <td data-label="Qty">${Store.formatNumber(order.quantity)}</td>
+          <td data-label="Provider">${Store.formatMoney(order.providerCharge)}</td>
+          <td data-label="Client"><strong>${Store.formatMoney(order.clientCharge)}</strong></td>
+          <td data-label="Revenue"><strong>${Store.formatMoney(order.revenue)}</strong></td>
+          <td data-label="Status"><span class="status-pill ${status}">${statusLabels[status] || status}</span></td>
+          <td data-label="Payment"><span class="status-pill payment-${payment}">${paymentLabels[payment] || payment}</span></td>
+          <td data-label="Actions"><div class="actions-cell">
+            <button class="btn small" type="button" data-view-order="${order.id}">View</button>
+            ${actionButton}
+          </div></td>
         </tr>
       `;
     }).join('');
@@ -218,27 +291,34 @@
     Store.getServices();
     fillAdminFilters();
     renderStats();
+    renderInvestments();
     renderServicesTable();
     renderOrdersTable();
   }
 
   function openModal(modal) {
     modal.classList.add('open');
+    document.body.classList.add('modal-open');
   }
 
   function closeModal(modal) {
     modal.classList.remove('open');
+    if (!document.querySelector('.modal-backdrop.open')) document.body.classList.remove('modal-open');
   }
 
   function getServiceById(id) {
     return Store.getServices().find(service => service.id === id);
   }
 
+  function getOrderById(id) {
+    return Store.getOrders().find(order => order.id === id);
+  }
+
   function fillServiceForm(service) {
     const isNew = !service;
     const data = service || {
       id: '', providerId: '', platform: '', category: '', name: '', description: '', providerRate: 0,
-      clientRate: 0, rateUnit: 1000, min: 100, max: 10000, avgTime: '', tag: '', visible: true
+      clientRate: 0, rateUnit: 1000, min: 100, max: 10000, avgTime: '', tag: '', visible: true, archived: false
     };
 
     els.serviceModalTitle.textContent = isNew ? 'Add Service' : 'Edit Service';
@@ -255,6 +335,7 @@
     els.serviceMax.value = data.max || 0;
     els.serviceTag.value = data.tag || '';
     els.serviceVisible.checked = data.visible !== false;
+    els.serviceArchived.checked = data.archived === true;
     els.serviceDescription.value = data.description || '';
     updateServiceRevenuePreview();
     openModal(els.serviceModal);
@@ -265,7 +346,8 @@
     const clientRate = Number(els.serviceClientRate.value) || 0;
     const unit = Number(els.serviceRateUnit.value) || 1000;
     const revenue = clientRate - providerRate;
-    els.serviceRevenuePreview.textContent = `Revenue preview: ${Store.formatMoney(revenue)} per ${Store.formatNumber(unit)} order quantity`;
+    const margin = clientRate > 0 ? (revenue / clientRate) * 100 : 0;
+    els.serviceRevenuePreview.innerHTML = `Revenue preview: <strong>${Store.formatMoney(revenue)}</strong> per ${Store.formatNumber(unit)} quantity · Margin: <strong>${margin.toFixed(1)}%</strong>`;
   }
 
   function saveServiceFromForm(event) {
@@ -287,15 +369,32 @@
       max: Number(els.serviceMax.value) || 0,
       tag: els.serviceTag.value.trim(),
       visible: els.serviceVisible.checked,
+      archived: els.serviceArchived.checked,
       description: els.serviceDescription.value.trim()
     };
+
+    if (!service.name || !service.providerId || !service.platform || !service.category) {
+      Store.toast('Complete required service details.', 'error');
+      return;
+    }
 
     if (existingIndex >= 0) services[existingIndex] = service;
     else services.unshift(service);
 
     Store.saveServices(services);
     closeModal(els.serviceModal);
-    Store.toast('Service saved.');
+    Store.toast('Service saved. Client page will use the updated visible price.');
+    renderAll();
+  }
+
+  function archiveService(serviceId, archived) {
+    const services = Store.getServices();
+    const service = services.find(item => item.id === serviceId);
+    if (!service) return;
+    service.archived = archived;
+    if (archived) service.visible = false;
+    Store.saveServices(services);
+    Store.toast(archived ? 'Service archived and hidden from clients.' : 'Service restored. Review visibility before sharing.');
     renderAll();
   }
 
@@ -303,7 +402,10 @@
     els.orderServiceId.value = service.id;
     els.orderServiceName.value = `${service.name} (${service.providerId})`;
     els.orderClientName.value = '';
+    els.orderClientContact.value = '';
     els.orderQuantity.value = service.rateUnit || 1000;
+    els.orderStatus.value = 'active';
+    els.orderPaymentStatus.value = 'paid';
     els.orderTarget.value = '';
     els.orderNotes.value = '';
     updateOrderCalcPreview();
@@ -323,9 +425,9 @@
 
     const calc = Store.calcForService(service, els.orderQuantity.value);
     els.orderCalcPreview.innerHTML = `
-      Provider Charge: <strong>${Store.formatMoney(calc.providerCharge)}</strong> ·
-      Client Charge: <strong>${Store.formatMoney(calc.clientCharge)}</strong> ·
-      Revenue: <strong>${Store.formatMoney(calc.revenue)}</strong>
+      <div class="preview-card"><span>Provider Charge</span><strong>${Store.formatMoney(calc.providerCharge)}</strong></div>
+      <div class="preview-card"><span>Client Charge</span><strong>${Store.formatMoney(calc.clientCharge)}</strong></div>
+      <div class="preview-card good"><span>Revenue</span><strong>${Store.formatMoney(calc.revenue)}</strong></div>
     `;
   }
 
@@ -346,7 +448,8 @@
     const order = {
       id: Store.uid('order'),
       createdAt: new Date().toISOString(),
-      status: 'active',
+      status: els.orderStatus.value || 'active',
+      paymentStatus: els.orderPaymentStatus.value || 'paid',
       serviceId: service.id,
       serviceName: service.name,
       providerId: service.providerId,
@@ -360,8 +463,10 @@
       clientCharge: calc.clientCharge,
       revenue: calc.revenue,
       clientName: els.orderClientName.value.trim(),
+      clientContact: els.orderClientContact.value.trim(),
       target: els.orderTarget.value.trim(),
       notes: els.orderNotes.value.trim(),
+      voidReason: '',
       voidedAt: null
     };
 
@@ -369,29 +474,69 @@
     orders.unshift(order);
     Store.saveOrders(orders);
     closeModal(els.orderModal);
-    Store.toast('Order saved and totals updated.');
+    Store.toast('Order saved. Totals updated using the price snapshot.');
     renderAll();
     document.getElementById('orders').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  function updateOrderStatus(orderId, status) {
+  function updateOrderStatus(orderId, status, extra = {}) {
     const orders = Store.getOrders();
     const order = orders.find(item => item.id === orderId);
     if (!order) return;
     order.status = status;
-    order.voidedAt = status === 'voided' ? new Date().toISOString() : null;
+    Object.assign(order, extra);
+    if (status === 'voided') order.voidedAt = new Date().toISOString();
+    if (status !== 'voided') {
+      order.voidedAt = null;
+      order.voidReason = '';
+    }
     Store.saveOrders(orders);
     Store.toast(status === 'voided' ? 'Order voided and removed from totals.' : 'Void undone. Order counted again.');
     renderAll();
   }
 
+  function openVoidModal(orderId) {
+    els.voidOrderId.value = orderId;
+    els.voidReason.value = '';
+    openModal(els.voidModal);
+  }
+
+  function viewOrder(orderId) {
+    const order = getOrderById(orderId);
+    if (!order) return;
+    const rows = [
+      ['Date', dateText(order.createdAt)],
+      ['Status', statusLabels[order.status] || order.status],
+      ['Payment', paymentLabels[order.paymentStatus] || order.paymentStatus],
+      ['Client', order.clientName || 'No client ref'],
+      ['Contact', order.clientContact || 'No contact'],
+      ['Service', `${order.serviceName} (${order.providerId})`],
+      ['Platform', order.platform],
+      ['Quantity', Store.formatNumber(order.quantity)],
+      ['Provider Rate', `${Store.formatMoney(order.providerRate)} / ${Store.formatNumber(order.rateUnit)}`],
+      ['Client Rate', `${Store.formatMoney(order.clientRate)} / ${Store.formatNumber(order.rateUnit)}`],
+      ['Provider Charge', Store.formatMoney(order.providerCharge)],
+      ['Client Charge', Store.formatMoney(order.clientCharge)],
+      ['Revenue', Store.formatMoney(order.revenue)],
+      ['Target', order.target || 'No target'],
+      ['Notes', order.notes || 'No notes'],
+      ['Void Reason', order.voidReason || 'Not voided']
+    ];
+    els.orderDetailsBody.innerHTML = rows.map(([label, value]) => `
+      <div class="detail-row"><span>${sanitize(label)}</span><strong>${sanitize(value)}</strong></div>
+    `).join('');
+    openModal(els.orderDetailsModal);
+  }
+
   function exportOrdersCsv() {
     const orders = Store.getOrders();
-    const header = ['Date', 'Status', 'Client', 'Service', 'Provider ID', 'Platform', 'Quantity', 'Rate Unit', 'Provider Rate', 'Client Rate', 'Provider Charge', 'Client Charge', 'Revenue', 'Target', 'Notes'];
+    const header = ['Date', 'Status', 'Payment Status', 'Client', 'Contact', 'Service', 'Provider ID', 'Platform', 'Quantity', 'Rate Unit', 'Provider Rate', 'Client Rate', 'Provider Charge', 'Client Charge', 'Revenue', 'Target', 'Notes', 'Void Reason'];
     const rows = orders.map(order => [
       order.createdAt,
       order.status,
+      order.paymentStatus || 'paid',
       order.clientName || '',
+      order.clientContact || '',
       order.serviceName,
       order.providerId,
       order.platform,
@@ -403,29 +548,39 @@
       order.clientCharge,
       order.revenue,
       order.target || '',
-      order.notes || ''
+      order.notes || '',
+      order.voidReason || ''
     ]);
     const csv = [header, ...rows].map(row => row.map(value => `"${String(value ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
     Store.downloadFile(`novalyte-orders-${new Date().toISOString().slice(0, 10)}.csv`, csv, 'text/csv');
   }
 
   function bindEvents() {
+    document.querySelectorAll('[data-toggle-password]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const input = document.getElementById(btn.dataset.togglePassword);
+        if (!input) return;
+        const visible = input.type === 'text';
+        input.type = visible ? 'password' : 'text';
+        btn.classList.toggle('active', !visible);
+        btn.textContent = visible ? '👁' : '🙈';
+        btn.setAttribute('aria-label', visible ? 'Show field' : 'Hide field');
+      });
+    });
+
     els.loginForm.addEventListener('submit', event => {
       event.preventDefault();
       const ok = els.loginUser.value.trim() === AUTH.username && els.loginPass.value === AUTH.password && els.loginPin.value === AUTH.pin;
       if (!ok) {
-        Store.toast('Wrong username, password, or PIN.', 'error');
+        els.loginAlert.textContent = 'Wrong username, password, or PIN. Please check the admin credentials.';
+        els.loginAlert.classList.remove('hidden');
+        Store.toast('Login failed.', 'error');
         return;
       }
+      els.loginAlert.classList.add('hidden');
       setLoggedIn(true);
       Store.toast('Welcome, admin.');
       showDashboard();
-    });
-
-    els.showPassword.addEventListener('change', () => {
-      const type = els.showPassword.checked ? 'text' : 'password';
-      els.loginPass.type = type;
-      els.loginPin.type = type;
     });
 
     els.logoutBtn.addEventListener('click', () => {
@@ -434,28 +589,45 @@
       showLogin();
     });
 
-    els.saveInvestBtn.addEventListener('click', () => {
-      Store.setInvest(els.investAmount.value || 0);
-      Store.toast('Total invest saved.');
-      renderStats();
-    });
-
     els.addInvestBtn.addEventListener('click', () => {
       const add = Number(els.addInvestAmount.value) || 0;
-      const current = Store.getInvest();
-      Store.setInvest(current + add);
+      if (add <= 0) {
+        Store.toast('Enter a valid investment amount.', 'error');
+        return;
+      }
+      Store.addInvestment(add, els.addInvestNote.value);
       els.addInvestAmount.value = '';
+      els.addInvestNote.value = '';
       Store.toast('Investment added.');
-      renderStats();
+      renderAll();
     });
 
-    [els.adminServiceSearch, els.adminPlatformFilter].forEach(el => el.addEventListener('input', renderServicesTable));
-    [els.orderSearch, els.orderStatusFilter].forEach(el => el.addEventListener('input', renderOrdersTable));
+    els.saveInvestBtn.addEventListener('click', () => {
+      const confirmed = confirm('Override total invest? This will replace the investment log with one correction entry.');
+      if (!confirmed) return;
+      Store.setInvest(els.investAmount.value || 0, 'Manual correction / override');
+      Store.toast('Total invest overridden.');
+      renderAll();
+    });
+
+    els.investmentsTable.addEventListener('click', event => {
+      const btn = event.target.closest('[data-remove-investment]');
+      if (!btn) return;
+      const confirmed = confirm('Remove this investment entry?');
+      if (!confirmed) return;
+      Store.removeInvestment(btn.dataset.removeInvestment);
+      Store.toast('Investment entry removed.');
+      renderAll();
+    });
+
+    [els.adminServiceSearch, els.adminPlatformFilter, els.adminArchiveFilter].forEach(el => el.addEventListener('input', renderServicesTable));
+    [els.orderSearch, els.orderStatusFilter, els.paymentStatusFilter].forEach(el => el.addEventListener('input', renderOrdersTable));
 
     els.addServiceBtn.addEventListener('click', () => fillServiceForm(null));
     els.servicesTable.addEventListener('click', event => {
       const editBtn = event.target.closest('[data-edit-service]');
       const orderBtn = event.target.closest('[data-create-order]');
+      const archiveBtn = event.target.closest('[data-archive-service]');
       if (editBtn) {
         const service = getServiceById(editBtn.dataset.editService);
         if (service) fillServiceForm(service);
@@ -464,23 +636,42 @@
         const service = getServiceById(orderBtn.dataset.createOrder);
         if (service) fillOrderForm(service);
       }
+      if (archiveBtn) {
+        const archived = archiveBtn.dataset.archiveValue === 'true';
+        const confirmed = confirm(archived ? 'Archive this service and hide it from clients?' : 'Restore this archived service?');
+        if (confirmed) archiveService(archiveBtn.dataset.archiveService, archived);
+      }
     });
 
     els.ordersTable.addEventListener('click', event => {
       const voidBtn = event.target.closest('[data-void-order]');
       const undoBtn = event.target.closest('[data-undo-void]');
-      if (voidBtn) updateOrderStatus(voidBtn.dataset.voidOrder, 'voided');
+      const viewBtn = event.target.closest('[data-view-order]');
+      if (viewBtn) viewOrder(viewBtn.dataset.viewOrder);
+      if (voidBtn) openVoidModal(voidBtn.dataset.voidOrder);
       if (undoBtn) updateOrderStatus(undoBtn.dataset.undoVoid, 'active');
+    });
+
+    els.confirmVoidBtn.addEventListener('click', () => {
+      const orderId = els.voidOrderId.value;
+      const reason = els.voidReason.value.trim();
+      updateOrderStatus(orderId, 'voided', { voidReason: reason });
+      closeModal(els.voidModal);
     });
 
     document.querySelectorAll('[data-close-modal]').forEach(btn => {
       btn.addEventListener('click', () => closeModal(document.getElementById(btn.dataset.closeModal)));
     });
 
-    [els.serviceModal, els.orderModal].forEach(modal => {
+    [els.serviceModal, els.orderModal, els.voidModal, els.orderDetailsModal].forEach(modal => {
       modal.addEventListener('click', event => {
         if (event.target === modal) closeModal(modal);
       });
+    });
+
+    document.addEventListener('keydown', event => {
+      if (event.key !== 'Escape') return;
+      document.querySelectorAll('.modal-backdrop.open').forEach(closeModal);
     });
 
     [els.serviceProviderRate, els.serviceClientRate, els.serviceRateUnit].forEach(el => {
@@ -488,7 +679,7 @@
     });
     els.serviceForm.addEventListener('submit', saveServiceFromForm);
 
-    els.orderQuantity.addEventListener('input', updateOrderCalcPreview);
+    [els.orderQuantity, els.orderStatus, els.orderPaymentStatus].forEach(el => el.addEventListener('input', updateOrderCalcPreview));
     els.orderForm.addEventListener('submit', saveOrder);
 
     els.exportBackupBtn.addEventListener('click', Store.exportBackup);
@@ -509,11 +700,11 @@
 
     els.exportOrdersCsvBtn.addEventListener('click', exportOrdersCsv);
     els.resetDemoBtn.addEventListener('click', () => {
-      const confirmed = confirm('Reset services to demo data and clear all orders/investment?');
+      const confirmed = confirm('Reset services to demo data and clear all orders/investments?');
       if (!confirmed) return;
       Store.resetServices();
       Store.saveOrders([]);
-      Store.setInvest(0);
+      Store.saveInvestments([]);
       Store.toast('Demo data reset.');
       renderAll();
     });
@@ -521,6 +712,7 @@
 
   function init() {
     Store.getServices();
+    Store.getInvestments();
     bindEvents();
     if (isLoggedIn()) showDashboard();
     else showLogin();

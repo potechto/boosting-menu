@@ -1,1 +1,5 @@
-﻿Resources/
+Resources/
+*.zip
+*.bak
+.DS_Store
+Thumbs.db
