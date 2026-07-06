@@ -665,17 +665,19 @@
   }
 
   function bindEvents() {
-    document.querySelectorAll('[data-toggle-password]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const input = document.getElementById(btn.dataset.togglePassword);
-        if (!input) return;
-        const visible = input.type === 'text';
-        input.type = visible ? 'password' : 'text';
-        btn.classList.toggle('active', !visible);
-        btn.textContent = '👁';
-        btn.setAttribute('aria-label', visible ? 'Show field' : 'Hide field');
+    const credentialToggle = document.querySelector('[data-toggle-login-credentials]');
+    if (credentialToggle) {
+      credentialToggle.addEventListener('click', () => {
+        const pass = document.getElementById('loginPass');
+        const pin = document.getElementById('loginPin');
+        if (!pass || !pin) return;
+        const show = pass.type === 'password' || pin.type === 'password';
+        pass.type = show ? 'text' : 'password';
+        pin.type = show ? 'text' : 'password';
+        credentialToggle.classList.toggle('active', show);
+        credentialToggle.setAttribute('aria-label', show ? 'Hide password and PIN' : 'Show password and PIN');
       });
-    });
+    }
 
     els.loginForm.addEventListener('submit', event => {
       event.preventDefault();

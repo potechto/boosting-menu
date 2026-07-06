@@ -187,31 +187,25 @@
     const start = (state.servicePage - 1) * state.perPage;
     const paged = services.slice(start, start + state.perPage);
     paged.forEach(service => {
-      const card = document.createElement('article');
-      card.className = 'card service-card';
-      card.innerHTML = `
-        <div class="card-top">
+      const row = document.createElement('tr');
+      row.className = 'public-service-row';
+      row.innerHTML = `
+        <td data-label="Platform">
           <span class="platform-pill ${platformClass(service.platform)}"><span class="platform-icon">${platformIcon(service.platform)}</span>${sanitize(service.platform)}</span>
-          <span class="id-chip">${sanitize(service.providerId)}</span>
-        </div>
-        <div>
-          <span class="tag">${sanitize(service.tag || service.category)}</span>
-          <h3>${sanitize(service.name)}</h3>
-        </div>
-        <p class="service-desc">${sanitize(service.description || 'No description yet.')}</p>
-        <div class="mini-meta">
-          <span>Category: <strong>${sanitize(service.category)}</strong></span>
-          <span>ETA: <strong>${sanitize(service.avgTime || 'Varies')}</strong></span>
-          <span>Min: <strong>${Store.formatNumber(service.min)}</strong></span>
-          <span>Max: <strong>${Store.formatNumber(service.max)}</strong></span>
-        </div>
-        <div class="price-row">
-          <span>Rate</span>
-          <strong>${Store.formatMoney(service.clientRate)} / ${Store.formatNumber(service.rateUnit)}</strong>
-        </div>
-        <button class="btn primary small" type="button" data-use-service="${service.id}">Calculate this</button>
+        </td>
+        <td data-label="ID"><span class="id-chip">${sanitize(service.providerId)}</span></td>
+        <td data-label="Service">
+          <div class="service-name-cell">
+            <strong>${sanitize(service.name)}</strong>
+            <span>${sanitize(service.description || service.tag || service.category || 'Available service')}</span>
+          </div>
+        </td>
+        <td data-label="Rate"><strong>${Store.formatMoney(service.clientRate)}</strong><span class="rate-unit"> / ${Store.formatNumber(service.rateUnit)}</span></td>
+        <td data-label="Min / Max"><span class="range-chip">${Store.formatNumber(service.min)} - ${Store.formatNumber(service.max)}</span></td>
+        <td data-label="ETA">${sanitize(service.avgTime || 'Varies')}</td>
+        <td data-label="Action"><button class="btn primary small" type="button" data-use-service="${service.id}">Calculate</button></td>
       `;
-      els.servicesGrid.append(card);
+      els.servicesGrid.append(row);
     });
   }
 

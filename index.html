@@ -32,9 +32,9 @@
       <div class="shell hero-grid">
         <div>
           <span class="eyebrow">⚡ Fast pricing preview for clients</span>
-          <h1>Choose your <span class="gradient-text">boosting service</span> faster.</h1>
+          <h1>Order-ready <span class="gradient-text">boosting menu</span> for every client.</h1>
           <p>
-            Browse available services, check estimated pricing, enter quantity, and generate a clean inquiry message before ordering.
+            Search services like an SMM panel, choose a platform, enter quantity and target link, then preview the exact total before messaging us.
           </p>
           <div class="hero-actions">
             <a class="btn primary" href="#calculator">Try calculator</a>
@@ -43,9 +43,9 @@
         </div>
         <aside class="hero-panel" aria-label="Service summary">
           <div class="panel-content">
-            <span class="eyebrow">Live Menu</span>
-            <h2>Clean client view.</h2>
-            <p class="service-desc">Browse available services and estimate your order in a clean, mobile-friendly menu.</p>
+            <span class="eyebrow">Client order flow</span>
+            <h2>Select service. Add target. See total.</h2>
+            <p class="service-desc">Built like a simple service panel, but clients only see your final edited prices.</p>
             <div class="metric-list">
               <div class="metric-line"><span>Visible services</span><strong id="visibleServiceCount">0</strong></div>
               <div class="metric-line"><span>Platforms</span><strong id="platformCount">0</strong></div>
@@ -89,21 +89,23 @@
           </div>
 
           <div class="card">
-            <div class="total-box">
-              <span class="label">Estimated charge</span>
-              <div class="amount" id="clientTotal">₱0.00</div>
-              <div class="mini-meta" id="calcMeta"></div>
+            <div class="order-summary-card">
+              <span class="eyebrow">Order preview</span>
+              <div class="total-box">
+                <span class="label">Total to pay</span>
+                <div class="amount" id="clientTotal">₱0.00</div>
+                <div class="mini-meta" id="calcMeta"></div>
+              </div>
             </div>
-            <div style="height:14px"></div>
             <div class="field">
-              <label>Generated inquiry message</label>
+              <label>Auto-generated order message</label>
               <div class="input client-message" id="orderMessage">Select a service first.</div>
             </div>
             <div class="modal-actions order-actions">
-              <button class="btn" id="copyOrderBtn" type="button">Copy message</button>
-              <button class="btn primary" id="proceedOrderBtn" type="button">Proceed / Order via Messenger</button>
+              <button class="btn" id="copyOrderBtn" type="button">Copy order details</button>
+              <button class="btn primary" id="proceedOrderBtn" type="button">Order via Messenger</button>
             </div>
-            <p class="service-desc messenger-note">Proceed copies your order message first, then opens our Messenger chat. Paste the copied message there to send your order details.</p>
+            <p class="service-desc messenger-note">The button copies the full order details first, then opens Messenger. Paste and send it to complete your inquiry.</p>
           </div>
         </div>
       </div>
@@ -137,7 +139,22 @@
         </div>
 
         <div style="height:16px"></div>
-        <div class="cards-grid" id="servicesGrid"></div>
+        <div class="table-wrap public-services-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Platform</th>
+                <th>ID</th>
+                <th>Service</th>
+                <th>Rate</th>
+                <th>Min / Max</th>
+                <th>ETA</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="servicesGrid"></tbody>
+          </table>
+        </div>
         <div class="pagination-bar" id="servicePagination" aria-label="Services pagination"></div>
         <div class="empty-state hidden" id="emptyServices">No visible service found. Try another search/filter.</div>
       </div>

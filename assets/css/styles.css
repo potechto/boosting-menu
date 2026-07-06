@@ -1420,3 +1420,157 @@ button[disabled] {
     white-space: normal;
   }
 }
+
+/* v1.3 polish: cleaner order panel, service table, and one credential visibility control */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
+.field-hint {
+  display: block;
+  margin-top: 0.45rem;
+  color: var(--muted-2);
+  font-size: 0.82rem;
+}
+
+.single-credential-toggle .input {
+  padding-right: 4.2rem;
+}
+
+.order-summary-card {
+  border: 1px solid rgba(112, 225, 255, 0.22);
+  border-radius: 22px;
+  padding: 18px;
+  background:
+    linear-gradient(135deg, rgba(112, 225, 255, 0.10), rgba(167, 139, 250, 0.08)),
+    rgba(15, 23, 42, 0.64);
+}
+
+.calculator-grid > .control-panel,
+.calculator-grid > .card {
+  min-height: 100%;
+}
+
+.public-services-table {
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: rgba(15, 23, 42, 0.72);
+  box-shadow: var(--shadow);
+}
+
+.public-services-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.public-services-table th {
+  color: #cbd5e1;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+  background: rgba(2, 6, 23, 0.58);
+}
+
+.public-services-table th,
+.public-services-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.public-service-row:hover {
+  background: rgba(112, 225, 255, 0.055);
+}
+
+.service-name-cell {
+  display: grid;
+  gap: 0.32rem;
+  min-width: 260px;
+}
+
+.service-name-cell strong {
+  color: var(--text);
+  line-height: 1.25;
+}
+
+.service-name-cell span,
+.rate-unit {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.range-chip,
+.id-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  background: rgba(15, 23, 42, 0.82);
+  color: #dbeafe;
+  border-radius: 999px;
+  padding: 0.35rem 0.62rem;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.platform-pill {
+  min-width: max-content;
+}
+
+.platform-icon svg {
+  width: 15px;
+  height: 15px;
+  display: block;
+  fill: currentColor;
+}
+
+@media (max-width: 860px) {
+  .public-services-table table,
+  .public-services-table thead,
+  .public-services-table tbody,
+  .public-services-table th,
+  .public-services-table td,
+  .public-services-table tr {
+    display: block;
+  }
+
+  .public-services-table thead {
+    display: none;
+  }
+
+  .public-services-table tr {
+    margin: 0.85rem;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    overflow: hidden;
+    background: rgba(15, 23, 42, 0.78);
+  }
+
+  .public-services-table td {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 12px;
+    padding: 0.82rem 0.95rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .public-services-table td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-weight: 700;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .service-name-cell {
+    min-width: 0;
+  }
+
+  .public-services-table td:last-child {
+    border-bottom: 0;
+  }
+}
