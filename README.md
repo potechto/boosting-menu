@@ -82,3 +82,20 @@ https://www.facebook.com/messages/t/707867809081709
 ```
 
 Important: Messenger does not reliably support auto-sending a prefilled message from a static GitHub Pages site. The safe flow is: copy generated order text automatically, open Messenger, then paste/send.
+
+## v1.4 local social icons workflow
+
+Use your local PNG icons from `Resources/icons` and copy them into the website asset folder before committing:
+
+```powershell
+cd "C:\Users\Ralph John\OneDrive\Desktop\ME FILES\BOOSTING"
+New-Item -ItemType Directory -Force ".\assets\icons\social"
+Copy-Item ".\Resources\icons\facebook.png" ".\assets\icons\social\facebook.png" -Force
+Copy-Item ".\Resources\icons\instagram.png" ".\assets\icons\social\instagram.png" -Force
+Copy-Item ".\Resources\icons\telegram.png" ".\assets\icons\social\telegram.png" -Force
+Copy-Item ".\Resources\icons\tiktok.png" ".\assets\icons\social\tiktok.png" -Force
+Copy-Item ".\Resources\icons\twitter.png" ".\assets\icons\social\twitter.png" -Force
+Copy-Item ".\Resources\icons\youtube.png" ".\assets\icons\social\youtube.png" -Force
+```
+
+`Resources/` remains ignored for drafts, but `assets/icons/social/` is part of the public website and will be pushed.

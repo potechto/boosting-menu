@@ -1574,3 +1574,212 @@ input::-ms-clear {
     border-bottom: 0;
   }
 }
+
+/* v1.4 visual upgrade: local social icons + cleaner panel rhythm */
+.platform-icon-wrap,
+.platform-icon-fallback {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  border-radius: 999px;
+  display: inline-grid;
+  place-items: center;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.platform-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.platform-icon-img.is-missing {
+  display: none;
+}
+
+.platform-icon-fallback {
+  font-weight: 900;
+  font-size: 0.72rem;
+  color: #f8fafc;
+}
+
+.platform-pill {
+  gap: 0.52rem;
+  padding: 0.38rem 0.68rem 0.38rem 0.42rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.88), rgba(30, 41, 59, 0.58));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.045);
+}
+
+.platform-facebook { border-color: rgba(59, 130, 246, 0.36); }
+.platform-instagram { border-color: rgba(236, 72, 153, 0.36); }
+.platform-tiktok { border-color: rgba(45, 212, 191, 0.32); }
+.platform-youtube { border-color: rgba(248, 113, 113, 0.36); }
+.platform-telegram { border-color: rgba(56, 189, 248, 0.36); }
+.platform-twitter,
+.platform-x { border-color: rgba(226, 232, 240, 0.30); }
+
+.hero-grid,
+.calculator-grid,
+.admin-layout {
+  position: relative;
+}
+
+.hero-grid::after,
+.calculator-grid::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  border-radius: 32px;
+  background: linear-gradient(135deg, rgba(112,225,255,0.06), transparent 28%, rgba(167,139,250,0.04));
+  z-index: -1;
+}
+
+.control-panel,
+.card,
+.hero-panel,
+.table-wrap,
+.admin-hero-card,
+.login-card {
+  box-shadow: 0 24px 80px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+.calculator-grid {
+  grid-template-columns: minmax(0, 1.12fr) minmax(340px, 0.88fr);
+  align-items: stretch;
+}
+
+.order-summary-card .total-box {
+  padding: 18px;
+  border-radius: 18px;
+  background: radial-gradient(circle at 80% 0%, rgba(167,139,250,0.20), transparent 40%), rgba(2,6,23,0.44);
+  border: 1px solid rgba(112,225,255,0.20);
+}
+
+.order-summary-card .amount {
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  letter-spacing: -0.06em;
+}
+
+.client-message {
+  min-height: 168px;
+  white-space: pre-wrap;
+  line-height: 1.55;
+  border-style: dashed;
+}
+
+.order-actions {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 10px;
+}
+
+.public-services-table {
+  overflow: auto;
+}
+
+.public-services-table th:first-child,
+.public-services-table td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: rgba(10, 15, 28, 0.98);
+}
+
+.public-services-table tbody tr {
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.public-services-table tbody tr:hover {
+  background: rgba(112,225,255,0.075);
+}
+
+.service-name-cell strong {
+  font-size: 0.96rem;
+}
+
+.service-name-cell span {
+  max-width: 560px;
+}
+
+.pagination-bar {
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(15,23,42,0.62);
+}
+
+.login-card {
+  max-width: 760px;
+}
+
+.login-card .form-grid {
+  gap: 18px;
+}
+
+.eye-btn {
+  right: 10px;
+  width: 44px;
+  height: 44px;
+  font-size: 1.05rem;
+}
+
+.sidebar-nav a,
+.sidebar-nav button {
+  border-radius: 16px;
+}
+
+.sidebar-nav a.active {
+  border-color: rgba(112,225,255,0.48);
+  background: linear-gradient(135deg, rgba(112,225,255,0.13), rgba(167,139,250,0.10));
+}
+
+@media (max-width: 920px) {
+  .calculator-grid,
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .order-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .public-services-table th:first-child,
+  .public-services-table td:first-child {
+    position: static;
+    background: transparent;
+  }
+}
+
+@media (max-width: 540px) {
+  .shell {
+    width: min(100% - 20px, 1180px);
+  }
+
+  .topbar-inner {
+    align-items: flex-start;
+  }
+
+  .hero {
+    padding-top: 44px;
+  }
+
+  .hero h1,
+  .page-title h1 {
+    font-size: clamp(2.25rem, 14vw, 4rem);
+  }
+
+  .public-services-table tr {
+    margin: 0.65rem;
+  }
+
+  .public-services-table td {
+    grid-template-columns: 84px minmax(0, 1fr);
+  }
+}

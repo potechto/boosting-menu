@@ -33,16 +33,31 @@
     return `platform-${String(platform || '').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
   }
 
-  function platformIcon(platform) {
-    const key = String(platform || '').toLowerCase();
-    const icons = {
-      facebook: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 8h3V4h-3c-3.3 0-5 2-5 5v2H6v4h3v5h4v-5h3.2l.8-4h-4V9c0-.7.3-1 1-1Z"/></svg>',
-      instagram: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4Zm5 5a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm5.2-.8a1.1 1.1 0 1 0 0 2.2 1.1 1.1 0 0 0 0-2.2Z"/></svg>',
-      tiktok: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h3c.3 2 1.5 3.4 4 3.8v3.5c-1.6 0-3-.5-4-1.3v6.2c0 3.4-2.3 5.8-5.8 5.8A5.2 5.2 0 0 1 6 15.8c0-3 2.2-5.1 5.7-5.2v3.7c-1.2.1-1.9.7-1.9 1.6 0 1 .7 1.7 1.7 1.7 1.3 0 2.1-.8 2.1-2.3V3Z"/></svg>',
-      youtube: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 7.3c-.2-1-1-1.8-2-2C17.2 5 12 5 12 5s-5.2 0-7 .3c-1 .2-1.8 1-2 2C2.7 9.1 2.7 12 2.7 12s0 2.9.3 4.7c.2 1 1 1.8 2 2 1.8.3 7 .3 7 .3s5.2 0 7-.3c1-.2 1.8-1 2-2 .3-1.8.3-4.7.3-4.7s0-2.9-.3-4.7ZM10 15.2V8.8l5.5 3.2L10 15.2Z"/></svg>',
-      telegram: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4 3.6 10.8c-1.2.5-1.2 1.1-.2 1.4l4.5 1.4 1.7 5.3c.2.6.3.8.7.8.3 0 .6-.2.9-.5l2.2-2.1 4.6 3.4c.9.5 1.5.3 1.7-.8L22.8 5.4c.3-1.2-.4-1.7-1.8-1.4Zm-11.8 9 8.8-5.6c.4-.2.8-.1.5.2l-7.5 6.8-.3 3.1-1.5-4.5Z"/></svg>'
+  function platformAsset(platform) {
+    const key = String(platform || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+    const files = {
+      facebook: 'facebook.png',
+      instagram: 'instagram.png',
+      tiktok: 'tiktok.png',
+      youtube: 'youtube.png',
+      telegram: 'telegram.png',
+      twitter: 'twitter.png',
+      x: 'twitter.png'
     };
-    return icons[key] || '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm1 5v4h4v2h-4v4h-2v-4H7v-2h4V7h2Z"/></svg>';
+    return files[key] || '';
+  }
+
+  function platformFallback(platform) {
+    const key = String(platform || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+    const map = { facebook: 'f', instagram: '◎', tiktok: '♪', youtube: '▶', telegram: '✈', twitter: '𝕏', x: '𝕏' };
+    return map[key] || '•';
+  }
+
+  function platformIcon(platform) {
+    const file = platformAsset(platform);
+    const fallback = sanitize(platformFallback(platform));
+    if (!file) return `<span class="platform-icon-fallback">${fallback}</span>`;
+    return `<span class="platform-icon-wrap"><img class="platform-icon-img" src="assets/icons/social/${file}" alt="${sanitize(platform)} icon" loading="lazy" onerror="this.classList.add('is-missing'); this.nextElementSibling.classList.remove('hidden');"><span class="platform-icon-fallback hidden">${fallback}</span></span>`;
   }
 
   function visibleServices() {

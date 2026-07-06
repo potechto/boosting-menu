@@ -120,14 +120,36 @@
     return String(text ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
   }
 
+  function platformAsset(platform) {
+    const key = String(platform || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+    const files = {
+      facebook: 'facebook.png',
+      instagram: 'instagram.png',
+      tiktok: 'tiktok.png',
+      youtube: 'youtube.png',
+      telegram: 'telegram.png',
+      twitter: 'twitter.png',
+      x: 'twitter.png'
+    };
+    return files[key] || '';
+  }
+
+  function platformFallback(platform) {
+    const key = String(platform || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+    const map = { facebook: 'f', instagram: '◎', tiktok: '♪', youtube: '▶', telegram: '✈', twitter: '𝕏', x: '𝕏' };
+    return map[key] || '•';
+  }
+
   function platformIcon(platform) {
-    const map = { Facebook: 'f', Instagram: '◎', TikTok: '♪', YouTube: '▶', Telegram: '✈' };
-    return map[platform] || '•';
+    const file = platformAsset(platform);
+    const fallback = sanitize(platformFallback(platform));
+    if (!file) return `<span class="platform-icon-fallback">${fallback}</span>`;
+    return `<span class="platform-icon-wrap"><img class="platform-icon-img" src="assets/icons/social/${file}" alt="${sanitize(platform)} icon" loading="lazy" onerror="this.classList.add('is-missing'); this.nextElementSibling.classList.remove('hidden');"><span class="platform-icon-fallback hidden">${fallback}</span></span>`;
   }
 
   function platformBadge(platform) {
     const key = String(platform || '').toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    return `<span class="platform-pill platform-${key}"><span class="platform-mini-icon">${sanitize(platformIcon(platform))}</span>${sanitize(platform)}</span>`;
+    return `<span class="platform-pill platform-${key}">${platformIcon(platform)}<span>${sanitize(platform)}</span></span>`;
   }
 
   function ensurePagination(id, afterElement) {
