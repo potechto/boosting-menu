@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Novalyte Boosting Menu</title>
-  <meta name="description" content="Client-facing Novalyte boosting service menu with live price calculator.">
+  <meta name="description" content="Client-facing Novalyte boosting service menu with panel-style order calculator.">
   <link rel="icon" href="assets/icons/novalyte.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
@@ -19,108 +19,120 @@
         </span>
       </a>
       <nav class="nav-actions" aria-label="Primary navigation">
+        <a class="btn ghost" href="#order-panel">Order Panel</a>
         <a class="btn ghost" href="#services">Services</a>
-        <a class="btn ghost" href="#calculator">Calculator</a>
         <a class="btn ghost" href="https://www.facebook.com/messages/t/707867809081709" target="_blank" rel="noopener">Messenger</a>
-        
       </nav>
     </div>
   </header>
 
   <main id="top">
-    <section class="hero">
-      <div class="shell hero-grid">
-        <div>
-          <span class="eyebrow">⚡ Fast pricing preview for clients</span>
-          <h1>Order-ready <span class="gradient-text">boosting menu</span> for every client.</h1>
-          <p>
-            Search services like an SMM panel, choose a platform, enter quantity and target link, then preview the exact total before messaging us.
-          </p>
-          <div class="hero-actions">
-            <a class="btn primary" href="#calculator">Try calculator</a>
-            <a class="btn" href="#services">View services</a>
+    <section class="provider-hero" id="order-panel">
+      <div class="shell provider-shell">
+        <div class="provider-title-row">
+          <div>
+            <span class="eyebrow">⚡ SMM-style order preview</span>
+            <h1>Choose a service, enter your link, and see your total.</h1>
+            <p>Client-friendly ordering panel. Provider costs stay hidden; only final edited prices are shown.</p>
+          </div>
+          <div class="mini-stats-card">
+            <span>Visible Services</span>
+            <strong id="visibleServiceCount">0</strong>
+            <small><span id="platformCount">0</span> platforms available</small>
           </div>
         </div>
-        <aside class="hero-panel" aria-label="Service summary">
-          <div class="panel-content">
-            <span class="eyebrow">Client order flow</span>
-            <h2>Select service. Add target. See total.</h2>
-            <p class="service-desc">Built like a simple service panel, but clients only see your final edited prices.</p>
-            <div class="metric-list">
-              <div class="metric-line"><span>Visible services</span><strong id="visibleServiceCount">0</strong></div>
-              <div class="metric-line"><span>Platforms</span><strong id="platformCount">0</strong></div>
-              <div class="metric-line"><span>Pricing basis</span><strong>Per service</strong></div>
+
+        <form class="provider-calculator-card" id="orderForm">
+          <div class="provider-searchbar">
+            <span class="search-glyph" aria-hidden="true">⌕</span>
+            <input id="calcSearch" type="search" placeholder="Search service, ID, platform, or keyword">
+          </div>
+
+          <div class="provider-field">
+            <label for="calcCategory">Category</label>
+            <div class="select-with-platform-icon">
+              <span class="select-platform-icon" id="categoryIcon" aria-hidden="true"></span>
+              <select id="calcCategory" class="provider-select"></select>
             </div>
           </div>
-        </aside>
+
+          <div class="provider-field">
+            <label for="calcService">Services</label>
+            <select id="calcService" class="provider-select service-select"></select>
+          </div>
+
+          <div class="provider-info-grid">
+            <section class="provider-info-box">
+              <div class="provider-box-title">
+                <h3>Service Dashboard</h3>
+                <span id="selectedServiceId">ID</span>
+              </div>
+              <div class="provider-divider"></div>
+              <div class="status-stack" id="serviceDashboard">
+                <div class="status-line"><span>✓</span> Select a service to view details.</div>
+              </div>
+            </section>
+
+            <section class="provider-info-box analytics-box">
+              <div class="provider-box-title">
+                <h3>Service Analytics</h3>
+                <span>Preview</span>
+              </div>
+              <div class="provider-divider"></div>
+              <div class="analytics-feed" id="serviceAnalytics">
+                Service analytics will appear here after choosing a service.
+              </div>
+            </section>
+          </div>
+
+          <div class="provider-field compact-field">
+            <label>Average time <span class="info-dot" title="Estimated delivery time from provider notes">i</span></label>
+            <div class="readonly-field" id="averageTimeField">Select a service</div>
+          </div>
+
+          <div class="provider-field">
+            <label for="calcLink">Link / Username</label>
+            <input class="provider-input" id="calcLink" type="text" placeholder="Paste the post link, profile link, or username">
+          </div>
+
+          <div class="provider-field">
+            <label for="calcQuantity">Quantity</label>
+            <input class="provider-input" id="calcQuantity" type="number" min="0" step="1" placeholder="Enter quantity">
+            <small class="field-hint" id="quantityHint">Min and max will appear after selecting a service.</small>
+          </div>
+
+          <div class="provider-field">
+            <label>Charge</label>
+            <div class="charge-field" id="clientTotal">₱0.00</div>
+            <small class="field-hint" id="chargeHint">Your total will update automatically.</small>
+          </div>
+
+          <div class="provider-order-actions">
+            <button class="new-order-btn" id="proceedOrderBtn" type="button">New Order</button>
+            <button class="copy-link-btn" id="copyOrderBtn" type="button">Copy Details Only</button>
+          </div>
+
+          <details class="message-preview-panel">
+            <summary>View generated order message</summary>
+            <div class="client-message" id="orderMessage">Select a service first.</div>
+          </details>
+
+          <p class="panel-note" id="calcNotice">Choose a service to see minimum, maximum, average time, and final charge.</p>
+        </form>
       </div>
     </section>
 
-    <section class="section" id="calculator">
+    <section class="section service-directory-section" id="services">
       <div class="shell">
         <div class="section-head">
           <div>
-            <h2>Price Calculator</h2>
-            <p>Select platform, service, and quantity to preview the estimated client charge.</p>
-          </div>
-        </div>
-
-        <div class="calculator-grid">
-          <div class="control-panel">
-            <div class="form-grid">
-              <div class="field">
-                <label for="calcPlatform">Platform</label>
-                <select class="select" id="calcPlatform"></select>
-              </div>
-              <div class="field">
-                <label for="calcService">Service</label>
-                <select class="select" id="calcService"></select>
-              </div>
-              <div class="field">
-                <label for="calcQuantity">Quantity</label>
-                <input class="input" id="calcQuantity" type="number" min="0" step="1" value="1000" placeholder="Example: 1000">
-              </div>
-              <div class="field">
-                <label for="calcLink">Target Link / Username</label>
-                <input class="input" id="calcLink" type="text" placeholder="Paste link or username here">
-              </div>
-            </div>
-            <div class="notice" id="calcNotice" style="margin-top:14px;">Choose a service to see minimum, maximum, and delivery estimate.</div>
-          </div>
-
-          <div class="card">
-            <div class="order-summary-card">
-              <span class="eyebrow">Order preview</span>
-              <div class="total-box">
-                <span class="label">Total to pay</span>
-                <div class="amount" id="clientTotal">₱0.00</div>
-                <div class="mini-meta" id="calcMeta"></div>
-              </div>
-            </div>
-            <div class="field">
-              <label>Auto-generated order message</label>
-              <div class="input client-message" id="orderMessage">Select a service first.</div>
-            </div>
-            <div class="modal-actions order-actions">
-              <button class="btn" id="copyOrderBtn" type="button">Copy order details</button>
-              <button class="btn primary" id="proceedOrderBtn" type="button">Order via Messenger</button>
-            </div>
-            <p class="service-desc messenger-note">The button copies the full order details first, then opens Messenger. Paste and send it to complete your inquiry.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="services">
-      <div class="shell">
-        <div class="section-head">
-          <div>
+            <span class="eyebrow">Service directory</span>
             <h2>Available Services</h2>
-            <p>Search by service name, platform, category, or service ID.</p>
+            <p>Browse public services in panel format. Provider charges are hidden from client view.</p>
           </div>
         </div>
 
-        <div class="control-panel">
+        <div class="control-panel directory-controls">
           <div class="controls-grid">
             <div class="field">
               <label for="serviceSearch">Search</label>
@@ -138,7 +150,6 @@
           </div>
         </div>
 
-        <div style="height:16px"></div>
         <div class="table-wrap public-services-table">
           <table>
             <thead>

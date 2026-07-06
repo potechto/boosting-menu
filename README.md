@@ -99,3 +99,31 @@ Copy-Item ".\Resources\icons\youtube.png" ".\assets\icons\social\youtube.png" -F
 ```
 
 `Resources/` remains ignored for drafts, but `assets/icons/social/` is part of the public website and will be pushed.
+
+## v1.5 Provider-style Calculator Update
+
+This update changes the public client page into a service-provider style order panel:
+
+- Search bar at the top of the order form.
+- Category dropdown similar to the provider panel format.
+- Service dropdown with service ID, name, and visible client rate.
+- Service Dashboard block with status, ID, min, and max.
+- Service Analytics block with rate, average time, and notes.
+- Average time field.
+- Link/username field.
+- Quantity field.
+- Charge field showing the exact client total.
+- New Order button that copies order details and opens Messenger.
+- Copy Details Only secondary button.
+
+Social media PNG icons should be copied from the local ignored folder:
+
+```powershell
+New-Item -ItemType Directory -Force ".\assets\icons\social"
+Copy-Item ".\Resources\icons\facebook.png" ".\assets\icons\social\facebook.png" -Force
+Copy-Item ".\Resources\icons\instagram.png" ".\assets\icons\social\instagram.png" -Force
+Copy-Item ".\Resources\icons\telegram.png" ".\assets\icons\social\telegram.png" -Force
+Copy-Item ".\Resources\icons\tiktok.png" ".\assets\icons\social\tiktok.png" -Force
+Copy-Item ".\Resources\icons\twitter.png" ".\assets\icons\social\twitter.png" -Force
+Copy-Item ".\Resources\icons\youtube.png" ".\assets\icons\social\youtube.png" -Force
+```
