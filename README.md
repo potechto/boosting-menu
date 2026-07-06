@@ -135,3 +135,11 @@ Copy-Item ".\Resources\icons\youtube.png" ".\assets\icons\social\youtube.png" -F
 - Service Dashboard now uses a full-width dark panel that matches the site theme.
 - Added auto-hiding scrollbar behavior for visible scroll areas. Scrollbars appear while scrolling and fade after.
 - Kept provider-style Category → Service → Link → Quantity → Charge → New Order flow.
+
+
+## v1.7 Notes
+
+- Removed the public `Visible Services` mini-stat card from the hero/order section.
+- Kept the site focused on the provider-style order calculator.
+- Added safe JavaScript guards so removed stat elements do not break the client page.
+- Full provider service import is still a separate data pass; current seed services are not yet the complete provider catalog from all screenshots.

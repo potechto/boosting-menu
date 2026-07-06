@@ -109,8 +109,8 @@
     els.calcCategory.innerHTML = '';
     platforms.forEach(platform => els.calcCategory.append(option(platform, groupLabel(platform))));
 
-    els.visibleServiceCount.textContent = Store.formatNumber(services.length);
-    els.platformCount.textContent = Store.formatNumber(platforms.length);
+    if (els.visibleServiceCount) els.visibleServiceCount.textContent = Store.formatNumber(services.length);
+    if (els.platformCount) els.platformCount.textContent = Store.formatNumber(platforms.length);
   }
 
   function calculatorCandidates() {

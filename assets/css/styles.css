@@ -2333,3 +2333,39 @@ input::-ms-clear {
     grid-template-columns: 1fr !important;
   }
 }
+
+
+/* v1.7: cleaner hero after removing the visible-services stats card */
+.provider-title-row-clean {
+  grid-template-columns: minmax(0, 780px);
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.provider-title-row-clean .eyebrow {
+  margin-inline: auto;
+}
+
+.provider-title-row-clean p {
+  margin-inline: auto;
+  max-width: 720px;
+}
+
+.provider-title-row-clean h1 {
+  max-width: 820px;
+  margin-inline: auto;
+}
+
+@media (max-width: 720px) {
+  .provider-title-row-clean {
+    text-align: left;
+    justify-content: stretch;
+  }
+
+  .provider-title-row-clean .eyebrow,
+  .provider-title-row-clean p,
+  .provider-title-row-clean h1 {
+    margin-inline: 0;
+  }
+}
