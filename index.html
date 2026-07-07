@@ -11,7 +11,7 @@
 <body>
   <header class="topbar">
     <div class="shell topbar-inner">
-      <a class="brand" href="#top" aria-label="Novalyte home">
+      <a class="brand" href="#top" id="homeBrand" aria-label="Novalyte home">
         <span class="logo-mark">N</span>
         <span>
           <span class="brand-title">Novalyte</span>
@@ -19,9 +19,8 @@
         </span>
       </a>
       <nav class="nav-actions" aria-label="Primary navigation">
-        <a class="btn ghost" href="#order-panel">Order Panel</a>
-        <a class="btn ghost" href="#services">Services</a>
-        <a class="btn ghost" href="https://www.facebook.com/messages/t/707867809081709" target="_blank" rel="noopener">Messenger</a>
+        <a class="btn ghost" href="#services" id="viewToggleBtn">Services</a>
+        <a class="btn ghost" href="https://www.facebook.com/messages/t/1240324299157071" id="messengerNavLink" target="_blank" rel="noopener">Messenger</a>
       </nav>
     </div>
   </header>
@@ -92,7 +91,7 @@
           </div>
 
           <div class="provider-order-actions">
-            <button class="new-order-btn" id="proceedOrderBtn" type="button">New Order</button>
+            <button class="new-order-btn" id="proceedOrderBtn" type="button">Proceed Order</button>
             <button class="copy-link-btn" id="copyOrderBtn" type="button">Copy Details Only</button>
           </div>
 
@@ -106,7 +105,7 @@
       </div>
     </section>
 
-    <section class="section service-directory-section" id="services">
+    <section class="section service-directory-section hidden" id="services">
       <div class="shell">
         <div class="section-head">
           <div>

@@ -1,7 +1,7 @@
 (function () {
   const Store = window.NovalyteStore;
-  const MESSENGER_URL = 'https://www.facebook.com/messages/t/707867809081709';
-  const state = { servicePage: 1, perPage: 10 };
+  const MESSENGER_URL = 'https://www.facebook.com/messages/t/1240324299157071';
+  const state = { servicePage: 1, perPage: 10, view: 'order' };
 
   const els = {
     visibleServiceCount: document.getElementById('visibleServiceCount'),
@@ -22,6 +22,10 @@
     orderMessage: document.getElementById('orderMessage'),
     copyOrderBtn: document.getElementById('copyOrderBtn'),
     proceedOrderBtn: document.getElementById('proceedOrderBtn'),
+    orderPanel: document.getElementById('order-panel'),
+    servicesSection: document.getElementById('services'),
+    viewToggleBtn: document.getElementById('viewToggleBtn'),
+    homeBrand: document.getElementById('homeBrand'),
     serviceSearch: document.getElementById('serviceSearch'),
     platformFilter: document.getElementById('platformFilter'),
     categoryFilter: document.getElementById('categoryFilter'),
@@ -161,7 +165,7 @@
     if (min && calc.quantity < min) return { ok: false, message: `Minimum order is ${Store.formatNumber(min)}.` };
     if (max && calc.quantity > max) return { ok: false, message: `Maximum order is ${Store.formatNumber(max)}.` };
     if (!target) return { ok: false, message: 'Paste the target link or username before proceeding.' };
-    return { ok: true, message: 'Ready. New Order will copy the details and open Messenger.' };
+    return { ok: true, message: 'Ready. Proceed Order will copy the details and open Messenger.' };
   }
 
   function updateCategoryIcon() {
@@ -273,10 +277,24 @@
         <td data-label="Rate"><strong>${Store.formatMoney(service.clientRate)}</strong><span class="rate-unit"> / ${Store.formatNumber(service.rateUnit)}</span></td>
         <td data-label="Min / Max"><span class="range-chip">${Store.formatNumber(service.min)} - ${Store.formatNumber(service.max)}</span></td>
         <td data-label="ETA">${sanitize(service.avgTime || 'Varies')}</td>
-        <td data-label="Action"><button class="btn primary small" type="button" data-use-service="${service.id}">Use</button></td>
+        <td data-label="Action"><button class="btn primary small" type="button" data-use-service="${service.id}">Order Now</button></td>
       `;
       els.servicesGrid.append(row);
     });
+  }
+
+  function showClientView(view, shouldScroll = true) {
+    const showServices = view === 'services';
+    state.view = showServices ? 'services' : 'order';
+    if (els.orderPanel) els.orderPanel.classList.toggle('hidden', showServices);
+    if (els.servicesSection) els.servicesSection.classList.toggle('hidden', !showServices);
+    if (els.viewToggleBtn) {
+      els.viewToggleBtn.textContent = showServices ? 'Order Panel' : 'Services';
+      els.viewToggleBtn.href = showServices ? '#order-panel' : '#services';
+      els.viewToggleBtn.setAttribute('aria-label', showServices ? 'Go to order panel' : 'View available services');
+    }
+    const target = showServices ? els.servicesSection : els.orderPanel;
+    if (shouldScroll && target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   async function copyInquiryMessage() {
@@ -339,7 +357,7 @@
       fillCalculatorServices(false);
       els.calcService.value = service.id;
       renderCalculator();
-      document.getElementById('order-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      showClientView('order');
     });
 
     els.servicePagination.addEventListener('click', event => {
@@ -352,6 +370,20 @@
       renderServices();
       document.getElementById('services').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
+
+    if (els.viewToggleBtn) {
+      els.viewToggleBtn.addEventListener('click', event => {
+        event.preventDefault();
+        showClientView(state.view === 'services' ? 'order' : 'services');
+      });
+    }
+
+    if (els.homeBrand) {
+      els.homeBrand.addEventListener('click', event => {
+        event.preventDefault();
+        showClientView('order');
+      });
+    }
 
     els.copyOrderBtn.addEventListener('click', copyInquiryMessage);
 
@@ -377,6 +409,7 @@
     fillCalculatorServices(false);
     renderServices();
     bindEvents();
+    showClientView(window.location.hash === '#services' ? 'services' : 'order', false);
   }
 
   document.addEventListener('DOMContentLoaded', init);

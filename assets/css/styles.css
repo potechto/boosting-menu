@@ -2369,3 +2369,724 @@ input::-ms-clear {
     margin-inline: 0;
   }
 }
+
+:root {
+  --shadow: 0 14px 44px rgba(0, 0, 0, 0.32);
+  --radius-lg: 22px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+}
+
+body {
+  font-size: 15px;
+  line-height: 1.42;
+}
+
+.shell {
+  width: min(1120px, calc(100% - 24px));
+}
+
+.topbar-inner {
+  min-height: 58px;
+  gap: 12px;
+}
+
+.brand {
+  gap: 9px;
+}
+
+.logo-mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  font-size: 0.92rem;
+}
+
+.brand-title {
+  font-size: 0.96rem;
+}
+
+.brand-subtitle {
+  font-size: 0.72rem;
+}
+
+.nav-actions {
+  gap: 8px;
+}
+
+.btn {
+  min-height: 36px;
+  padding: 0.58rem 0.8rem;
+  gap: 0.42rem;
+  font-size: 0.9rem;
+}
+
+.btn.small {
+  min-height: 32px;
+  padding: 0.45rem 0.62rem;
+  font-size: 0.82rem;
+}
+
+.eyebrow {
+  gap: 6px;
+  padding: 0.32rem 0.56rem;
+  font-size: 0.75rem;
+}
+
+.section {
+  padding: 22px 0;
+}
+
+.section-head {
+  margin-bottom: 12px;
+}
+
+.section-head p,
+.hero p,
+.page-title p,
+.provider-title-row p {
+  font-size: 0.92rem;
+}
+
+.provider-hero {
+  padding: 34px 0 24px;
+}
+
+.provider-shell {
+  width: min(860px, calc(100% - 24px));
+}
+
+.provider-title-row,
+.provider-title-row-clean {
+  margin-bottom: 14px;
+}
+
+.provider-title-row h1,
+.provider-title-row-clean h1 {
+  margin: 10px 0 8px;
+  font-size: clamp(1.8rem, 4.6vw, 3.4rem);
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+}
+
+.provider-calculator-card {
+  border-radius: 22px;
+  padding: 16px;
+}
+
+.provider-searchbar {
+  min-height: 42px;
+  margin-bottom: 12px;
+  padding: 0 10px;
+  border-radius: 10px;
+}
+
+.provider-searchbar input {
+  min-height: 42px;
+}
+
+.search-glyph {
+  font-size: 1rem;
+}
+
+.provider-field {
+  margin-top: 10px;
+}
+
+.provider-field label {
+  margin: 0 0 5px;
+  gap: 5px;
+  font-size: 0.9rem;
+}
+
+.provider-select,
+.provider-input,
+.readonly-field,
+.charge-field {
+  min-height: 42px;
+  border-radius: 9px;
+  padding: 0 11px;
+  font-size: 0.9rem;
+}
+
+.select-with-platform-icon .provider-select {
+  padding-left: 44px;
+}
+
+.select-platform-icon {
+  left: 10px;
+  width: 24px;
+  height: 24px;
+}
+
+.select-platform-icon .platform-icon-wrap,
+.select-platform-icon .platform-icon-img {
+  width: 24px;
+  height: 24px;
+}
+
+.provider-info-grid {
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.provider-info-box {
+  border-radius: 11px;
+  padding: 12px;
+}
+
+.provider-box-title h3 {
+  font-size: 0.92rem;
+}
+
+.provider-box-title span {
+  padding: 0.22rem 0.46rem;
+  font-size: 0.68rem;
+}
+
+.provider-divider {
+  margin: 8px 0;
+}
+
+.status-stack {
+  gap: 7px;
+}
+
+.status-line {
+  min-height: 34px;
+  border-radius: 7px;
+  padding: 7px 10px;
+  font-size: 0.86rem;
+}
+
+.info-dot {
+  width: 15px;
+  height: 15px;
+  font-size: 0.64rem;
+}
+
+.charge-field {
+  min-height: 46px;
+  font-size: clamp(1.12rem, 3vw, 1.75rem);
+}
+
+.provider-order-actions {
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.new-order-btn,
+.copy-link-btn {
+  min-height: 45px;
+  border-radius: 11px;
+  font-size: 0.9rem;
+}
+
+.copy-link-btn {
+  padding: 0 13px;
+}
+
+.message-preview-panel {
+  margin-top: 10px;
+  border-radius: 11px;
+}
+
+.message-preview-panel summary {
+  padding: 10px 12px;
+  font-size: 0.88rem;
+}
+
+.message-preview-panel .client-message {
+  max-height: 128px;
+  min-height: 96px;
+  font-size: 0.84rem;
+  line-height: 1.42;
+}
+
+.field-hint,
+.panel-note {
+  font-size: 0.78rem;
+}
+
+.panel-note {
+  margin-top: 9px;
+}
+
+.service-directory-section {
+  padding-top: 24px;
+}
+
+.control-panel,
+.card,
+.hero-panel,
+.order-summary-card,
+.admin-hero-card {
+  padding: 14px;
+}
+
+.controls-grid,
+.form-grid,
+.toolbar-left,
+.toolbar-right,
+.split-actions,
+.quick-links {
+  gap: 8px;
+}
+
+.input,
+.select,
+.textarea {
+  padding: 0.64rem 0.72rem;
+  border-radius: 10px;
+  font-size: 0.88rem;
+}
+
+.public-services-table {
+  border-radius: 18px;
+}
+
+.public-services-table table {
+  min-width: 820px;
+}
+
+.public-services-table th,
+.public-services-table td {
+  padding: 0.68rem 0.78rem;
+  font-size: 0.84rem;
+}
+
+.service-name-cell {
+  gap: 0.22rem;
+  min-width: 220px;
+}
+
+.service-name-cell strong {
+  font-size: 0.88rem;
+}
+
+.service-name-cell span,
+.rate-unit {
+  font-size: 0.76rem;
+}
+
+.platform-pill,
+.status-pill,
+.tag,
+.id-chip,
+.range-chip {
+  gap: 5px;
+  padding: 0.26rem 0.5rem;
+  font-size: 0.72rem;
+}
+
+.platform-icon-wrap,
+.platform-icon-fallback,
+.platform-icon,
+.platform-mini-icon {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+}
+
+.pagination-bar {
+  margin-top: 12px;
+  padding: 9px 10px;
+  border-radius: 14px;
+}
+
+.page-summary,
+.page-chip {
+  font-size: 0.78rem;
+}
+
+.footer {
+  margin-top: 20px;
+  padding: 16px 0 24px;
+  font-size: 0.78rem;
+}
+
+.login-card {
+  padding: 22px;
+}
+
+.login-card h1 {
+  margin: 12px 0 6px;
+  font-size: 2rem;
+}
+
+.lock-visual {
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+  font-size: 1.32rem;
+}
+
+.sidebar {
+  padding: 16px;
+  gap: 16px;
+}
+
+.admin-main {
+  padding: 20px;
+}
+
+.stat-card {
+  padding: 12px;
+}
+
+.stat-card strong {
+  font-size: 1.18rem;
+}
+
+th,
+td {
+  padding: 10px 11px;
+  font-size: 0.84rem;
+}
+
+@media (max-width: 760px) {
+  body {
+    font-size: 14px;
+  }
+
+  .shell,
+  .provider-shell {
+    width: min(100% - 14px, 860px);
+  }
+
+  .topbar-inner {
+    min-height: 50px;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 0;
+  }
+
+  .brand {
+    gap: 7px;
+    flex: 1 1 auto;
+  }
+
+  .logo-mark {
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+  }
+
+  .brand-title {
+    font-size: 0.9rem;
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+
+  .nav-actions {
+    width: auto;
+    flex: 0 0 auto;
+    gap: 6px;
+  }
+
+  .nav-actions .btn {
+    flex: 0 0 auto;
+    min-height: 31px;
+    padding: 0.42rem 0.56rem;
+    font-size: 0.78rem;
+  }
+
+  .provider-hero {
+    padding: 18px 0 14px;
+  }
+
+  .provider-title-row,
+  .provider-title-row-clean {
+    margin-bottom: 10px;
+  }
+
+  .provider-title-row h1,
+  .provider-title-row-clean h1,
+  .hero h1,
+  .page-title h1 {
+    margin: 8px 0 6px;
+    font-size: clamp(1.45rem, 9vw, 2.3rem);
+    line-height: 1;
+    letter-spacing: -0.045em;
+  }
+
+  .provider-title-row p,
+  .section-head p,
+  .hero p,
+  .page-title p {
+    font-size: 0.82rem;
+  }
+
+  .eyebrow {
+    padding: 0.26rem 0.46rem;
+    font-size: 0.68rem;
+  }
+
+  .provider-calculator-card {
+    padding: 11px;
+    border-radius: 17px;
+  }
+
+  .provider-searchbar {
+    min-height: 36px;
+    margin-bottom: 8px;
+    padding: 0 8px;
+  }
+
+  .provider-searchbar input {
+    min-height: 36px;
+    font-size: 0.84rem;
+  }
+
+  .provider-field {
+    margin-top: 8px;
+  }
+
+  .provider-field label {
+    margin-bottom: 4px;
+    font-size: 0.82rem;
+  }
+
+  .provider-select,
+  .provider-input,
+  .readonly-field,
+  .charge-field {
+    min-height: 37px;
+    padding: 0 9px;
+    font-size: 0.82rem;
+  }
+
+  .select-with-platform-icon .provider-select {
+    padding-left: 38px;
+  }
+
+  .select-platform-icon,
+  .select-platform-icon .platform-icon-wrap,
+  .select-platform-icon .platform-icon-img {
+    width: 21px;
+    height: 21px;
+  }
+
+  .provider-info-grid {
+    gap: 8px;
+    margin-top: 9px;
+  }
+
+  .provider-info-box {
+    padding: 9px;
+    border-radius: 10px;
+  }
+
+  .provider-box-title h3 {
+    font-size: 0.84rem;
+  }
+
+  .provider-box-title span {
+    font-size: 0.62rem;
+  }
+
+  .provider-divider {
+    margin: 6px 0;
+  }
+
+  .status-stack {
+    gap: 6px;
+  }
+
+  .status-line {
+    min-height: 30px;
+    padding: 6px 8px;
+    gap: 7px;
+    font-size: 0.78rem;
+  }
+
+  .charge-field {
+    min-height: 40px;
+    font-size: clamp(1rem, 7vw, 1.5rem);
+  }
+
+  .new-order-btn,
+  .copy-link-btn {
+    min-height: 39px;
+    border-radius: 10px;
+    font-size: 0.82rem;
+  }
+
+  .provider-order-actions {
+    margin-top: 9px;
+  }
+
+  .message-preview-panel summary {
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+
+  .message-preview-panel .client-message {
+    min-height: 78px;
+    max-height: 112px;
+    font-size: 0.76rem;
+  }
+
+  .field-hint,
+  .panel-note {
+    margin-top: 5px;
+    font-size: 0.72rem;
+  }
+
+  .section,
+  .service-directory-section {
+    padding: 14px 0;
+  }
+
+  .section-head {
+    gap: 8px;
+    margin-bottom: 9px;
+  }
+
+  .control-panel,
+  .card,
+  .hero-panel,
+  .order-summary-card,
+  .admin-hero-card {
+    padding: 10px;
+    border-radius: 16px;
+  }
+
+  .input,
+  .select,
+  .textarea {
+    padding: 0.54rem 0.62rem;
+    font-size: 0.8rem;
+  }
+
+  .public-services-table {
+    border-radius: 15px;
+  }
+
+  .public-services-table tr {
+    margin: 0.45rem;
+    border-radius: 12px;
+  }
+
+  .public-services-table td {
+    grid-template-columns: 68px minmax(0, 1fr);
+    gap: 7px;
+    padding: 0.5rem 0.58rem;
+    font-size: 0.78rem;
+  }
+
+  .public-services-table td::before {
+    font-size: 0.62rem;
+  }
+
+  .service-name-cell strong {
+    font-size: 0.8rem;
+  }
+
+  .service-name-cell span,
+  .rate-unit {
+    font-size: 0.7rem;
+  }
+
+  .platform-pill,
+  .status-pill,
+  .tag,
+  .id-chip,
+  .range-chip {
+    padding: 0.2rem 0.38rem;
+    font-size: 0.66rem;
+  }
+
+  .pagination-bar {
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .page-buttons {
+    gap: 6px;
+  }
+
+  .page-chip,
+  .page-summary {
+    font-size: 0.72rem;
+  }
+
+  .footer {
+    margin-top: 12px;
+    padding: 12px 0 18px;
+    font-size: 0.72rem;
+  }
+
+  .login-page {
+    padding: 12px;
+  }
+
+  .login-card {
+    padding: 16px;
+    border-radius: 18px;
+  }
+
+  .login-brand-row {
+    gap: 10px;
+  }
+
+  .login-card h1 {
+    font-size: 1.55rem;
+  }
+
+  .lock-visual {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    font-size: 1.05rem;
+  }
+
+  .admin-main {
+    padding: 12px;
+  }
+
+  .sidebar {
+    padding: 12px;
+  }
+
+  .stat-card {
+    padding: 10px;
+  }
+
+  .responsive-table tr {
+    margin-bottom: 8px;
+    border-radius: 12px;
+  }
+
+  .responsive-table td {
+    gap: 6px;
+    padding: 8px;
+    font-size: 0.76rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .brand-title {
+    font-size: 0.84rem;
+  }
+
+  .nav-actions .btn {
+    padding: 0.38rem 0.48rem;
+    font-size: 0.72rem;
+  }
+
+  .provider-title-row h1,
+  .provider-title-row-clean h1,
+  .hero h1,
+  .page-title h1 {
+    font-size: clamp(1.32rem, 8.5vw, 1.9rem);
+  }
+
+  .public-services-table td {
+    grid-template-columns: 1fr;
+  }
+}

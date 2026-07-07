@@ -78,7 +78,7 @@ Added after internal review:
 Messenger chat target:
 
 ```text
-https://www.facebook.com/messages/t/707867809081709
+https://www.facebook.com/messages/t/1240324299157071
 ```
 
 Important: Messenger does not reliably support auto-sending a prefilled message from a static GitHub Pages site. The safe flow is: copy generated order text automatically, open Messenger, then paste/send.
@@ -143,3 +143,25 @@ Copy-Item ".\Resources\icons\youtube.png" ".\assets\icons\social\youtube.png" -F
 - Kept the site focused on the provider-style order calculator.
 - Added safe JavaScript guards so removed stat elements do not break the client page.
 - Full provider service import is still a separate data pass; current seed services are not yet the complete provider catalog from all screenshots.
+
+## v1.8 Novalyte Messenger CTA Update
+
+- Updated the public Messenger destination to the Novalyte page Messenger link.
+- Changed the main CTA from New Order to Proceed Order.
+- Changed public service table action buttons from Use to Order Now.
+- Client landing now starts on the Order Panel, while Services opens as a separate view from the navigation.
+- When viewing Services, the same navigation button changes to Order Panel so clients can return cleanly.
+
+Messenger chat target:
+
+```text
+https://www.facebook.com/messages/t/1240324299157071
+```
+
+
+## v1.9 Compact Responsive UI Update
+
+- Reduced oversized public page spacing, card padding, button height, form height, and hero title scale.
+- Added stronger mobile overrides so small screens show more of the order form without excessive scrolling.
+- Kept the Novalyte Messenger CTA and Proceed Order flow from v1.8.
+- Admin/login spacing was also tightened for smaller screens.
