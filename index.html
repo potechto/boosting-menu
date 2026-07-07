@@ -37,9 +37,12 @@
         </div>
 
         <form class="provider-calculator-card" id="orderForm">
-          <div class="provider-searchbar">
-            <span class="search-glyph" aria-hidden="true">⌕</span>
-            <input id="calcSearch" type="search" placeholder="Search service, ID, platform, or keyword">
+          <div class="provider-search-group">
+            <div class="provider-searchbar">
+              <span class="search-glyph" aria-hidden="true">⌕</span>
+              <input id="calcSearch" type="search" placeholder="Type service ID, platform, or keyword" autocomplete="off" aria-controls="calcSearchSuggestions" aria-expanded="false">
+            </div>
+            <div class="service-suggestions hidden" id="calcSearchSuggestions" role="listbox" aria-label="Matching services"></div>
           </div>
 
           <div class="provider-field">

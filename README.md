@@ -41,7 +41,7 @@ Recommended next upgrade:
 Work in:
 
 ```powershell
-cd "C:\Users\Ralph John\OneDrive\Desktop\ME FILES\BOOSTING"
+cd "C:\Users\Ralph John\OneDrive\Desktop\ME FILES\Novalyte"
 ```
 
 Normal update flow:
@@ -88,7 +88,7 @@ Important: Messenger does not reliably support auto-sending a prefilled message 
 Use your local PNG icons from `Resources/icons` and copy them into the website asset folder before committing:
 
 ```powershell
-cd "C:\Users\Ralph John\OneDrive\Desktop\ME FILES\BOOSTING"
+cd "C:\Users\Ralph John\OneDrive\Desktop\ME FILES\Novalyte"
 New-Item -ItemType Directory -Force ".\assets\icons\social"
 Copy-Item ".\Resources\icons\facebook.png" ".\assets\icons\social\facebook.png" -Force
 Copy-Item ".\Resources\icons\instagram.png" ".\assets\icons\social\instagram.png" -Force
@@ -165,3 +165,13 @@ https://www.facebook.com/messages/t/1240324299157071
 - Added stronger mobile overrides so small screens show more of the order form without excessive scrolling.
 - Kept the Novalyte Messenger CTA and Proceed Order flow from v1.8.
 - Admin/login spacing was also tightened for smaller screens.
+
+
+## v2.0 ID Autocomplete and Telegram Visibility
+
+- Order panel search now shows a dropdown of matching service suggestions while typing.
+- Typing in the search bar no longer rebuilds or shrinks the main Services dropdown.
+- Service suggestions prioritize exact and partial provider ID matches before broader keyword matches.
+- Selecting a suggestion automatically sets the correct platform/category and service in the order panel.
+- Pressing Enter while suggestions are open selects the first match; Escape closes the suggestions.
+- Telegram is now visible in the public platform/service options using the existing seed placeholder service until exact provider details are added.

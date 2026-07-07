@@ -7,6 +7,7 @@
     visibleServiceCount: document.getElementById('visibleServiceCount'),
     platformCount: document.getElementById('platformCount'),
     calcSearch: document.getElementById('calcSearch'),
+    calcSearchSuggestions: document.getElementById('calcSearchSuggestions'),
     calcCategory: document.getElementById('calcCategory'),
     calcService: document.getElementById('calcService'),
     calcQuantity: document.getElementById('calcQuantity'),
@@ -120,12 +121,72 @@
   function calculatorCandidates() {
     const services = visibleServices();
     const platform = els.calcCategory.value;
-    const search = els.calcSearch.value.trim().toLowerCase();
-    return services.filter(service => {
-      const matchesPlatform = !platform || service.platform === platform;
-      const matchesSearch = !search || searchableText(service).includes(search);
-      return matchesPlatform && matchesSearch;
-    });
+    return services.filter(service => !platform || service.platform === platform);
+  }
+
+  function suggestionCandidates(query) {
+    const term = String(query || '').trim().toLowerCase();
+    if (!term) return [];
+    return visibleServices()
+      .map(service => {
+        const id = String(service.providerId || '').toLowerCase();
+        const text = searchableText(service);
+        let score = 99;
+        if (id === term) score = 0;
+        else if (id.startsWith(term)) score = 1;
+        else if (id.includes(term)) score = 2;
+        else if (text.includes(term)) score = 3;
+        return { service, score };
+      })
+      .filter(item => item.score < 99)
+      .sort((a, b) => a.score - b.score || String(a.service.providerId).localeCompare(String(b.service.providerId), undefined, { numeric: true }))
+      .slice(0, 8)
+      .map(item => item.service);
+  }
+
+  function hideSearchSuggestions() {
+    if (!els.calcSearchSuggestions) return;
+    els.calcSearchSuggestions.classList.add('hidden');
+    els.calcSearchSuggestions.innerHTML = '';
+    if (els.calcSearch) els.calcSearch.setAttribute('aria-expanded', 'false');
+  }
+
+  function renderSearchSuggestions() {
+    if (!els.calcSearchSuggestions) return;
+    const term = els.calcSearch.value.trim();
+    if (!term) {
+      hideSearchSuggestions();
+      return;
+    }
+
+    const matches = suggestionCandidates(term);
+    els.calcSearchSuggestions.classList.remove('hidden');
+    els.calcSearch.setAttribute('aria-expanded', 'true');
+
+    if (!matches.length) {
+      els.calcSearchSuggestions.innerHTML = '<div class="service-suggestion-empty">No matching service ID yet.</div>';
+      return;
+    }
+
+    els.calcSearchSuggestions.innerHTML = matches.map(service => `
+      <button class="service-suggestion" type="button" role="option" data-suggest-service="${sanitize(service.id)}">
+        <span class="suggestion-id">ID ${sanitize(service.providerId)}</span>
+        <span class="suggestion-copy">
+          <strong>${sanitize(service.name)}</strong>
+          <small>${sanitize(service.platform)} • ${sanitize(service.category)} • ${Store.formatMoney(service.clientRate)} / ${Store.formatNumber(service.rateUnit)}</small>
+        </span>
+      </button>
+    `).join('');
+  }
+
+  function selectSuggestedService(service) {
+    if (!service) return;
+    els.calcCategory.value = service.platform;
+    fillCalculatorServices(false);
+    els.calcService.value = service.id;
+    els.calcSearch.value = `ID ${service.providerId} - ${service.name}`;
+    hideSearchSuggestions();
+    renderCalculator();
   }
 
   function serviceOptionLabel(service) {
@@ -343,8 +404,34 @@
       renderServices();
     });
 
-    els.calcCategory.addEventListener('change', () => fillCalculatorServices(false));
-    els.calcSearch.addEventListener('input', () => fillCalculatorServices(false));
+    els.calcCategory.addEventListener('change', () => {
+      fillCalculatorServices(false);
+      renderSearchSuggestions();
+    });
+    els.calcSearch.addEventListener('input', renderSearchSuggestions);
+    els.calcSearch.addEventListener('focus', renderSearchSuggestions);
+    els.calcSearch.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        hideSearchSuggestions();
+        return;
+      }
+      if (event.key !== 'Enter') return;
+      const first = els.calcSearchSuggestions ? els.calcSearchSuggestions.querySelector('[data-suggest-service]') : null;
+      if (!first) return;
+      event.preventDefault();
+      selectSuggestedService(visibleServices().find(item => item.id === first.dataset.suggestService));
+    });
+    if (els.calcSearchSuggestions) {
+      els.calcSearchSuggestions.addEventListener('click', event => {
+        const btn = event.target.closest('[data-suggest-service]');
+        if (!btn) return;
+        selectSuggestedService(visibleServices().find(item => item.id === btn.dataset.suggestService));
+      });
+    }
+    document.addEventListener('click', event => {
+      if (event.target.closest('.provider-search-group')) return;
+      hideSearchSuggestions();
+    });
     [els.calcService, els.calcQuantity, els.calcLink].forEach(el => el.addEventListener('input', renderCalculator));
 
     els.servicesGrid.addEventListener('click', event => {
@@ -353,7 +440,8 @@
       const service = visibleServices().find(item => item.id === btn.dataset.useService);
       if (!service) return;
       els.calcCategory.value = service.platform;
-      els.calcSearch.value = '';
+      els.calcSearch.value = `ID ${service.providerId} - ${service.name}`;
+      hideSearchSuggestions();
       fillCalculatorServices(false);
       els.calcService.value = service.id;
       renderCalculator();

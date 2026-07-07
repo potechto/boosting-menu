@@ -218,6 +218,6 @@ window.NOVALYTE_SEED_SERVICES = [
     id: 'svc_telegram_members_sample', providerId: 'TG-5001', platform: 'Telegram', category: 'Members',
     name: 'Telegram Group Members', description: 'Telegram members placeholder. Edit with exact provider ID/rate once selected from panel.',
     providerRate: 380, clientRate: 440, rateUnit: 1000, min: 100, max: 50000,
-    avgTime: '1-3 days', tag: 'To verify', visible: false
+    avgTime: '1-3 days', tag: 'To verify', visible: true
   }
 ];
