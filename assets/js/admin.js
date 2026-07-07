@@ -19,7 +19,17 @@
     investAmount: document.getElementById('investAmount'),
     addInvestAmount: document.getElementById('addInvestAmount'),
     addInvestNote: document.getElementById('addInvestNote'),
+    financeEntryType: document.getElementById('financeEntryType'),
+    financePerson: document.getElementById('financePerson'),
+    teamMemberName: document.getElementById('teamMemberName'),
+    teamPayMode: document.getElementById('teamPayMode'),
+    teamPayAmount: document.getElementById('teamPayAmount'),
+    teamPayFrequency: document.getElementById('teamPayFrequency'),
+    addTeamMemberBtn: document.getElementById('addTeamMemberBtn'),
+    teamMembersTable: document.getElementById('teamMembersTable'),
     investmentsTable: document.getElementById('investmentsTable'),
+    investmentAnalyticsGrid: document.getElementById('investmentAnalyticsGrid'),
+    investmentInsightsCard: document.getElementById('investmentInsightsCard'),
     saveInvestBtn: document.getElementById('saveInvestBtn'),
     addInvestBtn: document.getElementById('addInvestBtn'),
     adminServiceSearch: document.getElementById('adminServiceSearch'),
@@ -27,6 +37,26 @@
     adminArchiveFilter: document.getElementById('adminArchiveFilter'),
     servicesTable: document.getElementById('servicesTable'),
     addServiceBtn: document.getElementById('addServiceBtn'),
+    addDigitalProductBtn: document.getElementById('addDigitalProductBtn'),
+    adminDigitalProductSearch: document.getElementById('adminDigitalProductSearch'),
+    adminDigitalProductFilter: document.getElementById('adminDigitalProductFilter'),
+    adminDigitalProductStatusFilter: document.getElementById('adminDigitalProductStatusFilter'),
+    digitalProductsTable: document.getElementById('digitalProductsTable'),
+    digitalProductAdminModal: document.getElementById('digitalProductAdminModal'),
+    digitalProductAdminForm: document.getElementById('digitalProductAdminForm'),
+    digitalProductAdminModalTitle: document.getElementById('digitalProductAdminModalTitle'),
+    digitalProductEditId: document.getElementById('digitalProductEditId'),
+    digitalProductName: document.getElementById('digitalProductName'),
+    digitalProductCategory: document.getElementById('digitalProductCategory'),
+    digitalProductPrice: document.getElementById('digitalProductPrice'),
+    digitalProductProviderPrice: document.getElementById('digitalProductProviderPrice'),
+    digitalProductProfitPreview: document.getElementById('digitalProductProfitPreview'),
+    digitalProductDuration: document.getElementById('digitalProductDuration'),
+    digitalProductImage: document.getElementById('digitalProductImage'),
+    digitalProductImageUpload: document.getElementById('digitalProductImageUpload'),
+    digitalProductVisible: document.getElementById('digitalProductVisible'),
+    digitalProductImagePreview: document.getElementById('digitalProductImagePreview'),
+    digitalProductDescription: document.getElementById('digitalProductDescription'),
     exportBackupBtn: document.getElementById('exportBackupBtn'),
     importBackupInput: document.getElementById('importBackupInput'),
     exportOrdersCsvBtn: document.getElementById('exportOrdersCsvBtn'),
@@ -77,8 +107,11 @@
   let activePanel = 'dashboard';
   let servicePage = 1;
   let orderPage = 1;
+  let digitalProductPage = 1;
+  let pendingDigitalImageData = '';
   const servicePageSize = 8;
   const orderPageSize = 10;
+  const digitalProductPageSize = 8;
 
   const statusLabels = {
     active: 'Active',
@@ -170,14 +203,16 @@
       const dashboard = document.getElementById('dashboard');
       const stats = document.getElementById('statsGrid');
       const services = document.getElementById('services');
+      const digitalProductsAdmin = document.getElementById('digital-products');
       const investments = document.getElementById('investments');
       const orders = document.getElementById('orders');
-      [dashboard, stats, services, investments, orders].forEach(el => el && el.classList.add('hidden'));
+      [dashboard, stats, services, digitalProductsAdmin, investments, orders].forEach(el => el && el.classList.add('hidden'));
       if (activePanel === 'dashboard') {
         dashboard && dashboard.classList.remove('hidden');
         stats && stats.classList.remove('hidden');
       }
       if (activePanel === 'services') services && services.classList.remove('hidden');
+      if (activePanel === 'digital-products') digitalProductsAdmin && digitalProductsAdmin.classList.remove('hidden');
       if (activePanel === 'investments') investments && investments.classList.remove('hidden');
       if (activePanel === 'orders') orders && orders.classList.remove('hidden');
       navLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === `#${activePanel}`));
@@ -186,7 +221,7 @@
     navLinks.forEach(link => {
       link.addEventListener('click', event => {
         const target = link.getAttribute('href').replace('#', '');
-        if (!['dashboard', 'services', 'investments', 'orders'].includes(target)) return;
+        if (!['dashboard', 'services', 'digital-products', 'investments', 'orders'].includes(target)) return;
         event.preventDefault();
         showPanel(target);
       });
@@ -198,6 +233,188 @@
     const services = Store.getServices();
     return [...new Set(services.map(item => item.platform).filter(Boolean))].sort();
   }
+
+  function digitalProductImage(product) {
+    const value = product.imageData || product.image || '';
+    if (!value) return '';
+    if (/^(data:|https?:|blob:)/i.test(value)) return value;
+    return `assets/img/digital/${encodeURIComponent(value)}`;
+  }
+
+  function digitalProductCategories() {
+    return [...new Set(Store.getDigitalProducts().map(item => item.category).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+  }
+
+  function fillAdminDigitalProductFilters() {
+    if (!els.adminDigitalProductFilter) return;
+    const current = els.adminDigitalProductFilter.value || 'all';
+    els.adminDigitalProductFilter.innerHTML = '<option value="all">All categories</option>';
+    digitalProductCategories().forEach(category => {
+      const opt = document.createElement('option');
+      opt.value = category;
+      opt.textContent = category;
+      els.adminDigitalProductFilter.append(opt);
+    });
+    if ([...els.adminDigitalProductFilter.options].some(opt => opt.value === current)) els.adminDigitalProductFilter.value = current;
+  }
+
+  function filteredDigitalProducts() {
+    if (!els.adminDigitalProductSearch || !els.adminDigitalProductFilter) return Store.getDigitalProducts();
+    const search = els.adminDigitalProductSearch.value.trim().toLowerCase();
+    const category = els.adminDigitalProductFilter.value || 'all';
+    const status = els.adminDigitalProductStatusFilter ? els.adminDigitalProductStatusFilter.value || 'shown' : 'shown';
+    return Store.getDigitalProducts().filter(product => {
+      const text = `${product.name} ${product.category} ${product.description} ${product.duration} ${product.image}`.toLowerCase();
+      const hidden = product.visible === false;
+      const disabled = product.disabled === true;
+      const matchesSearch = !search || text.includes(search);
+      const matchesCategory = category === 'all' || product.category === category;
+      const matchesStatus = status === 'all' || (status === 'shown' && !hidden) || (status === 'disabled' && disabled) || (status === 'hidden' && hidden);
+      return matchesSearch && matchesCategory && matchesStatus;
+    }).sort((a, b) => String(a.name).localeCompare(String(b.name)));
+  }
+
+  function renderDigitalProductsPagination(total) {
+    if (!els.digitalProductsTable) return;
+    const wrapper = els.digitalProductsTable.closest('.table-wrap');
+    const pager = ensurePagination('adminDigitalProductsPagination', wrapper);
+    if (!pager) return;
+    const pages = Math.max(1, Math.ceil(total / digitalProductPageSize));
+    digitalProductPage = Math.min(digitalProductPage, pages);
+    if (pages <= 1) {
+      pager.innerHTML = '';
+      return;
+    }
+    const start = (digitalProductPage - 1) * digitalProductPageSize + 1;
+    const end = Math.min(total, digitalProductPage * digitalProductPageSize);
+    pager.innerHTML = `
+      <div class="page-summary">Showing ${Store.formatNumber(start)}-${Store.formatNumber(end)} of ${Store.formatNumber(total)} digital products</div>
+      <div class="page-buttons">
+        <button class="btn small" type="button" data-admin-digital-page="prev" ${digitalProductPage === 1 ? 'disabled' : ''}>Previous</button>
+        <span class="page-chip">Page ${digitalProductPage} / ${pages}</span>
+        <button class="btn small" type="button" data-admin-digital-page="next" ${digitalProductPage === pages ? 'disabled' : ''}>Next</button>
+      </div>
+    `;
+  }
+
+  function renderDigitalProductsTable() {
+    if (!els.digitalProductsTable) return;
+    const products = filteredDigitalProducts();
+    renderDigitalProductsPagination(products.length);
+    if (!products.length) {
+      els.digitalProductsTable.innerHTML = '<tr><td colspan="6"><div class="empty-state">No digital products found.</div></td></tr>';
+      return;
+    }
+    const start = (digitalProductPage - 1) * digitalProductPageSize;
+    const paged = products.slice(start, start + digitalProductPageSize);
+    els.digitalProductsTable.innerHTML = paged.map(product => {
+      const statusText = product.visible === false ? 'Hidden' : product.disabled ? 'Disabled' : 'Visible';
+      const statusClass = product.visible === false ? 'is-hidden' : product.disabled ? 'disabled' : 'visible';
+      const toggleText = product.disabled ? 'Enable' : 'Disable';
+      const toggleClass = product.disabled ? 'success' : 'danger';
+      const toggleValue = product.disabled ? 'false' : 'true';
+      return `
+        <tr class="${[product.disabled ? 'is-admin-digital-disabled' : '', product.visible === false ? 'is-admin-digital-hidden' : ''].filter(Boolean).join(' ')}">
+          <td data-label="Product">
+            <div class="admin-product-cell">
+              <img src="${sanitize(digitalProductImage(product))}" alt="${sanitize(product.name)}" loading="lazy">
+              <div><strong>${sanitize(product.name)}</strong><br><span class="service-desc">${sanitize(product.description || 'No description')}</span></div>
+            </div>
+          </td>
+          <td data-label="Category">${sanitize(product.category || 'Digital Product')}</td>
+          <td data-label="Client / Cost"><strong>${Store.formatMoney(product.price)}</strong><br><span class="service-desc">Cost: ${Store.formatMoney(product.providerPrice || 0)}</span></td>
+          <td data-label="Duration">${sanitize(product.duration || '1 Month Access')}</td>
+          <td data-label="Status"><span class="status-pill ${statusClass}">${statusText}</span></td>
+          <td data-label="Actions">
+            <div class="actions-cell admin-digital-actions">
+              <button class="btn small" type="button" data-edit-digital-product="${sanitize(product.id)}">Edit</button>
+              <button class="btn small ${toggleClass}" type="button" data-toggle-digital-product="${sanitize(product.id)}" data-toggle-value="${toggleValue}">${toggleText}</button>
+              <button class="btn small danger ghost-danger" type="button" data-delete-digital-product="${sanitize(product.id)}">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function getDigitalProductById(id) {
+    return Store.getDigitalProducts().find(product => product.id === id);
+  }
+
+  function updateDigitalProductPreview() {
+    if (!els.digitalProductImagePreview) return;
+    const data = pendingDigitalImageData || els.digitalProductImage.value.trim();
+    const src = /^(data:|https?:|blob:)/i.test(data) ? data : data ? `assets/img/digital/${encodeURIComponent(data)}` : '';
+    els.digitalProductImagePreview.src = src;
+    els.digitalProductImagePreview.alt = els.digitalProductName.value || 'Digital product preview';
+  }
+
+  function updateDigitalProductProfitPreview() {
+    if (!els.digitalProductProfitPreview) return;
+    const client = Number(els.digitalProductPrice ? els.digitalProductPrice.value : 0) || 0;
+    const provider = Number(els.digitalProductProviderPrice ? els.digitalProductProviderPrice.value : 0) || 0;
+    const profit = client - provider;
+    els.digitalProductProfitPreview.textContent = `Provider cost: ${Store.formatMoney(provider)} · Profit: ${Store.formatMoney(profit)}`;
+  }
+
+  function fillDigitalProductForm(product) {
+    const isNew = !product;
+    const data = product || {
+      id: '', name: '', price: 0, providerPrice: 0, category: 'Digital Product', image: '', imageData: '', duration: '1 Month Access', description: '', visible: true
+    };
+    pendingDigitalImageData = data.imageData || '';
+    els.digitalProductAdminModalTitle.textContent = isNew ? 'Add Digital Product' : 'Edit Digital Product';
+    els.digitalProductEditId.value = data.id || '';
+    els.digitalProductName.value = data.name || '';
+    els.digitalProductCategory.value = data.category || '';
+    els.digitalProductPrice.value = Number(data.price) || 0;
+    if (els.digitalProductProviderPrice) els.digitalProductProviderPrice.value = Number(data.providerPrice) || 0;
+    els.digitalProductDuration.value = data.duration || '';
+    els.digitalProductImage.value = data.image || '';
+    els.digitalProductVisible.checked = data.visible !== false;
+    els.digitalProductDescription.value = data.description || '';
+    if (els.digitalProductImageUpload) els.digitalProductImageUpload.value = '';
+    updateDigitalProductPreview();
+    updateDigitalProductProfitPreview();
+    openModal(els.digitalProductAdminModal);
+  }
+
+  function saveDigitalProductFromForm(event) {
+    event.preventDefault();
+    const id = els.digitalProductEditId.value || Store.uid('dp');
+    const products = Store.getDigitalProducts();
+    const existingIndex = products.findIndex(product => product.id === id);
+    const product = {
+      id,
+      name: els.digitalProductName.value.trim(),
+      category: els.digitalProductCategory.value.trim(),
+      price: Number(els.digitalProductPrice.value) || 0,
+      providerPrice: Number(els.digitalProductProviderPrice ? els.digitalProductProviderPrice.value : 0) || 0,
+      duration: els.digitalProductDuration.value.trim() || '1 Month Access',
+      image: els.digitalProductImage.value.trim(),
+      imageData: pendingDigitalImageData || '',
+      visible: els.digitalProductVisible.checked,
+      disabled: existingIndex >= 0 ? Boolean(products[existingIndex].disabled) : false,
+      description: els.digitalProductDescription.value.trim()
+    };
+    if (!product.name || !product.category) {
+      Store.toast('Complete required digital product details.', 'error');
+      return;
+    }
+    if (!product.image && !product.imageData) {
+      Store.toast('Add an image filename, URL, or uploaded image.', 'error');
+      return;
+    }
+    if (existingIndex >= 0) products[existingIndex] = product;
+    else products.unshift(product);
+    Store.saveDigitalProducts(products);
+    closeModal(els.digitalProductAdminModal);
+    pendingDigitalImageData = '';
+    fillAdminDigitalProductFilters();
+    renderDigitalProductsTable();
+    Store.toast('Digital product saved. Client Digital Products page will use the updated details.');
+  }
+
 
   function dateText(value) {
     return value ? new Date(value).toLocaleString('en-PH', { dateStyle: 'medium', timeStyle: 'short' }) : '-';
@@ -230,21 +447,107 @@
     els.investAmount.value = totals.invest || '';
   }
 
+  function financeTypeLabel(type) {
+    const labels = {
+      'capital-in': 'Add Funds / Reload',
+      'owner-payout': 'Owner Payout',
+      'payroll-payout': 'Team Payroll Payout',
+      expense: 'Other Expense'
+    };
+    return labels[type] || 'Finance Entry';
+  }
+
+  function financeAmountClass(type) {
+    return type === 'capital-in' ? 'good' : type === 'owner-payout' || type === 'payroll-payout' ? 'warn' : 'bad';
+  }
+
+  function renderInvestmentAnalytics() {
+    if (!els.investmentAnalyticsGrid) return;
+    const totals = Store.getFinanceTotals ? Store.getFinanceTotals() : Store.getTotals();
+    const entries = Store.getFinanceEntries ? Store.getFinanceEntries() : Store.getInvestments();
+    const roi = totals.capitalIn > 0 ? (totals.retainedProfit / totals.capitalIn) * 100 : 0;
+    const availableClass = totals.availableCapital < 0 ? 'bad' : totals.availableCapital < Math.max(totals.capitalIn * 0.25, 1) ? 'warn' : 'good';
+    const metrics = [
+      { label: 'Total capital', value: Store.formatMoney(totals.capitalIn), note: `${Store.formatNumber(Store.getInvestments().length)} capital reload logs`, className: '' },
+      { label: 'Used for provider orders', value: Store.formatMoney(totals.providerCharges), note: 'Based on non-voided order records', className: '' },
+      { label: 'Available capital', value: Store.formatMoney(totals.availableCapital), note: 'Capital minus provider charges', className: availableClass },
+      { label: 'Gross revenue', value: Store.formatMoney(totals.revenue), note: 'Client sales minus provider costs', className: totals.revenue > 0 ? 'good' : '' },
+      { label: 'Owner payouts', value: Store.formatMoney(totals.ownerPayout || 0), note: 'Self payout logs', className: totals.ownerPayout ? 'warn' : '' },
+      { label: 'Team payroll paid', value: Store.formatMoney(totals.payrollPayout || 0), note: `${Store.formatNumber(totals.teamCount || 0)} team rules saved`, className: totals.payrollPayout ? 'warn' : '' },
+      { label: 'Net retained', value: Store.formatMoney(totals.retainedProfit || 0), note: `${roi.toFixed(1)}% retained return vs capital`, className: totals.retainedProfit < 0 ? 'bad' : totals.retainedProfit > 0 ? 'good' : '' },
+      { label: 'Cash wallet estimate', value: Store.formatMoney(totals.paidWallet || 0), note: 'Paid sales minus costs and payouts', className: totals.paidWallet < 0 ? 'bad' : totals.paidWallet > 0 ? 'good' : '' },
+      { label: 'Paid sales', value: Store.formatMoney(totals.paidSales), note: `${Store.formatNumber(totals.paidCount)} fully paid records`, className: 'good' },
+      { label: 'Receivables', value: Store.formatMoney(totals.receivables), note: `${Store.formatNumber(totals.unpaidCount + totals.partialCount)} unpaid/partial records`, className: totals.receivables ? 'warn' : '' }
+    ];
+    els.investmentAnalyticsGrid.innerHTML = metrics.map(item => `
+      <article class="investment-analytics-card ${item.className}">
+        <span>${item.label}</span>
+        <strong>${item.value}</strong>
+        <small>${item.note}</small>
+      </article>
+    `).join('');
+    if (els.investmentInsightsCard) {
+      const lastEntry = entries[0];
+      const statusText = totals.availableCapital < 0
+        ? 'Capital is negative after provider charges. Add funds before accepting more orders.'
+        : totals.availableCapital < Math.max(totals.capitalIn * 0.25, 1)
+          ? 'Available capital is getting low. Consider reloading before scaling orders.'
+          : 'Capital status looks healthy based on current provider charges.';
+      els.investmentInsightsCard.innerHTML = `
+        <div>
+          <span class="eyebrow">Finance insight</span>
+          <strong>${statusText}</strong>
+        </div>
+        <div>
+          <span>Latest log</span>
+          <strong>${lastEntry ? `${financeTypeLabel(lastEntry.type)} · ${Store.formatMoney(lastEntry.amount)} · ${sanitize(dateText(lastEntry.createdAt))}` : 'No finance log yet'}</strong>
+        </div>
+      `;
+    }
+  }
+
   function renderInvestments() {
-    const entries = Store.getInvestments();
+    const entries = Store.getFinanceEntries ? Store.getFinanceEntries() : Store.getInvestments().map(entry => ({ ...entry, type: 'capital-in', person: 'Novalyte Capital', source: 'investment', sourceId: entry.id }));
+    if (!els.investmentsTable) return;
     if (!entries.length) {
-      els.investmentsTable.innerHTML = '<tr><td colspan="4"><div class="empty-state">No investment entries yet.</div></td></tr>';
+      els.investmentsTable.innerHTML = '<tr><td colspan="6"><div class="empty-state">No finance logs yet.</div></td></tr>';
       return;
     }
 
     els.investmentsTable.innerHTML = entries.map(entry => `
       <tr>
         <td>${sanitize(dateText(entry.createdAt))}</td>
+        <td><span class="status-pill ${financeAmountClass(entry.type)}">${sanitize(financeTypeLabel(entry.type))}</span></td>
+        <td>${sanitize(entry.person || (entry.type === 'owner-payout' ? 'Self' : '-'))}</td>
         <td><strong>${Store.formatMoney(entry.amount)}</strong></td>
         <td>${sanitize(entry.note || 'No note')}</td>
-        <td><button class="btn small danger" type="button" data-remove-investment="${entry.id}">Remove</button></td>
+        <td><button class="btn small danger" type="button" data-remove-finance-entry="${sanitize(entry.id)}" data-finance-source="${sanitize(entry.source || 'finance')}" data-source-id="${sanitize(entry.sourceId || '')}">Remove</button></td>
       </tr>
     `).join('');
+  }
+
+  function renderTeamMembers() {
+    if (!els.teamMembersTable || !Store.getTeamMembers) return;
+    const members = Store.getTeamMembers();
+    const totals = Store.getFinanceTotals ? Store.getFinanceTotals() : Store.getTotals();
+    if (!members.length) {
+      els.teamMembersTable.innerHTML = '<tr><td colspan="4"><div class="empty-state">No team payroll rules yet.</div></td></tr>';
+      return;
+    }
+    els.teamMembersTable.innerHTML = members.map(member => {
+      const estimated = member.mode === 'percent' ? (totals.revenue * ((Number(member.amount) || 0) / 100)) : Number(member.amount) || 0;
+      const rule = member.mode === 'percent'
+        ? `${Number(member.amount) || 0}% ${member.frequency}`
+        : `${Store.formatMoney(member.amount)} ${member.frequency}`;
+      return `
+        <tr>
+          <td><strong>${sanitize(member.name)}</strong></td>
+          <td>${sanitize(rule)}</td>
+          <td>${Store.formatMoney(estimated)}</td>
+          <td><button class="btn small danger" type="button" data-remove-team-member="${sanitize(member.id)}">Remove</button></td>
+        </tr>
+      `;
+    }).join('');
   }
 
   function fillAdminFilters() {
@@ -271,7 +574,8 @@
       const text = `${service.name} ${service.platform} ${service.category} ${service.providerId} ${service.description} ${service.tag}`.toLowerCase();
       const matchesSearch = !search || text.includes(search);
       const matchesPlatform = platform === 'all' || service.platform === platform;
-      const matchesArchive = archive === 'all' || (archive === 'active' && !archived) || (archive === 'archived' && archived);
+      const hidden = service.visible === false;
+      const matchesArchive = archive === 'all' || (archive === 'active' && !hidden) || (archive === 'archived' && archived);
       return matchesSearch && matchesPlatform && matchesArchive;
     });
   }
@@ -310,14 +614,15 @@
     const paged = services.slice(start, start + servicePageSize);
     els.servicesTable.innerHTML = paged.map(service => {
       const revenue = (Number(service.clientRate) || 0) - (Number(service.providerRate) || 0);
-      const statusText = service.archived ? 'Archived' : service.visible === false ? 'Hidden' : 'Visible';
-      const statusClass = service.archived ? 'archived' : service.visible === false ? 'is-hidden' : 'visible';
+      const statusText = service.archived ? 'Disabled' : service.visible === false ? 'Hidden' : 'Visible';
+      const statusClass = service.archived ? 'disabled' : service.visible === false ? 'is-hidden' : 'visible';
       const archiveAction = service.archived
-        ? `<button class="btn small success" type="button" data-archive-service="${service.id}" data-archive-value="false">Restore</button>`
-        : `<button class="btn small danger" type="button" data-archive-service="${service.id}" data-archive-value="true">Archive</button>`;
+        ? `<button class="btn small success" type="button" data-archive-service="${service.id}" data-archive-value="false">Enable</button>`
+        : `<button class="btn small danger" type="button" data-archive-service="${service.id}" data-archive-value="true">Disable</button>`;
 
+      const rowClass = [service.archived ? 'is-admin-service-disabled' : '', service.visible === false ? 'is-admin-service-hidden' : ''].filter(Boolean).join(' ');
       return `
-        <tr>
+        <tr class="${rowClass}">
           <td data-label="Service">
             <strong>${sanitize(service.name)}</strong><br>
             <span class="service-desc">${sanitize(service.category)} · ${sanitize(service.avgTime || 'Varies')}</span>
@@ -421,9 +726,13 @@
   function renderAll() {
     Store.getServices();
     fillAdminFilters();
+    fillAdminDigitalProductFilters();
     renderStats();
+    renderInvestmentAnalytics();
     renderInvestments();
+    renderTeamMembers();
     renderServicesTable();
+    renderDigitalProductsTable();
     renderOrdersTable();
   }
 
@@ -499,7 +808,7 @@
       min: Number(els.serviceMin.value) || 0,
       max: Number(els.serviceMax.value) || 0,
       tag: els.serviceTag.value.trim(),
-      visible: els.serviceVisible.checked,
+      visible: els.serviceArchived.checked ? true : els.serviceVisible.checked,
       archived: els.serviceArchived.checked,
       description: els.serviceDescription.value.trim()
     };
@@ -523,10 +832,31 @@
     const service = services.find(item => item.id === serviceId);
     if (!service) return;
     service.archived = archived;
-    if (archived) service.visible = false;
+    if (archived) service.visible = true;
     Store.saveServices(services);
-    Store.toast(archived ? 'Service archived and hidden from clients.' : 'Service restored. Review visibility before sharing.');
+    Store.toast(archived ? 'Service disabled. The row stays here and the button changed to Enable.' : 'Service enabled and orderable again.');
     renderAll();
+  }
+
+  function toggleDigitalProduct(productId, disabled) {
+    const products = Store.getDigitalProducts();
+    const product = products.find(item => item.id === productId);
+    if (!product) return;
+    product.disabled = disabled;
+    if (disabled) product.visible = true;
+    Store.saveDigitalProducts(products);
+    Store.toast(disabled ? 'Digital product disabled. The row stays here and the button changed to Enable.' : 'Digital product enabled and available again.');
+    fillAdminDigitalProductFilters();
+    renderDigitalProductsTable();
+  }
+
+  function deleteDigitalProduct(productId) {
+    const product = getDigitalProductById(productId);
+    if (!product) return;
+    Store.deleteDigitalProduct(productId);
+    Store.toast(`${product.name} deleted from Digital Products.`);
+    fillAdminDigitalProductFilters();
+    renderDigitalProductsTable();
   }
 
   function fillOrderForm(service) {
@@ -742,34 +1072,67 @@
       showLogin();
     });
 
-    els.addInvestBtn.addEventListener('click', () => {
-      const add = Number(els.addInvestAmount.value) || 0;
-      if (add <= 0) {
-        Store.toast('Enter a valid investment amount.', 'error');
+    if (els.addInvestBtn) els.addInvestBtn.addEventListener('click', () => {
+      const amount = Number(els.addInvestAmount.value) || 0;
+      const type = els.financeEntryType ? els.financeEntryType.value : 'capital-in';
+      const person = els.financePerson ? els.financePerson.value : '';
+      if (amount <= 0) {
+        Store.toast('Enter a valid finance amount.', 'error');
         return;
       }
-      Store.addInvestment(add, els.addInvestNote.value);
+      if (type === 'capital-in') Store.addInvestment(amount, els.addInvestNote.value);
+      else if (Store.addFinanceEntry) Store.addFinanceEntry(type, amount, person, els.addInvestNote.value);
       els.addInvestAmount.value = '';
       els.addInvestNote.value = '';
-      Store.toast('Investment added.');
+      if (els.financePerson) els.financePerson.value = '';
+      Store.toast('Finance log added.');
       renderAll();
     });
 
-    els.saveInvestBtn.addEventListener('click', () => {
-      const confirmed = confirm('Override total invest? This will replace the investment log with one correction entry.');
+    if (els.saveInvestBtn) els.saveInvestBtn.addEventListener('click', () => {
+      const confirmed = confirm('Override total capital? This replaces the capital reload log with one correction entry.');
       if (!confirmed) return;
-      Store.setInvest(els.investAmount.value || 0, 'Manual correction / override');
-      Store.toast('Total invest overridden.');
+      Store.setInvest(els.investAmount.value || 0, 'Manual capital correction / override');
+      Store.toast('Total capital overridden.');
       renderAll();
     });
 
-    els.investmentsTable.addEventListener('click', event => {
-      const btn = event.target.closest('[data-remove-investment]');
+    if (els.investmentsTable) els.investmentsTable.addEventListener('click', event => {
+      const btn = event.target.closest('[data-remove-finance-entry]');
       if (!btn) return;
-      const confirmed = confirm('Remove this investment entry?');
+      const confirmed = confirm('Remove this finance log?');
       if (!confirmed) return;
-      Store.removeInvestment(btn.dataset.removeInvestment);
-      Store.toast('Investment entry removed.');
+      if (btn.dataset.financeSource === 'investment') Store.removeInvestment(btn.dataset.sourceId);
+      else if (Store.removeFinanceEntry) Store.removeFinanceEntry(btn.dataset.removeFinanceEntry);
+      Store.toast('Finance log removed.');
+      renderAll();
+    });
+
+    if (els.addTeamMemberBtn) els.addTeamMemberBtn.addEventListener('click', () => {
+      if (!Store.addTeamMember) return;
+      const member = Store.addTeamMember(
+        els.teamMemberName.value,
+        els.teamPayMode.value,
+        els.teamPayAmount.value,
+        els.teamPayFrequency.value
+      );
+      if (!member) {
+        Store.toast('Complete team member name and pay amount.', 'error');
+        return;
+      }
+      els.teamMemberName.value = '';
+      els.teamPayAmount.value = '';
+      Store.toast('Team payroll rule added.');
+      renderAll();
+    });
+
+    if (els.teamMembersTable) els.teamMembersTable.addEventListener('click', event => {
+      const btn = event.target.closest('[data-remove-team-member]');
+      if (!btn || !Store.removeTeamMember) return;
+      const confirmed = confirm('Remove this team payroll rule?');
+      if (!confirmed) return;
+      Store.removeTeamMember(btn.dataset.removeTeamMember);
+      Store.toast('Team payroll rule removed.');
       renderAll();
     });
 
@@ -777,6 +1140,13 @@
       servicePage = 1;
       renderServicesTable();
     }));
+    if (els.adminDigitalProductSearch && els.adminDigitalProductFilter) {
+      [els.adminDigitalProductSearch, els.adminDigitalProductFilter, els.adminDigitalProductStatusFilter].filter(Boolean).forEach(el => el.addEventListener('input', () => {
+        digitalProductPage = 1;
+        renderDigitalProductsTable();
+      }));
+    }
+
     [els.orderSearch, els.orderStatusFilter, els.paymentStatusFilter].forEach(el => el.addEventListener('input', () => {
       orderPage = 1;
       renderOrdersTable();
@@ -791,6 +1161,14 @@
         if (servicePager.dataset.adminServicePage === 'next') servicePage = Math.min(pages, servicePage + 1);
         renderServicesTable();
       }
+      const digitalPager = event.target.closest('[data-admin-digital-page]');
+      if (digitalPager) {
+        const total = filteredDigitalProducts().length;
+        const pages = Math.max(1, Math.ceil(total / digitalProductPageSize));
+        if (digitalPager.dataset.adminDigitalPage === 'prev') digitalProductPage = Math.max(1, digitalProductPage - 1);
+        if (digitalPager.dataset.adminDigitalPage === 'next') digitalProductPage = Math.min(pages, digitalProductPage + 1);
+        renderDigitalProductsTable();
+      }
       const orderPager = event.target.closest('[data-admin-order-page]');
       if (orderPager) {
         const total = filteredOrders().length;
@@ -800,6 +1178,49 @@
         renderOrdersTable();
       }
     });
+
+    if (els.addDigitalProductBtn) els.addDigitalProductBtn.addEventListener('click', () => fillDigitalProductForm(null));
+    if (els.digitalProductsTable) {
+      els.digitalProductsTable.addEventListener('click', event => {
+        const editBtn = event.target.closest('[data-edit-digital-product]');
+        const toggleBtn = event.target.closest('[data-toggle-digital-product]');
+        const deleteBtn = event.target.closest('[data-delete-digital-product]');
+        if (editBtn) {
+          const product = getDigitalProductById(editBtn.dataset.editDigitalProduct);
+          if (product) fillDigitalProductForm(product);
+        }
+        if (toggleBtn) {
+          const disabled = toggleBtn.dataset.toggleValue === 'true';
+          const confirmed = confirm(disabled ? 'Disable this digital product? It will stay visible but checkout will be blocked.' : 'Enable this digital product and allow checkout again?');
+          if (confirmed) toggleDigitalProduct(toggleBtn.dataset.toggleDigitalProduct, disabled);
+        }
+        if (deleteBtn) {
+          const product = getDigitalProductById(deleteBtn.dataset.deleteDigitalProduct);
+          const confirmed = product && confirm(`Delete ${product.name}? This removes it from Digital Products until you reset or add it again.`);
+          if (confirmed) deleteDigitalProduct(deleteBtn.dataset.deleteDigitalProduct);
+        }
+      });
+    }
+    if (els.digitalProductImage) els.digitalProductImage.addEventListener('input', () => {
+      pendingDigitalImageData = '';
+      updateDigitalProductPreview();
+    });
+    if (els.digitalProductName) els.digitalProductName.addEventListener('input', updateDigitalProductPreview);
+    if (els.digitalProductPrice) els.digitalProductPrice.addEventListener('input', updateDigitalProductProfitPreview);
+    if (els.digitalProductProviderPrice) els.digitalProductProviderPrice.addEventListener('input', updateDigitalProductProfitPreview);
+    if (els.digitalProductImageUpload) {
+      els.digitalProductImageUpload.addEventListener('change', event => {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          pendingDigitalImageData = String(reader.result || '');
+          updateDigitalProductPreview();
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+    if (els.digitalProductAdminForm) els.digitalProductAdminForm.addEventListener('submit', saveDigitalProductFromForm);
 
     els.addServiceBtn.addEventListener('click', () => fillServiceForm(null));
     els.servicesTable.addEventListener('click', event => {
@@ -816,7 +1237,7 @@
       }
       if (archiveBtn) {
         const archived = archiveBtn.dataset.archiveValue === 'true';
-        const confirmed = confirm(archived ? 'Archive this service and hide it from clients?' : 'Restore this archived service?');
+        const confirmed = confirm(archived ? 'Disable this service? It will stay visible but unorderable for clients.' : 'Enable this service and make it orderable again?');
         if (confirmed) archiveService(archiveBtn.dataset.archiveService, archived);
       }
     });
@@ -841,11 +1262,6 @@
       btn.addEventListener('click', () => closeModal(document.getElementById(btn.dataset.closeModal)));
     });
 
-    [els.serviceModal, els.orderModal, els.voidModal, els.orderDetailsModal].forEach(modal => {
-      modal.addEventListener('click', event => {
-        if (event.target === modal) closeModal(modal);
-      });
-    });
 
     document.addEventListener('keydown', event => {
       if (event.key !== 'Escape') return;
@@ -881,8 +1297,11 @@
       const confirmed = confirm('Reset services to demo data and clear all orders/investments?');
       if (!confirmed) return;
       Store.resetServices();
+      Store.resetDigitalProducts();
       Store.saveOrders([]);
       Store.saveInvestments([]);
+      if (Store.saveFinanceEntries) Store.saveFinanceEntries([]);
+      if (Store.saveTeamMembers) Store.saveTeamMembers([]);
       Store.toast('Demo data reset.');
       renderAll();
     });
@@ -891,6 +1310,7 @@
   function init() {
     setupAutoScrollbars();
     Store.getServices();
+    Store.getDigitalProducts();
     Store.getInvestments();
     setupAdminPanels();
     bindEvents();

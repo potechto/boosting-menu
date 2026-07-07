@@ -1,11 +1,27 @@
 (function () {
   const Store = window.NovalyteStore;
   const MESSENGER_URL = 'https://www.facebook.com/messages/t/1240324299157071';
-  const state = { servicePage: 1, perPage: 10, view: 'order' };
+  const CLIENT_STATE_KEY = 'novalyte-client-view-state-v2';
+  const state = { servicePage: 1, perPage: 10, view: 'home', activeDigitalProductId: null };
 
   const els = {
     visibleServiceCount: document.getElementById('visibleServiceCount'),
     platformCount: document.getElementById('platformCount'),
+    homeSection: document.getElementById('home'),
+    homeNavBtn: document.getElementById('homeNavBtn'),
+    whatWeDoNavBtn: document.getElementById('whatWeDoNavBtn'),
+    aboutNavBtn: document.getElementById('aboutNavBtn'),
+    whatWeDoSection: document.getElementById('what-we-do'),
+    aboutSection: document.getElementById('about-novalyte'),
+    reviewCards: document.getElementById('reviewCards'),
+    reviewForm: document.getElementById('reviewForm'),
+    reviewDisplayName: document.getElementById('reviewDisplayName'),
+    reviewText: document.getElementById('reviewText'),
+    reviewCharCount: document.getElementById('reviewCharCount'),
+    submitReviewBtn: document.getElementById('submitReviewBtn'),
+    reviewFormNotice: document.getElementById('reviewFormNotice'),
+    homeVisibleServices: document.getElementById('homeVisibleServices'),
+    homeDigitalProducts: document.getElementById('homeDigitalProducts'),
     calcSearch: document.getElementById('calcSearch'),
     calcSearchSuggestions: document.getElementById('calcSearchSuggestions'),
     calcCategory: document.getElementById('calcCategory'),
@@ -16,16 +32,16 @@
     clientTotal: document.getElementById('clientTotal'),
     chargeHint: document.getElementById('chargeHint'),
     quantityHint: document.getElementById('quantityHint'),
-    averageTimeField: document.getElementById('averageTimeField'),
     categoryIcon: document.getElementById('categoryIcon'),
-    selectedServiceId: document.getElementById('selectedServiceId'),
-    serviceDashboard: document.getElementById('serviceDashboard'),
+    selectedServiceSummary: document.getElementById('selectedServiceSummary'),
     orderMessage: document.getElementById('orderMessage'),
     copyOrderBtn: document.getElementById('copyOrderBtn'),
     proceedOrderBtn: document.getElementById('proceedOrderBtn'),
     orderPanel: document.getElementById('order-panel'),
     servicesSection: document.getElementById('services'),
-    viewToggleBtn: document.getElementById('viewToggleBtn'),
+    digitalProductsSection: document.getElementById('digital-products'),
+    digitalProductsNavBtn: document.getElementById('digitalProductsNavBtn'),
+    servicesNavBtn: document.getElementById('servicesNavBtn'),
     homeBrand: document.getElementById('homeBrand'),
     serviceSearch: document.getElementById('serviceSearch'),
     platformFilter: document.getElementById('platformFilter'),
@@ -33,7 +49,20 @@
     clearFilters: document.getElementById('clearFilters'),
     servicesGrid: document.getElementById('servicesGrid'),
     servicePagination: document.getElementById('servicePagination'),
-    emptyServices: document.getElementById('emptyServices')
+    emptyServices: document.getElementById('emptyServices'),
+    digitalProductSearch: document.getElementById('digitalProductSearch'),
+    digitalProductFilter: document.getElementById('digitalProductFilter'),
+    clearDigitalProductFilters: document.getElementById('clearDigitalProductFilters'),
+    digitalProductsGrid: document.getElementById('digitalProductsGrid'),
+    emptyDigitalProducts: document.getElementById('emptyDigitalProducts'),
+    digitalProductModal: document.getElementById('digitalProductModal'),
+    digitalProductModalClose: document.getElementById('digitalProductModalClose'),
+    digitalProductModalCheckout: document.getElementById('digitalProductModalCheckout'),
+    digitalProductModalTitle: document.getElementById('digitalProductModalTitle'),
+    digitalProductModalCategory: document.getElementById('digitalProductModalCategory'),
+    digitalProductModalImage: document.getElementById('digitalProductModalImage'),
+    digitalProductModalPrice: document.getElementById('digitalProductModalPrice'),
+    digitalProductModalDescription: document.getElementById('digitalProductModalDescription')
   };
 
   function sanitize(text) {
@@ -73,8 +102,83 @@
     return `<span class="platform-icon-wrap"><img class="platform-icon-img" src="assets/icons/social/${file}" alt="${sanitize(platform)} icon" loading="lazy" onerror="this.classList.add('is-missing'); this.nextElementSibling.classList.remove('hidden');"><span class="platform-icon-fallback hidden">${fallback}</span></span>`;
   }
 
+  function readClientState() {
+    try {
+      return JSON.parse(localStorage.getItem(CLIENT_STATE_KEY) || '{}') || {};
+    } catch (error) {
+      return {};
+    }
+  }
+
+  function saveClientState() {
+    try {
+      localStorage.setItem(CLIENT_STATE_KEY, JSON.stringify({
+        view: state.view,
+        servicePage: state.servicePage,
+        serviceSearch: els.serviceSearch ? els.serviceSearch.value : '',
+        platformFilter: els.platformFilter ? els.platformFilter.value : 'all',
+        categoryFilter: els.categoryFilter ? els.categoryFilter.value : 'all',
+        digitalProductSearch: els.digitalProductSearch ? els.digitalProductSearch.value : '',
+        digitalProductFilter: els.digitalProductFilter ? els.digitalProductFilter.value : 'all',
+        calcSearch: els.calcSearch ? els.calcSearch.value : '',
+        calcCategory: els.calcCategory ? els.calcCategory.value : '',
+        calcService: els.calcService ? els.calcService.value : '',
+        calcLink: els.calcLink ? els.calcLink.value : '',
+        calcQuantity: els.calcQuantity ? els.calcQuantity.value : ''
+      }));
+    } catch (error) {}
+  }
+
+  function viewFromHash() {
+    if (window.location.hash === '#what-we-do') return 'what-we-do';
+    if (window.location.hash === '#about-novalyte') return 'about';
+    if (window.location.hash === '#services') return 'services';
+    if (window.location.hash === '#digital-products') return 'digital-products';
+    if (window.location.hash === '#calculator' || window.location.hash === '#order-panel') return 'order';
+    if (window.location.hash === '#home' || !window.location.hash) return 'home';
+    return '';
+  }
+
+  function hashForView(view) {
+    if (view === 'services') return '#services';
+    if (view === 'digital-products') return '#digital-products';
+    if (view === 'order') return '#calculator';
+    if (view === 'what-we-do') return '#what-we-do';
+    if (view === 'about') return '#about-novalyte';
+    return '#home';
+  }
+
+  function updateViewHash(view) {
+    const nextHash = hashForView(view);
+    if (window.location.hash !== nextHash) history.replaceState(null, '', nextHash);
+  }
+
+  function restoreClientState(saved) {
+    if (!saved || typeof saved !== 'object') return;
+    if (els.serviceSearch && saved.serviceSearch) els.serviceSearch.value = saved.serviceSearch;
+    if (els.platformFilter && saved.platformFilter && [...els.platformFilter.options].some(opt => opt.value === saved.platformFilter)) els.platformFilter.value = saved.platformFilter;
+    if (els.categoryFilter && saved.categoryFilter && [...els.categoryFilter.options].some(opt => opt.value === saved.categoryFilter)) els.categoryFilter.value = saved.categoryFilter;
+    if (els.digitalProductSearch && saved.digitalProductSearch) els.digitalProductSearch.value = saved.digitalProductSearch;
+    if (els.digitalProductFilter && saved.digitalProductFilter && [...els.digitalProductFilter.options].some(opt => opt.value === saved.digitalProductFilter)) els.digitalProductFilter.value = saved.digitalProductFilter;
+    if (els.calcSearch && saved.calcSearch) els.calcSearch.value = saved.calcSearch;
+    if (els.calcCategory && saved.calcCategory && [...els.calcCategory.options].some(opt => opt.value === saved.calcCategory)) els.calcCategory.value = saved.calcCategory;
+    fillCalculatorServices(false);
+    if (els.calcService && saved.calcService && [...els.calcService.options].some(opt => opt.value === saved.calcService)) els.calcService.value = saved.calcService;
+    if (els.calcLink && saved.calcLink) els.calcLink.value = saved.calcLink;
+    if (els.calcQuantity && saved.calcQuantity) els.calcQuantity.value = saved.calcQuantity;
+    if (Number.isFinite(Number(saved.servicePage))) state.servicePage = Math.max(1, Number(saved.servicePage));
+  }
+
   function visibleServices() {
-    return Store.getServices().filter(service => service.visible !== false && service.archived !== true);
+    return Store.getServices().filter(service => service.visible !== false);
+  }
+
+  function orderableServices() {
+    return visibleServices().filter(service => service.archived !== true);
+  }
+
+  function isServiceDisabled(service) {
+    return service && service.archived === true;
   }
 
   function unique(list, key) {
@@ -173,7 +277,7 @@
         <span class="suggestion-id">ID ${sanitize(service.providerId)}</span>
         <span class="suggestion-copy">
           <strong>${sanitize(service.name)}</strong>
-          <small>${sanitize(service.platform)} • ${sanitize(service.category)} • ${Store.formatMoney(service.clientRate)} / ${Store.formatNumber(service.rateUnit)}</small>
+          <small>${sanitize(service.platform)} • ${sanitize(service.category)} • ${Store.formatMoney(service.clientRate)} / ${Store.formatNumber(service.rateUnit)}${isServiceDisabled(service) ? ' • Disabled' : ''}</small>
         </span>
       </button>
     `).join('');
@@ -187,10 +291,12 @@
     els.calcSearch.value = `ID ${service.providerId} - ${service.name}`;
     hideSearchSuggestions();
     renderCalculator();
+    saveClientState();
   }
 
   function serviceOptionLabel(service) {
-    return `${service.providerId} | ${service.name} - ${Store.formatMoney(service.clientRate)} per ${Store.formatNumber(service.rateUnit)}`;
+    const availability = isServiceDisabled(service) ? ' - Disabled' : '';
+    return `${service.providerId} | ${service.name} - ${Store.formatMoney(service.clientRate)} per ${Store.formatNumber(service.rateUnit)}${availability}`;
   }
 
   function fillCalculatorServices(keepSelected = true) {
@@ -198,10 +304,17 @@
     const previous = els.calcService.value;
 
     els.calcService.innerHTML = '';
-    filtered.forEach(service => els.calcService.append(option(service.id, serviceOptionLabel(service))));
+    filtered.forEach(service => {
+      const opt = option(service.id, serviceOptionLabel(service));
+      if (isServiceDisabled(service)) opt.disabled = true;
+      els.calcService.append(opt);
+    });
 
     if (keepSelected && filtered.some(service => service.id === previous)) {
       els.calcService.value = previous;
+    } else {
+      const firstOrderable = filtered.find(service => !isServiceDisabled(service));
+      if (firstOrderable) els.calcService.value = firstOrderable.id;
     }
 
     updateCategoryIcon();
@@ -222,6 +335,7 @@
     const min = Number(service.min) || 0;
     const max = Number(service.max) || 0;
     if (!service) return { ok: false, message: 'Select a service first.' };
+    if (isServiceDisabled(service)) return { ok: false, message: 'This service is temporarily disabled and cannot be ordered right now.' };
     if (!calc.quantity || calc.quantity <= 0) return { ok: false, message: 'Enter a valid quantity.' };
     if (min && calc.quantity < min) return { ok: false, message: `Minimum order is ${Store.formatNumber(min)}.` };
     if (max && calc.quantity > max) return { ok: false, message: `Maximum order is ${Store.formatNumber(max)}.` };
@@ -235,27 +349,27 @@
     els.categoryIcon.innerHTML = platformIcon(platform);
   }
 
-  function renderDashboard(service) {
+  function renderSelectedSummary(service) {
+    if (!els.selectedServiceSummary) return;
     if (!service) {
-      els.serviceDashboard.innerHTML = '<div class="status-line"><span>✓</span> Select a service to view details.</div>';
-      els.averageTimeField.textContent = 'Select a service';
-      els.selectedServiceId.textContent = 'ID';
+      els.selectedServiceSummary.innerHTML = '<span class="summary-placeholder">Select a service to preview ID, rate, min/max, and ETA.</span>';
       return;
     }
 
-    const notes = [
-      { label: 'Status', value: 'Available for inquiry' },
-      { label: 'Service ID', value: service.providerId },
-      { label: 'Min order', value: Store.formatNumber(service.min) },
-      { label: 'Max order', value: Store.formatNumber(service.max) }
+    const items = [
+      { label: 'ID', value: service.providerId },
+      { label: 'Rate', value: `${Store.formatMoney(service.clientRate)} / ${Store.formatNumber(service.rateUnit)}` },
+      { label: 'Min-Max', value: `${Store.formatNumber(service.min)} - ${Store.formatNumber(service.max)}` },
+      { label: 'ETA', value: service.avgTime || 'Varies' }
     ];
 
-    els.selectedServiceId.textContent = `ID-${service.providerId}`;
-    els.averageTimeField.textContent = service.avgTime || 'Varies';
-    els.serviceDashboard.innerHTML = notes.map(item => `
-      <div class="status-line"><span>✓</span><strong>${sanitize(item.label)}:</strong> ${sanitize(item.value)}</div>
-    `).join('');
-
+    els.selectedServiceSummary.innerHTML = `
+      <div class="selected-summary-title">${sanitize(service.platform)} • ${sanitize(service.category)}</div>
+      <div class="selected-summary-name">${sanitize(service.name)}</div>
+      <div class="selected-summary-chips">
+        ${items.map(item => `<span><strong>${sanitize(item.label)}:</strong> ${sanitize(item.value)}</span>`).join('')}
+      </div>
+    `;
   }
 
   function renderCalculator() {
@@ -267,7 +381,7 @@
       els.calcNotice.textContent = 'No service selected.';
       els.orderMessage.textContent = 'Select a service first.';
       els.proceedOrderBtn.disabled = true;
-      renderDashboard(null);
+      renderSelectedSummary(null);
       return;
     }
 
@@ -281,7 +395,150 @@
     els.calcNotice.classList.toggle('warning-notice', !validation.ok);
     els.orderMessage.textContent = buildInquiryMessage(service, calc);
     els.proceedOrderBtn.disabled = !validation.ok;
-    renderDashboard(service);
+    renderSelectedSummary(service);
+  }
+
+
+
+  async function writeClipboardText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch (error) {}
+    }
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'fixed';
+    textarea.style.left = '-9999px';
+    textarea.style.top = '0';
+    document.body.append(textarea);
+    textarea.focus();
+    textarea.select();
+    let copied = false;
+    try {
+      copied = document.execCommand('copy');
+    } catch (error) {
+      copied = false;
+    }
+    textarea.remove();
+    return copied;
+  }
+
+  function digitalProducts() {
+    return Store.getDigitalProducts().filter(product => product.visible !== false);
+  }
+
+  function digitalProductImage(product) {
+    const value = product.imageData || product.image || '';
+    if (!value) return '';
+    if (/^(data:|https?:|blob:)/i.test(value)) return value;
+    return `assets/img/digital/${encodeURIComponent(value)}`;
+  }
+
+  function digitalProductMessage(product) {
+    return `Hello Novalyte, I want to order this digital product.\n\nProduct: ${product.name}\nPrice: ${Store.formatMoney(product.price)}\nCategory: ${product.category || 'Digital Product'}\nDelivery: Email/account details\nAccess: ${product.duration || '1 Month Access'}\n\nPlease confirm availability and payment instructions. Thank you!`;
+  }
+
+  async function copyDigitalProductMessage(product) {
+    const message = digitalProductMessage(product);
+    const copied = await writeClipboardText(message);
+    Store.toast(copied ? 'Digital product message copied. Redirecting to Messenger.' : 'Clipboard copy failed. Messenger will still open.', copied ? 'success' : 'warning');
+    return copied;
+  }
+
+  async function checkoutDigitalProduct(product) {
+    if (!product) return;
+    if (product.disabled) {
+      Store.toast('This digital product is temporarily unavailable.', 'warning');
+      return;
+    }
+    await copyDigitalProductMessage(product);
+    window.open(MESSENGER_URL, '_blank', 'noopener');
+  }
+
+  function openDigitalProductModal(product) {
+    if (!product || !els.digitalProductModal) return;
+    state.activeDigitalProductId = product.id;
+    els.digitalProductModalTitle.textContent = product.name;
+    els.digitalProductModalCategory.textContent = product.category || 'Digital Product';
+    els.digitalProductModalPrice.textContent = Store.formatMoney(product.price);
+    els.digitalProductModalDescription.textContent = product.disabled ? `${product.description || 'Message Novalyte for complete details.'} This product is temporarily unavailable.` : product.description || 'Message Novalyte for complete details.';
+    if (els.digitalProductModalCheckout) {
+      els.digitalProductModalCheckout.disabled = Boolean(product.disabled);
+      els.digitalProductModalCheckout.textContent = product.disabled ? 'Unavailable' : 'Checkout';
+    }
+    els.digitalProductModalImage.src = digitalProductImage(product);
+    els.digitalProductModalImage.alt = product.name;
+    els.digitalProductModal.classList.add('open');
+    els.digitalProductModal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('modal-open');
+  }
+
+  function closeDigitalProductModal() {
+    if (!els.digitalProductModal) return;
+    els.digitalProductModal.classList.remove('open');
+    els.digitalProductModal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('modal-open');
+    state.activeDigitalProductId = null;
+  }
+
+  function activeDigitalProduct() {
+    return digitalProducts().find(product => product.id === state.activeDigitalProductId);
+  }
+
+  function digitalProductCategories() {
+    return [...new Set(digitalProducts().map(product => product.category).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+  }
+
+  function fillDigitalProductFilters() {
+    if (!els.digitalProductFilter) return;
+    const current = els.digitalProductFilter.value || 'all';
+    els.digitalProductFilter.innerHTML = '';
+    els.digitalProductFilter.append(option('all', 'All digital products'));
+    digitalProductCategories().forEach(category => els.digitalProductFilter.append(option(category, category)));
+    if ([...els.digitalProductFilter.options].some(opt => opt.value === current)) els.digitalProductFilter.value = current;
+  }
+
+  function renderHomeMetrics() {
+    if (els.homeVisibleServices) els.homeVisibleServices.textContent = Store.formatNumber(visibleServices().length);
+    if (els.homeDigitalProducts) els.homeDigitalProducts.textContent = Store.formatNumber(digitalProducts().filter(product => product.visible !== false).length);
+  }
+
+  function filteredDigitalProducts() {
+    const search = els.digitalProductSearch ? els.digitalProductSearch.value.trim().toLowerCase() : '';
+    const category = els.digitalProductFilter ? els.digitalProductFilter.value : 'all';
+    return digitalProducts().filter(product => {
+      const text = `${product.name} ${product.category} ${product.description}`.toLowerCase();
+      const matchesSearch = !search || text.includes(search);
+      const matchesCategory = category === 'all' || product.category === category;
+      return matchesSearch && matchesCategory;
+    });
+  }
+
+  function renderDigitalProducts() {
+    if (!els.digitalProductsGrid) return;
+    const products = filteredDigitalProducts();
+    els.emptyDigitalProducts.classList.toggle('hidden', products.length > 0);
+    els.digitalProductsGrid.innerHTML = products.map(product => `
+      <article class="digital-product-card${product.disabled ? ' is-digital-product-disabled' : ''}">
+        <div class="digital-product-media">
+          <img src="${sanitize(digitalProductImage(product))}" alt="${sanitize(product.name)}" loading="lazy" onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');">
+          <div class="digital-product-fallback hidden">${sanitize(product.name.slice(0, 2).toUpperCase())}</div>
+        </div>
+        <div class="digital-product-body">
+          <span class="digital-product-category">${sanitize(product.category || 'Digital Product')}</span>
+          <h3>${sanitize(product.name)}</h3>
+          <strong class="digital-product-price">${Store.formatMoney(product.price)}</strong>
+          ${product.disabled ? '<span class="digital-product-unavailable">Temporarily unavailable</span>' : ''}
+          <div class="digital-product-actions">
+            <button class="btn digital-description-btn" type="button" data-digital-description="${sanitize(product.id)}">Description</button>
+            <button class="btn primary digital-checkout-btn" type="button" data-digital-product="${sanitize(product.id)}" ${product.disabled ? 'disabled' : ''}>${product.disabled ? 'Unavailable' : 'Checkout'}</button>
+          </div>
+        </div>
+      </article>
+    `).join('');
   }
 
   function filteredServices() {
@@ -330,7 +587,7 @@
     const paged = services.slice(start, start + state.perPage);
     paged.forEach(service => {
       const row = document.createElement('tr');
-      row.className = 'public-service-row';
+      row.className = `public-service-row${isServiceDisabled(service) ? ' is-service-disabled' : ''}`;
       row.innerHTML = `
         <td data-label="Platform"><span class="platform-pill ${platformClass(service.platform)}"><span class="platform-icon">${platformIcon(service.platform)}</span>${sanitize(service.platform)}</span></td>
         <td data-label="ID"><span class="id-chip">${sanitize(service.providerId)}</span></td>
@@ -338,35 +595,113 @@
         <td data-label="Rate"><strong>${Store.formatMoney(service.clientRate)}</strong><span class="rate-unit"> / ${Store.formatNumber(service.rateUnit)}</span></td>
         <td data-label="Min / Max"><span class="range-chip">${Store.formatNumber(service.min)} - ${Store.formatNumber(service.max)}</span></td>
         <td data-label="ETA">${sanitize(service.avgTime || 'Varies')}</td>
-        <td data-label="Action"><button class="btn primary small" type="button" data-use-service="${service.id}">Order Now</button></td>
+        <td data-label="Action"><button class="btn primary small" type="button" data-use-service="${service.id}" ${isServiceDisabled(service) ? 'disabled' : ''}>${isServiceDisabled(service) ? 'Disabled' : 'Order Now'}</button></td>
       `;
       els.servicesGrid.append(row);
     });
   }
 
-  function showClientView(view, shouldScroll = true) {
-    const showServices = view === 'services';
-    state.view = showServices ? 'services' : 'order';
-    if (els.orderPanel) els.orderPanel.classList.toggle('hidden', showServices);
-    if (els.servicesSection) els.servicesSection.classList.toggle('hidden', !showServices);
-    if (els.viewToggleBtn) {
-      els.viewToggleBtn.textContent = showServices ? 'Order Panel' : 'Services';
-      els.viewToggleBtn.href = showServices ? '#order-panel' : '#services';
-      els.viewToggleBtn.setAttribute('aria-label', showServices ? 'Go to order panel' : 'View available services');
+
+  function renderReviews() {
+    if (!els.reviewCards) return;
+    const reviews = Store.getReviews ? Store.getReviews() : [];
+    if (!reviews.length) {
+      els.reviewCards.innerHTML = `
+        <article class="review-card review-empty-card">
+          <span class="review-id">Pnovalyte000</span>
+          <p>No reviews yet. Be the first client to leave feedback for Novalyte.</p>
+        </article>
+      `;
+    } else {
+      els.reviewCards.innerHTML = reviews.map(review => `
+        <article class="review-card">
+          <div class="review-card-head">
+            <span class="review-id">${sanitize(review.id)}</span>
+            <small>${sanitize(new Date(review.createdAt).toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' }))}</small>
+          </div>
+          <p>${sanitize(review.message)}</p>
+          <strong>${sanitize(review.displayName || 'Novalyte Client')}</strong>
+          ${review.updatedAt ? '<small class="review-edited">Edited</small>' : ''}
+        </article>
+      `).join('');
     }
-    const target = showServices ? els.servicesSection : els.orderPanel;
-    if (shouldScroll && target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    const current = Store.getCurrentClientReview ? Store.getCurrentClientReview() : null;
+    const editable = current && Store.canEditReview && Store.canEditReview(current);
+    if (els.reviewDisplayName && els.reviewText && current) {
+      els.reviewDisplayName.value = current.displayName || '';
+      els.reviewText.value = current.message || '';
+    }
+    if (els.submitReviewBtn) {
+      els.submitReviewBtn.textContent = current ? editable ? 'Update Review' : 'Review Locked' : 'Submit Review';
+      els.submitReviewBtn.disabled = Boolean(current && !editable);
+    }
+    if (els.reviewFormNotice) {
+      els.reviewFormNotice.textContent = current
+        ? editable
+          ? `Your review ID is ${current.id}. You can still edit it within 30 minutes of posting.`
+          : `Your review ID is ${current.id}. The 30-minute edit window has ended.`
+        : 'No account required. Your review will receive a Novalyte client ID.';
+    }
+    updateReviewCharCount();
+  }
+
+  function updateReviewCharCount() {
+    if (!els.reviewText || !els.reviewCharCount) return;
+    els.reviewCharCount.textContent = String(els.reviewText.value.length);
+  }
+
+  function submitClientReview(event) {
+    event.preventDefault();
+    if (!Store.addReview || !Store.updateReview) return;
+    const current = Store.getCurrentClientReview ? Store.getCurrentClientReview() : null;
+    const result = current
+      ? Store.updateReview(els.reviewDisplayName.value, els.reviewText.value)
+      : Store.addReview(els.reviewDisplayName.value, els.reviewText.value);
+    if (!result.ok) {
+      const messages = {
+        empty: 'Please write a review before submitting.',
+        locked: 'This review is already locked after the 30-minute edit window.',
+        'exists-editable': 'You already have a review. You can edit it while it is still within 30 minutes.'
+      };
+      Store.toast(messages[result.reason] || 'Review was not saved.', result.reason === 'empty' ? 'error' : 'warning');
+      renderReviews();
+      return;
+    }
+    Store.toast(current ? 'Review updated.' : 'Review submitted. Thank you for your feedback.');
+    renderReviews();
+  }
+
+  function showClientView(view, shouldScroll = true) {
+    const showHome = !view || view === 'home';
+    const showServices = view === 'services';
+    const showDigitalProducts = view === 'digital-products';
+    const showOrder = view === 'order';
+    const showWhatWeDo = view === 'what-we-do';
+    const showAbout = view === 'about';
+    state.view = showServices ? 'services' : showDigitalProducts ? 'digital-products' : showOrder ? 'order' : showWhatWeDo ? 'what-we-do' : showAbout ? 'about' : 'home';
+    if (els.homeSection) els.homeSection.classList.toggle('hidden', !showHome);
+    if (els.orderPanel) els.orderPanel.classList.toggle('hidden', !showOrder);
+    if (els.servicesSection) els.servicesSection.classList.toggle('hidden', !showServices);
+    if (els.digitalProductsSection) els.digitalProductsSection.classList.toggle('hidden', !showDigitalProducts);
+    if (els.whatWeDoSection) els.whatWeDoSection.classList.toggle('hidden', !showWhatWeDo);
+    if (els.aboutSection) els.aboutSection.classList.toggle('hidden', !showAbout);
+    if (els.homeNavBtn) els.homeNavBtn.classList.toggle('active', showHome);
+    if (els.servicesNavBtn) els.servicesNavBtn.classList.toggle('active', showServices);
+    if (els.digitalProductsNavBtn) els.digitalProductsNavBtn.classList.toggle('active', showDigitalProducts);
+    if (els.whatWeDoNavBtn) els.whatWeDoNavBtn.classList.toggle('active', showWhatWeDo);
+    if (els.aboutNavBtn) els.aboutNavBtn.classList.toggle('active', showAbout);
+    updateViewHash(state.view);
+    saveClientState();
+    renderHomeMetrics();
+    renderReviews();
+    if (shouldScroll) window.scrollTo({ top: 0, behavior: 'auto' });
   }
 
   async function copyInquiryMessage() {
-    try {
-      await navigator.clipboard.writeText(els.orderMessage.textContent);
-      Store.toast('Order details copied. Paste it in Messenger.', 'success');
-      return true;
-    } catch (error) {
-      Store.toast('Copy failed. Please select and copy manually.', 'error');
-      return false;
-    }
+    const copied = await writeClipboardText(els.orderMessage.textContent);
+    Store.toast(copied ? 'Order details copied. Paste it in Messenger.' : 'Copy failed. Please select and copy manually.', copied ? 'success' : 'error');
+    return copied;
   }
 
   function setupAutoScrollbars() {
@@ -394,7 +729,45 @@
     [els.serviceSearch, els.platformFilter, els.categoryFilter].forEach(el => el.addEventListener('input', () => {
       resetServicePage();
       renderServices();
+      saveClientState();
     }));
+
+    if (els.digitalProductSearch) els.digitalProductSearch.addEventListener('input', () => { renderDigitalProducts(); saveClientState(); });
+    if (els.digitalProductFilter) els.digitalProductFilter.addEventListener('input', () => { renderDigitalProducts(); saveClientState(); });
+    if (els.clearDigitalProductFilters) {
+      els.clearDigitalProductFilters.addEventListener('click', () => {
+        els.digitalProductSearch.value = '';
+        els.digitalProductFilter.value = 'all';
+        renderDigitalProducts();
+        saveClientState();
+      });
+    }
+
+    if (els.digitalProductsGrid) {
+      els.digitalProductsGrid.addEventListener('click', async event => {
+        const descBtn = event.target.closest('[data-digital-description]');
+        if (descBtn) {
+          const product = digitalProducts().find(item => item.id === descBtn.dataset.digitalDescription);
+          openDigitalProductModal(product);
+          return;
+        }
+        const btn = event.target.closest('[data-digital-product]');
+        if (!btn) return;
+        const product = digitalProducts().find(item => item.id === btn.dataset.digitalProduct);
+        await checkoutDigitalProduct(product);
+      });
+    }
+
+    if (els.digitalProductModalClose) els.digitalProductModalClose.addEventListener('click', closeDigitalProductModal);
+    if (els.digitalProductModalCheckout) {
+      els.digitalProductModalCheckout.addEventListener('click', async () => {
+        await checkoutDigitalProduct(activeDigitalProduct());
+        closeDigitalProductModal();
+      });
+    }
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') closeDigitalProductModal();
+    });
 
     els.clearFilters.addEventListener('click', () => {
       els.serviceSearch.value = '';
@@ -402,13 +775,15 @@
       els.categoryFilter.value = 'all';
       resetServicePage();
       renderServices();
+      saveClientState();
     });
 
     els.calcCategory.addEventListener('change', () => {
       fillCalculatorServices(false);
       renderSearchSuggestions();
+      saveClientState();
     });
-    els.calcSearch.addEventListener('input', renderSearchSuggestions);
+    els.calcSearch.addEventListener('input', () => { renderSearchSuggestions(); saveClientState(); });
     els.calcSearch.addEventListener('focus', renderSearchSuggestions);
     els.calcSearch.addEventListener('keydown', event => {
       if (event.key === 'Escape') {
@@ -432,13 +807,13 @@
       if (event.target.closest('.provider-search-group')) return;
       hideSearchSuggestions();
     });
-    [els.calcService, els.calcQuantity, els.calcLink].forEach(el => el.addEventListener('input', renderCalculator));
+    [els.calcService, els.calcQuantity, els.calcLink].forEach(el => el.addEventListener('input', () => { renderCalculator(); saveClientState(); }));
 
     els.servicesGrid.addEventListener('click', event => {
       const btn = event.target.closest('[data-use-service]');
       if (!btn) return;
       const service = visibleServices().find(item => item.id === btn.dataset.useService);
-      if (!service) return;
+      if (!service || isServiceDisabled(service)) return;
       els.calcCategory.value = service.platform;
       els.calcSearch.value = `ID ${service.providerId} - ${service.name}`;
       hideSearchSuggestions();
@@ -446,6 +821,7 @@
       els.calcService.value = service.id;
       renderCalculator();
       showClientView('order');
+      saveClientState();
     });
 
     els.servicePagination.addEventListener('click', event => {
@@ -456,20 +832,57 @@
       if (btn.dataset.servicePage === 'prev') state.servicePage = Math.max(1, state.servicePage - 1);
       if (btn.dataset.servicePage === 'next') state.servicePage = Math.min(pages, state.servicePage + 1);
       renderServices();
+      saveClientState();
       document.getElementById('services').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 
-    if (els.viewToggleBtn) {
-      els.viewToggleBtn.addEventListener('click', event => {
+    if (els.homeNavBtn) {
+      els.homeNavBtn.addEventListener('click', event => {
         event.preventDefault();
-        showClientView(state.view === 'services' ? 'order' : 'services');
+        showClientView('home');
+      });
+    }
+
+    document.querySelectorAll('[data-client-view]').forEach(btn => {
+      btn.addEventListener('click', () => showClientView(btn.dataset.clientView));
+    });
+
+    if (els.reviewText) els.reviewText.addEventListener('input', updateReviewCharCount);
+    if (els.reviewForm) els.reviewForm.addEventListener('submit', submitClientReview);
+
+
+    if (els.whatWeDoNavBtn) {
+      els.whatWeDoNavBtn.addEventListener('click', event => {
+        event.preventDefault();
+        showClientView('what-we-do');
+      });
+    }
+
+    if (els.aboutNavBtn) {
+      els.aboutNavBtn.addEventListener('click', event => {
+        event.preventDefault();
+        showClientView('about');
+      });
+    }
+
+    if (els.servicesNavBtn) {
+      els.servicesNavBtn.addEventListener('click', event => {
+        event.preventDefault();
+        showClientView('services');
+      });
+    }
+
+    if (els.digitalProductsNavBtn) {
+      els.digitalProductsNavBtn.addEventListener('click', event => {
+        event.preventDefault();
+        showClientView('digital-products');
       });
     }
 
     if (els.homeBrand) {
       els.homeBrand.addEventListener('click', event => {
         event.preventDefault();
-        showClientView('order');
+        showClientView('home');
       });
     }
 
@@ -493,11 +906,22 @@
   function init() {
     setupAutoScrollbars();
     Store.getServices();
+    const saved = readClientState();
     fillFilters();
+    fillDigitalProductFilters();
     fillCalculatorServices(false);
+    restoreClientState(saved);
+    renderCalculator();
     renderServices();
+    renderDigitalProducts();
+    renderHomeMetrics();
+    renderReviews();
     bindEvents();
-    showClientView(window.location.hash === '#services' ? 'services' : 'order', false);
+    const initialHash = window.location.hash;
+    showClientView(viewFromHash() || saved.view || 'home', false);
+    window.addEventListener('hashchange', () => {
+      showClientView(viewFromHash() || 'home', false);
+    });
   }
 
   document.addEventListener('DOMContentLoaded', init);

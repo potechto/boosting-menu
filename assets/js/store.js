@@ -1,9 +1,15 @@
 (function () {
   const KEYS = {
     services: 'novalyte.services.v4',
+    digitalProducts: 'novalyte.digitalProducts.v1',
+    deletedDigitalProductIds: 'novalyte.deletedDigitalProductIds.v1',
     orders: 'novalyte.orders.v1',
     invest: 'novalyte.totalInvest.v1',
     investments: 'novalyte.investments.v1',
+    financeEntries: 'novalyte.financeEntries.v1',
+    teamMembers: 'novalyte.teamMembers.v1',
+    reviews: 'novalyte.reviews.v1',
+    clientReviewToken: 'novalyte.clientReviewToken.v1',
     session: 'novalyte.adminSession.v1'
   };
 
@@ -50,11 +56,45 @@
     };
   }
 
+  function mergeSeedServices(services) {
+    const deprecatedServiceIds = new Set(['svc_telegram_members_sample', 'svc_youtube_views_sample']);
+    const rawServices = Array.isArray(services) ? services.map(normalizeService) : [];
+    const normalized = rawServices.filter(service => {
+      const shouldKeep = !deprecatedServiceIds.has(service.id) && service.providerId !== 'TG-5001' && service.providerId !== 'YT-4001';
+      return shouldKeep;
+    });
+    const seeds = clone(window.NOVALYTE_SEED_SERVICES || []).map(normalizeService);
+    const existingIds = new Set(normalized.map(service => service.id));
+    let changed = rawServices.length !== normalized.length;
+
+    seeds.forEach(seed => {
+      if (!existingIds.has(seed.id)) {
+        normalized.push(seed);
+        existingIds.add(seed.id);
+        changed = true;
+        return;
+      }
+
+      const index = normalized.findIndex(service => service.id === seed.id);
+      if (index < 0) return;
+
+      if (['telegram', 'youtube'].includes(String(seed.platform || '').toLowerCase()) && normalized[index].visible === false) {
+        normalized[index].visible = true;
+        changed = true;
+      }
+    });
+
+    if (changed) writeJson(KEYS.services, normalized);
+    return normalized;
+  }
+
   function getServices() {
     let services = readJson(KEYS.services, null);
     if (!Array.isArray(services) || services.length === 0) {
       services = clone(window.NOVALYTE_SEED_SERVICES || []).map(normalizeService);
       writeJson(KEYS.services, services);
+    } else {
+      services = mergeSeedServices(services);
     }
     return services.map(normalizeService);
   }
@@ -68,6 +108,84 @@
     saveServices(services);
     return services;
   }
+
+  function normalizeDigitalProduct(product) {
+    return {
+      id: '',
+      name: '',
+      price: 0,
+      providerPrice: 0,
+      category: 'Digital Product',
+      image: '',
+      imageData: '',
+      duration: '1 Month Access',
+      description: '',
+      visible: true,
+      disabled: false,
+      ...product
+    };
+  }
+
+  function mergeSeedDigitalProducts(products) {
+    const normalized = Array.isArray(products) ? products.map(normalizeDigitalProduct) : [];
+    const deletedIds = new Set(readJson(KEYS.deletedDigitalProductIds, []));
+    const seeds = clone(window.NOVALYTE_DIGITAL_PRODUCTS || []).map(normalizeDigitalProduct).filter(product => !deletedIds.has(product.id));
+    const existingIds = new Set(normalized.map(product => product.id));
+    let changed = false;
+
+    seeds.forEach(seed => {
+      if (!existingIds.has(seed.id)) {
+        normalized.push(seed);
+        existingIds.add(seed.id);
+        changed = true;
+      }
+    });
+
+    if (changed) writeJson(KEYS.digitalProducts, normalized);
+    return normalized;
+  }
+
+  function getDigitalProducts() {
+    let products = readJson(KEYS.digitalProducts, null);
+    if (!Array.isArray(products) || products.length === 0) {
+      products = clone(window.NOVALYTE_DIGITAL_PRODUCTS || []).map(normalizeDigitalProduct);
+      writeJson(KEYS.digitalProducts, products);
+    } else {
+      products = mergeSeedDigitalProducts(products);
+    }
+    return products.map(normalizeDigitalProduct);
+  }
+
+  function saveDigitalProducts(products) {
+    writeJson(KEYS.digitalProducts, Array.isArray(products) ? products.map(normalizeDigitalProduct) : []);
+  }
+
+  function getDeletedDigitalProductIds() {
+    const deletedIds = readJson(KEYS.deletedDigitalProductIds, []);
+    return Array.isArray(deletedIds) ? deletedIds : [];
+  }
+
+  function saveDeletedDigitalProductIds(ids) {
+    writeJson(KEYS.deletedDigitalProductIds, Array.isArray(ids) ? [...new Set(ids)] : []);
+  }
+
+  function deleteDigitalProduct(productId) {
+    const products = getDigitalProducts().filter(product => product.id !== productId);
+    const seedIds = new Set((window.NOVALYTE_DIGITAL_PRODUCTS || []).map(product => product.id));
+    if (seedIds.has(productId)) {
+      saveDeletedDigitalProductIds([...getDeletedDigitalProductIds(), productId]);
+    }
+    saveDigitalProducts(products);
+    return products;
+  }
+
+  function resetDigitalProducts() {
+    saveDeletedDigitalProductIds([]);
+    const products = clone(window.NOVALYTE_DIGITAL_PRODUCTS || []).map(normalizeDigitalProduct);
+    saveDigitalProducts(products);
+    return products;
+  }
+
 
   function normalizeOrder(order) {
     const status = order.status || 'active';
@@ -155,6 +273,128 @@
     saveInvestments(entries);
   }
 
+  function normalizeFinanceEntry(entry) {
+    return {
+      id: '',
+      createdAt: new Date().toISOString(),
+      type: 'capital-in',
+      amount: 0,
+      person: '',
+      note: '',
+      source: 'finance',
+      ...entry
+    };
+  }
+
+  function getFinanceEntries() {
+    const manual = readJson(KEYS.financeEntries, []);
+    const finance = Array.isArray(manual) ? manual.map(normalizeFinanceEntry) : [];
+    const capital = getInvestments().map(entry => normalizeFinanceEntry({
+      id: `capital_${entry.id}`,
+      sourceId: entry.id,
+      source: 'investment',
+      createdAt: entry.createdAt,
+      type: 'capital-in',
+      amount: Number(entry.amount) || 0,
+      person: 'Novalyte Capital',
+      note: entry.note || ''
+    }));
+    return [...capital, ...finance].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  }
+
+  function saveFinanceEntries(entries) {
+    writeJson(KEYS.financeEntries, Array.isArray(entries) ? entries.map(normalizeFinanceEntry) : []);
+  }
+
+  function addFinanceEntry(type, amount, person = '', note = '') {
+    const value = Number(amount);
+    if (!Number.isFinite(value) || value <= 0) return null;
+    const entry = normalizeFinanceEntry({
+      id: uid('finance'),
+      createdAt: new Date().toISOString(),
+      type: type || 'expense',
+      amount: value,
+      person: String(person || '').trim(),
+      note: String(note || '').trim()
+    });
+    const entries = readJson(KEYS.financeEntries, []);
+    const list = Array.isArray(entries) ? entries.map(normalizeFinanceEntry) : [];
+    list.unshift(entry);
+    saveFinanceEntries(list);
+    return entry;
+  }
+
+  function removeFinanceEntry(id) {
+    const entries = readJson(KEYS.financeEntries, []);
+    const list = Array.isArray(entries) ? entries.map(normalizeFinanceEntry).filter(item => item.id !== id) : [];
+    saveFinanceEntries(list);
+  }
+
+  function normalizeTeamMember(member) {
+    return {
+      id: '',
+      name: '',
+      mode: 'fixed',
+      amount: 0,
+      frequency: 'weekly',
+      createdAt: new Date().toISOString(),
+      ...member
+    };
+  }
+
+  function getTeamMembers() {
+    const members = readJson(KEYS.teamMembers, []);
+    return Array.isArray(members) ? members.map(normalizeTeamMember) : [];
+  }
+
+  function saveTeamMembers(members) {
+    writeJson(KEYS.teamMembers, Array.isArray(members) ? members.map(normalizeTeamMember) : []);
+  }
+
+  function addTeamMember(name, mode, amount, frequency) {
+    const value = Number(amount);
+    if (!String(name || '').trim() || !Number.isFinite(value) || value <= 0) return null;
+    const member = normalizeTeamMember({
+      id: uid('team'),
+      name: String(name || '').trim(),
+      mode: mode === 'percent' ? 'percent' : 'fixed',
+      amount: value,
+      frequency: frequency === 'monthly' ? 'monthly' : 'weekly',
+      createdAt: new Date().toISOString()
+    });
+    const members = getTeamMembers();
+    members.unshift(member);
+    saveTeamMembers(members);
+    return member;
+  }
+
+  function removeTeamMember(id) {
+    saveTeamMembers(getTeamMembers().filter(member => member.id !== id));
+  }
+
+  function getFinanceTotals() {
+    const base = getTotals();
+    const entries = getFinanceEntries();
+    const ownerPayout = entries.filter(item => item.type === 'owner-payout').reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+    const payrollPayout = entries.filter(item => item.type === 'payroll-payout').reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+    const expenses = entries.filter(item => item.type === 'expense').reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+    const capitalIn = base.invest;
+    const paidWallet = base.paidSales - base.providerCharges - ownerPayout - payrollPayout - expenses;
+    const retainedProfit = base.revenue - ownerPayout - payrollPayout - expenses;
+    return {
+      ...base,
+      capitalIn,
+      ownerPayout,
+      payrollPayout,
+      expenses,
+      paidWallet,
+      retainedProfit,
+      availableCapital: capitalIn - base.providerCharges,
+      financeEntryCount: entries.length,
+      teamCount: getTeamMembers().length
+    };
+  }
+
   function calcForService(service, quantity) {
     const qty = Math.max(0, Number(quantity) || 0);
     const unit = Math.max(1, Number(service.rateUnit) || 1000);
@@ -222,6 +462,97 @@
     };
   }
 
+
+  function normalizeReview(review) {
+    return {
+      id: '',
+      token: '',
+      displayName: '',
+      message: '',
+      createdAt: new Date().toISOString(),
+      updatedAt: '',
+      ...review
+    };
+  }
+
+  function getReviews() {
+    const reviews = readJson(KEYS.reviews, []);
+    return Array.isArray(reviews)
+      ? reviews.map(normalizeReview).filter(review => review.id && review.message).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      : [];
+  }
+
+  function saveReviews(reviews) {
+    writeJson(KEYS.reviews, Array.isArray(reviews) ? reviews.map(normalizeReview) : []);
+  }
+
+  function ensureClientReviewToken() {
+    let token = localStorage.getItem(KEYS.clientReviewToken);
+    if (!token) {
+      token = uid('client_review');
+      localStorage.setItem(KEYS.clientReviewToken, token);
+    }
+    return token;
+  }
+
+  function getClientReviewToken() {
+    return localStorage.getItem(KEYS.clientReviewToken) || '';
+  }
+
+  function getCurrentClientReview() {
+    const token = getClientReviewToken();
+    if (!token) return null;
+    return getReviews().find(review => review.token === token) || null;
+  }
+
+  function canEditReview(review) {
+    if (!review || !review.createdAt) return false;
+    return Date.now() - new Date(review.createdAt).getTime() <= 30 * 60 * 1000;
+  }
+
+  function nextReviewId(reviews) {
+    const max = reviews.reduce((highest, review) => {
+      const match = String(review.id || '').match(/^Pnovalyte(\d+)$/i);
+      return match ? Math.max(highest, Number(match[1]) || 0) : highest;
+    }, 0);
+    return `Pnovalyte${String(max + 1).padStart(3, '0')}`;
+  }
+
+  function addReview(displayName, message) {
+    const text = String(message || '').trim().slice(0, 1000);
+    if (!text) return { ok: false, reason: 'empty' };
+    const existing = getCurrentClientReview();
+    if (existing) return { ok: false, reason: canEditReview(existing) ? 'exists-editable' : 'locked', review: existing };
+    const reviews = getReviews();
+    const review = normalizeReview({
+      id: nextReviewId(reviews),
+      token: ensureClientReviewToken(),
+      displayName: String(displayName || '').trim().slice(0, 60),
+      message: text,
+      createdAt: new Date().toISOString(),
+      updatedAt: ''
+    });
+    reviews.unshift(review);
+    saveReviews(reviews);
+    return { ok: true, review };
+  }
+
+  function updateReview(displayName, message) {
+    const text = String(message || '').trim().slice(0, 1000);
+    if (!text) return { ok: false, reason: 'empty' };
+    const existing = getCurrentClientReview();
+    if (!existing) return addReview(displayName, text);
+    if (!canEditReview(existing)) return { ok: false, reason: 'locked', review: existing };
+    const reviews = getReviews().map(review => review.id === existing.id ? normalizeReview({
+      ...review,
+      displayName: String(displayName || '').trim().slice(0, 60),
+      message: text,
+      updatedAt: new Date().toISOString()
+    }) : review);
+    saveReviews(reviews);
+    return { ok: true, review: reviews.find(review => review.id === existing.id) };
+  }
+
   function formatMoney(value) {
     return peso.format(Number(value) || 0);
   }
@@ -246,18 +577,28 @@
     const data = {
       exportedAt: new Date().toISOString(),
       services: getServices(),
+      digitalProducts: getDigitalProducts(),
+      deletedDigitalProductIds: getDeletedDigitalProductIds(),
       orders: getOrders(),
       invest: getInvest(),
-      investments: getInvestments()
+      investments: getInvestments(),
+      financeEntries: getFinanceEntries().filter(entry => entry.source !== 'investment'),
+      teamMembers: getTeamMembers(),
+      reviews: getReviews()
     };
     downloadFile(`novalyte-backup-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(data, null, 2));
   }
 
   function importBackup(data) {
     if (Array.isArray(data.services)) saveServices(data.services);
+    if (Array.isArray(data.digitalProducts)) saveDigitalProducts(data.digitalProducts);
+    if (Array.isArray(data.deletedDigitalProductIds)) saveDeletedDigitalProductIds(data.deletedDigitalProductIds);
     if (Array.isArray(data.orders)) saveOrders(data.orders);
     if (Array.isArray(data.investments)) saveInvestments(data.investments);
     else if (typeof data.invest !== 'undefined') setInvest(data.invest, 'Imported total invest');
+    if (Array.isArray(data.financeEntries)) saveFinanceEntries(data.financeEntries);
+    if (Array.isArray(data.teamMembers)) saveTeamMembers(data.teamMembers);
+    if (Array.isArray(data.reviews)) saveReviews(data.reviews);
   }
 
   function toast(message, type = 'success') {
@@ -285,12 +626,33 @@
     getServices,
     saveServices,
     resetServices,
+    getDigitalProducts,
+    saveDigitalProducts,
+    getDeletedDigitalProductIds,
+    saveDeletedDigitalProductIds,
+    deleteDigitalProduct,
+    resetDigitalProducts,
     getOrders,
     saveOrders,
     getInvestments,
     saveInvestments,
     addInvestment,
     removeInvestment,
+    getFinanceEntries,
+    saveFinanceEntries,
+    addFinanceEntry,
+    removeFinanceEntry,
+    getTeamMembers,
+    saveTeamMembers,
+    addTeamMember,
+    removeTeamMember,
+    getReviews,
+    saveReviews,
+    getCurrentClientReview,
+    canEditReview,
+    addReview,
+    updateReview,
+    getFinanceTotals,
     getInvest,
     setInvest,
     calcForService,

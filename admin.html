@@ -57,6 +57,7 @@
       <nav class="sidebar-nav" aria-label="Admin navigation">
         <a href="#dashboard" class="active">Dashboard</a>
         <a href="#services">Services</a>
+        <a href="#digital-products">Digital Products</a>
         <a href="#investments">Investments</a>
         <a href="#orders">Orders</a>
         <a href="index.html">Client View</a>
@@ -72,6 +73,7 @@
         <p>Control client-facing prices, protect provider costs, create order records, track investment, and void/restore mistakes cleanly.</p>
         <div class="quick-links">
           <a class="btn small" href="#services">Manage Services</a>
+          <a class="btn small" href="#digital-products">Manage Digital Products</a>
           <a class="btn small" href="#orders">View Orders</a>
           <button class="btn small" type="button" id="exportBackupBtn">Export Backup</button>
           <label class="btn small" for="importBackupInput">Import Backup</label>
@@ -89,14 +91,18 @@
           </div>
           <button class="btn primary" type="button" id="addServiceBtn">Add Service</button>
         </div>
+        <div class="admin-explainer-grid compact-explainer">
+          <article><strong>Service rows stay visible in admin.</strong><span>Disable changes checkout/order availability only. Use the status filter to review disabled items.</span></article>
+          <article><strong>Client rate is public.</strong><span>Provider rate is internal and used only for profit and investment tracking.</span></article>
+        </div>
         <div class="toolbar control-panel compact-panel">
           <div class="toolbar-left">
             <input class="input" id="adminServiceSearch" type="search" placeholder="Search services, platform, ID..." style="min-width:min(420px,100%)">
             <select class="select" id="adminPlatformFilter" style="width:auto;min-width:180px"></select>
             <select class="select" id="adminArchiveFilter" style="width:auto;min-width:170px">
-              <option value="active">Active services</option>
+              <option value="active">Shown services</option>
               <option value="all">All services</option>
-              <option value="archived">Archived only</option>
+              <option value="archived">Disabled only</option>
             </select>
           </div>
           <div class="toolbar-right">
@@ -122,40 +128,163 @@
         </div>
       </section>
 
+
+
+      <section class="section hidden" id="digital-products">
+        <div class="section-head">
+          <div>
+            <h2>Digital Product Manager</h2>
+            <p>Manage subscription/account products separately from boosting services. Edit client prices, descriptions, categories, and product images here.</p>
+          </div>
+          <button class="btn primary" type="button" id="addDigitalProductBtn">Add Digital Product</button>
+        </div>
+        <div class="admin-explainer-grid compact-explainer">
+          <article><strong>Digital products are separate.</strong><span>These do not affect boosting provider rates or service order settings.</span></article>
+          <article><strong>Edit price, description, and image.</strong><span>Disable keeps the product in admin while making checkout unavailable to clients.</span></article>
+        </div>
+        <div class="toolbar control-panel compact-panel">
+          <div class="toolbar-left">
+            <input class="input" id="adminDigitalProductSearch" type="search" placeholder="Search products, category, description..." style="min-width:min(420px,100%)">
+            <select class="select" id="adminDigitalProductFilter" style="width:auto;min-width:190px"></select>
+            <select class="select" id="adminDigitalProductStatusFilter" style="width:auto;min-width:170px">
+              <option value="shown">Shown products</option>
+              <option value="all">All products</option>
+              <option value="disabled">Disabled only</option>
+              <option value="hidden">Hidden only</option>
+            </select>
+          </div>
+          <div class="toolbar-right">
+            <span class="service-desc">Digital products are managed here only. Disable/Enable keeps the row visible while changing client checkout availability.</span>
+          </div>
+        </div>
+        <div class="table-wrap responsive-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Category</th>
+                <th>Client / Cost</th>
+                <th>Duration</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="digitalProductsTable"></tbody>
+          </table>
+        </div>
+      </section>
+
       <section class="section" id="investments">
         <div class="section-head">
           <div>
-            <h2>Investment Tracker</h2>
-            <p>Add every cash-in or reload entry so available fund estimates remain clean and traceable.</p>
+            <h2>Income + Investment Tracker</h2>
+            <p>Track capital reloads, provider spend, owner payouts, team payroll, receivables, and finance history in one place.</p>
           </div>
         </div>
-        <div class="card investment-card">
-          <div class="form-grid">
-            <div class="field">
-              <label for="addInvestAmount">Investment Amount</label>
-              <input class="input" id="addInvestAmount" type="number" min="0" step="0.01" placeholder="Example: 1000">
-            </div>
-            <div class="field">
-              <label for="addInvestNote">Note</label>
-              <input class="input" id="addInvestNote" type="text" placeholder="Example: Initial fund / Reload">
-            </div>
-            <div class="field">
-              <label for="investAmount">Override Total Invest</label>
-              <input class="input" id="investAmount" type="number" min="0" step="0.01" placeholder="Use only for corrections">
-            </div>
-            <div class="field button-field">
-              <label>&nbsp;</label>
-              <div class="split-actions">
-                <button class="btn primary" type="button" id="addInvestBtn">Add Investment</button>
-                <button class="btn warning" type="button" id="saveInvestBtn">Override Total</button>
+        <div class="admin-explainer-grid compact-explainer investment-help-grid">
+          <article><strong>Capital logs</strong><span>Record every reload or cash-in used for provider orders.</span></article>
+          <article><strong>Payout logs</strong><span>Record owner payout, team payroll, and other operating expenses without deleting history.</span></article>
+          <article><strong>Team payroll rules</strong><span>Add future helpers using fixed peso or percentage allocation for weekly/monthly tracking.</span></article>
+        </div>
+        <div class="investment-analytics-grid" id="investmentAnalyticsGrid"></div>
+        <div class="investment-insights-card" id="investmentInsightsCard"></div>
+        <div class="investment-workspace-grid">
+          <div class="card investment-card finance-entry-card">
+            <h3>Finance Entry</h3>
+            <p class="service-desc">Use this for money in, owner payout, team payout, and expense logs.</p>
+            <div class="form-grid finance-form-grid">
+              <div class="field">
+                <label for="financeEntryType">Entry Type</label>
+                <select class="select" id="financeEntryType">
+                  <option value="capital-in">Add Funds / Reload</option>
+                  <option value="owner-payout">Owner Payout</option>
+                  <option value="payroll-payout">Team Payroll Payout</option>
+                  <option value="expense">Other Expense</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="addInvestAmount">Amount</label>
+                <input class="input" id="addInvestAmount" type="number" min="0" step="0.01" placeholder="Example: 1000">
+              </div>
+              <div class="field">
+                <label for="financePerson">Person / Payee</label>
+                <input class="input" id="financePerson" type="text" placeholder="Self, booster name, provider, etc.">
+              </div>
+              <div class="field">
+                <label for="addInvestNote">Note</label>
+                <input class="input" id="addInvestNote" type="text" placeholder="Optional note / purpose">
+              </div>
+              <div class="field full split-actions-row">
+                <button class="btn primary" type="button" id="addInvestBtn">Add Finance Log</button>
               </div>
             </div>
+            <div class="correction-box">
+              <div class="field">
+                <label for="investAmount">Override Total Capital</label>
+                <input class="input" id="investAmount" type="number" min="0" step="0.01" placeholder="Use only for corrections">
+              </div>
+              <button class="btn warning" type="button" id="saveInvestBtn">Override Capital</button>
+            </div>
           </div>
-          <div class="table-wrap mini-table-wrap">
+          <div class="card investment-card team-card">
+            <h3>Future Team Payroll Rules</h3>
+            <p class="service-desc">Set planned booster/helper share. Actual payouts are still recorded in Finance Entry.</p>
+            <div class="form-grid team-form-grid">
+              <div class="field">
+                <label for="teamMemberName">Person Name</label>
+                <input class="input" id="teamMemberName" type="text" placeholder="Example: Person 1">
+              </div>
+              <div class="field">
+                <label for="teamPayMode">Pay Mode</label>
+                <select class="select" id="teamPayMode">
+                  <option value="fixed">Peso amount</option>
+                  <option value="percent">Percentage</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="teamPayAmount">Amount / Percent</label>
+                <input class="input" id="teamPayAmount" type="number" min="0" step="0.01" placeholder="100 or 2">
+              </div>
+              <div class="field">
+                <label for="teamPayFrequency">Frequency</label>
+                <select class="select" id="teamPayFrequency">
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                </select>
+              </div>
+              <div class="field full split-actions-row">
+                <button class="btn primary" type="button" id="addTeamMemberBtn">Add Team Rule</button>
+              </div>
+            </div>
+            <div class="table-wrap mini-table-wrap compact-history-wrap">
+              <table class="mini-table">
+                <thead>
+                  <tr>
+                    <th>Person</th>
+                    <th>Rule</th>
+                    <th>Est. Share</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="teamMembersTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="card investment-card finance-history-card">
+          <div class="history-head-row">
+            <div>
+              <h3>Finance Logs / History</h3>
+              <p class="service-desc">All money-in and money-out records stay here for tracking.</p>
+            </div>
+          </div>
+          <div class="table-wrap mini-table-wrap compact-history-wrap">
             <table class="mini-table">
               <thead>
                 <tr>
                   <th>Date</th>
+                  <th>Type</th>
+                  <th>Person</th>
                   <th>Amount</th>
                   <th>Note</th>
                   <th>Action</th>
@@ -173,6 +302,10 @@
             <h2>Order History</h2>
             <p>Voided and cancelled orders remain in history but are excluded from totals. Undo void restores them.</p>
           </div>
+        </div>
+        <div class="admin-explainer-grid compact-explainer order-help-grid">
+          <article><strong>Order History is your ledger.</strong><span>Create records from a service row. Paid, partial, and unpaid statuses affect sales and receivables.</span></article>
+          <article><strong>Void keeps history clean.</strong><span>Voided or cancelled records stay visible but are excluded from dashboard totals until restored.</span></article>
         </div>
         <div class="toolbar control-panel compact-panel">
           <div class="toolbar-left">
@@ -221,6 +354,63 @@
     </main>
   </div>
 
+
+
+  <div class="modal-backdrop" id="digitalProductAdminModal" role="dialog" aria-modal="true">
+    <div class="modal-card wide-modal">
+      <div class="modal-head">
+        <div>
+          <span class="eyebrow">Digital product manager</span>
+          <h2 id="digitalProductAdminModalTitle">Edit Digital Product</h2>
+          <p class="service-desc">These products are separate from boosting services and appear only in the client Digital Products page.</p>
+        </div>
+        <button class="btn icon-btn modal-x-btn" type="button" data-close-modal="digitalProductAdminModal" aria-label="Close digital product manager">×</button>
+      </div>
+      <form id="digitalProductAdminForm" class="form-grid">
+        <input type="hidden" id="digitalProductEditId">
+        <div class="field">
+          <label for="digitalProductName">Product Name</label>
+          <input class="input" id="digitalProductName" required placeholder="Netflix">
+        </div>
+        <div class="field">
+          <label for="digitalProductCategory">Category</label>
+          <input class="input" id="digitalProductCategory" required placeholder="Streaming">
+        </div>
+        <div class="field">
+          <label for="digitalProductPrice">Client Price</label>
+          <input class="input" id="digitalProductPrice" type="number" min="0" step="0.01" required placeholder="70">
+          <small class="field-hint" id="digitalProductProfitPreview">Provider cost: ₱0.00 · Profit: ₱0.00</small>
+        </div>
+        <div class="field">
+          <label for="digitalProductProviderPrice">Service Provider Price</label>
+          <input class="input" id="digitalProductProviderPrice" type="number" min="0" step="0.01" placeholder="Amount you pay">
+        </div>
+        <div class="field">
+          <label for="digitalProductDuration">Duration / Access</label>
+          <input class="input" id="digitalProductDuration" placeholder="1 Month Access">
+        </div>
+        <div class="field">
+          <label for="digitalProductImageUpload">Product Cover Image</label>
+          <input class="input" id="digitalProductImageUpload" type="file" accept="image/png,image/jpeg,image/webp">
+          <input type="hidden" id="digitalProductImage">
+          <input type="checkbox" id="digitalProductVisible" checked class="hidden">
+          <small class="field-hint">Choose a cover image. Existing image stays if no new file is selected.</small>
+        </div>
+        <div class="field digital-product-admin-preview-field">
+          <label>Image Preview</label>
+          <div class="digital-product-admin-preview"><img id="digitalProductImagePreview" src="" alt="Digital product image preview"></div>
+        </div>
+        <div class="field full">
+          <label for="digitalProductDescription">Description</label>
+          <textarea class="textarea" id="digitalProductDescription" placeholder="Short client-friendly description"></textarea>
+        </div>
+        <div class="modal-actions full">
+          <button class="btn primary" type="submit">Save Digital Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div class="modal-backdrop" id="serviceModal" role="dialog" aria-modal="true">
     <div class="modal-card wide-modal">
       <div class="modal-head">
@@ -229,7 +419,7 @@
           <h2 id="serviceModalTitle">Edit Service</h2>
           <p class="service-desc">Old orders keep their original snapshot prices even after pricing changes.</p>
         </div>
-        <button class="btn small" type="button" data-close-modal="serviceModal">Close</button>
+        <button class="btn icon-btn modal-x-btn" type="button" data-close-modal="serviceModal" aria-label="Close service manager">×</button>
       </div>
       <form id="serviceForm" class="form-grid">
         <input type="hidden" id="serviceEditId">
@@ -280,7 +470,7 @@
         <div class="field visibility-field">
           <label>Visibility</label>
           <label class="checkbox-line"><input type="checkbox" id="serviceVisible"> Show to clients</label>
-          <label class="checkbox-line"><input type="checkbox" id="serviceArchived"> Archived</label>
+          <label class="checkbox-line"><input type="checkbox" id="serviceArchived"> Disabled</label>
         </div>
         <div class="field full">
           <label for="serviceDescription">Description</label>
@@ -288,7 +478,6 @@
         </div>
         <div class="notice full" id="serviceRevenuePreview">Revenue preview: ₱0.00</div>
         <div class="modal-actions full">
-          <button class="btn" type="button" data-close-modal="serviceModal">Cancel</button>
           <button class="btn primary" type="submit">Save Service</button>
         </div>
       </form>
@@ -303,7 +492,7 @@
           <h2>Create Order</h2>
           <p class="service-desc">Service type auto-fills. Charges, client sales, and revenue update live.</p>
         </div>
-        <button class="btn small" type="button" data-close-modal="orderModal">Close</button>
+        <button class="btn icon-btn modal-x-btn" type="button" data-close-modal="orderModal" aria-label="Close order form">×</button>
       </div>
       <form id="orderForm" class="form-grid">
         <input type="hidden" id="orderServiceId">
@@ -350,7 +539,6 @@
           <textarea class="textarea" id="orderNotes" placeholder="Optional notes, provider reminders, or client instructions"></textarea>
         </div>
         <div class="modal-actions full">
-          <button class="btn" type="button" data-close-modal="orderModal">Cancel</button>
           <button class="btn primary" type="submit">Save Order</button>
         </div>
       </form>
@@ -365,7 +553,7 @@
           <h2>Confirm Void</h2>
           <p class="service-desc">This removes the order from totals but keeps it in history. You can undo void later.</p>
         </div>
-        <button class="btn small" type="button" data-close-modal="voidModal">Close</button>
+        <button class="btn icon-btn modal-x-btn" type="button" data-close-modal="voidModal" aria-label="Close void confirmation">×</button>
       </div>
       <input type="hidden" id="voidOrderId">
       <div class="field full">
@@ -373,7 +561,6 @@
         <textarea class="textarea" id="voidReason" placeholder="Example: cancelled by client / wrong service / duplicate order"></textarea>
       </div>
       <div class="modal-actions full">
-        <button class="btn" type="button" data-close-modal="voidModal">Cancel</button>
         <button class="btn warning" type="button" id="confirmVoidBtn">Void Order</button>
       </div>
     </div>
@@ -386,7 +573,7 @@
           <span class="eyebrow">Order details</span>
           <h2>Snapshot</h2>
         </div>
-        <button class="btn small" type="button" data-close-modal="orderDetailsModal">Close</button>
+        <button class="btn icon-btn modal-x-btn" type="button" data-close-modal="orderDetailsModal" aria-label="Close order details">×</button>
       </div>
       <div id="orderDetailsBody" class="details-grid"></div>
     </div>

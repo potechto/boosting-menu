@@ -19,14 +19,160 @@
         </span>
       </a>
       <nav class="nav-actions" aria-label="Primary navigation">
-        <a class="btn ghost" href="#services" id="viewToggleBtn">Services</a>
+        <a class="btn ghost" href="#home" id="homeNavBtn">Home</a>
+        <a class="btn ghost" href="#what-we-do" id="whatWeDoNavBtn">What We Do</a>
+        <a class="btn ghost" href="#about-novalyte" id="aboutNavBtn">About</a>
+        <a class="btn ghost" href="#digital-products" id="digitalProductsNavBtn">Digital Products</a>
+        <a class="btn ghost" href="#services" id="servicesNavBtn">Services</a>
         <a class="btn ghost" href="https://www.facebook.com/messages/t/1240324299157071" id="messengerNavLink" target="_blank" rel="noopener">Messenger</a>
       </nav>
     </div>
   </header>
 
   <main id="top">
-    <section class="provider-hero" id="order-panel">
+    <section class="client-home-section" id="home">
+      <div class="shell client-home-shell">
+        <div class="client-home-hero elevated-card">
+          <div class="client-home-copy">
+            <span class="eyebrow">Digital growth solutions</span>
+            <h1>Novalyte helps brands, creators, and online sellers grow faster.</h1>
+            <p>Browse boosting services, premium digital products, and ready-to-message checkout flows in one clean client portal.</p>
+            <div class="client-home-actions">
+              <button class="btn primary" type="button" data-client-view="order">Start an Order</button>
+              <button class="btn" type="button" data-client-view="digital-products">View Digital Products</button>
+              <button class="btn" type="button" data-client-view="services">Browse Services</button>
+            </div>
+          </div>
+          <div class="client-home-panel">
+            <div class="home-metric-card">
+              <span>Service catalog</span>
+              <strong id="homeVisibleServices">0</strong>
+              <small>Visible boosting services</small>
+            </div>
+            <div class="home-metric-card">
+              <span>Digital products</span>
+              <strong id="homeDigitalProducts">0</strong>
+              <small>Tools and subscriptions</small>
+            </div>
+            <div class="home-metric-card highlight">
+              <span>Checkout flow</span>
+              <strong>Messenger</strong>
+              <small>Auto-copy order details before redirect</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="client-info-grid">
+          <article class="client-info-card">
+            <span class="info-icon">⚡</span>
+            <h2>Boosting services</h2>
+            <p>Search by platform, category, or provider ID. Rates are client-facing and provider costs stay internal.</p>
+            <button class="btn small" type="button" data-client-view="services">Open services</button>
+          </article>
+          <article class="client-info-card">
+            <span class="info-icon">💎</span>
+            <h2>Digital products</h2>
+            <p>Premium subscriptions and tools for streaming, editing, productivity, AI, and student use.</p>
+            <button class="btn small" type="button" data-client-view="digital-products">Open products</button>
+          </article>
+          <article class="client-info-card">
+            <span class="info-icon">🛟</span>
+            <h2>Contact us</h2>
+            <p>Questions, availability checks, and custom orders are handled through the Novalyte Messenger page.</p>
+            <a class="btn small primary" href="https://www.facebook.com/messages/t/1240324299157071" target="_blank" rel="noopener">Message Novalyte</a>
+          </article>
+        </div>
+
+
+
+      </div>
+    </section>
+
+    <section class="client-standalone-section hidden" id="what-we-do" aria-labelledby="clientWhatWeDoTitle">
+      <div class="shell client-standalone-shell">
+        <div class="client-direction-section elevated-card">
+          <div class="client-section-heading">
+            <span class="eyebrow">What we do</span>
+            <h1 id="clientWhatWeDoTitle">A cleaner direction for Novalyte as a permanent growth portal.</h1>
+            <p>Built to start as a simple ordering menu, then grow into a full boosting and digital access platform when the brand is ready for its own domain.</p>
+          </div>
+          <div class="client-feature-grid">
+            <article class="client-feature-card">
+              <span class="info-icon">📈</span>
+              <h3>Social growth services</h3>
+              <p>Organized boosting services for views, reactions, followers, members, shares, and other platform-based campaigns.</p>
+            </article>
+            <article class="client-feature-card">
+              <span class="info-icon">🎬</span>
+              <h3>Digital subscriptions</h3>
+              <p>Selected streaming, AI, editing, and student tools with clear pricing and Messenger-based checkout.</p>
+            </article>
+            <article class="client-feature-card">
+              <span class="info-icon">🧾</span>
+              <h3>Order coordination</h3>
+              <p>Clients can copy or send formatted order details so inquiries stay consistent and easier to process.</p>
+            </article>
+            <article class="client-feature-card">
+              <span class="info-icon">🤝</span>
+              <h3>Future booster network</h3>
+              <p>The structure is ready to support a larger team, more providers, and a stronger brand workflow as Novalyte grows.</p>
+            </article>
+          </div>
+        </div>
+
+        <div class="client-process-section elevated-card" aria-labelledby="clientProcessTitle">
+          <div class="client-section-heading compact-heading">
+            <span class="eyebrow">Simple process</span>
+            <h2 id="clientProcessTitle">Choose, preview, message, then confirm.</h2>
+            <p>A practical flow for clients today, with room to become a full checkout system later.</p>
+          </div>
+          <div class="client-process-steps">
+            <article><strong>01</strong><h3>Browse</h3><p>Select boosting services or digital products from a focused catalog.</p></article>
+            <article><strong>02</strong><h3>Prepare</h3><p>Enter links, usernames, quantities, or product requests with clean order details.</p></article>
+            <article><strong>03</strong><h3>Message</h3><p>Checkout details are copied or sent through Messenger for fast confirmation.</p></article>
+            <article><strong>04</strong><h3>Track</h3><p>Admin records can monitor status, income, provider cost, and investment usage.</p></article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="client-standalone-section hidden" id="about-novalyte" aria-labelledby="aboutNovalyteTitle">
+      <div class="shell client-standalone-shell">
+        <div class="client-about-card elevated-card">
+          <span class="eyebrow">About Novalyte</span>
+          <h1 id="aboutNovalyteTitle">Simple, organized, and client-friendly digital growth ordering.</h1>
+          <p>Novalyte is being built as a clean service portal for social growth services and selected digital subscriptions. Founder, owner, and development team details can be added here once the brand is ready for a public launch story.</p>
+        </div>
+
+        <div class="client-reviews-section elevated-card" aria-labelledby="clientReviewsTitle">
+          <div class="client-section-heading review-heading">
+            <span class="eyebrow">Client reviews</span>
+            <h2 id="clientReviewsTitle">What clients say about Novalyte</h2>
+            <p>Public feedback cards can grow here over time. Each browser can leave one review only, with a 30-minute edit window after submitting.</p>
+          </div>
+          <div class="review-cards-scroll" id="reviewCards" aria-live="polite"></div>
+          <form class="review-form" id="reviewForm">
+            <div class="review-form-grid">
+              <div class="field">
+                <label for="reviewDisplayName">Display Name</label>
+                <input class="input" id="reviewDisplayName" type="text" maxlength="60" placeholder="Optional name or nickname">
+              </div>
+              <div class="field review-text-field">
+                <label for="reviewText">Your Review</label>
+                <textarea class="textarea" id="reviewText" maxlength="1000" rows="5" placeholder="Share your experience with Novalyte. Maximum 1000 characters."></textarea>
+                <small class="field-hint"><span id="reviewCharCount">0</span>/1000 characters</small>
+              </div>
+            </div>
+            <div class="review-form-actions">
+              <p class="service-desc" id="reviewFormNotice">No account required. Your review will receive a Novalyte client ID.</p>
+              <button class="btn primary" id="submitReviewBtn" type="submit">Submit Review</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="provider-hero hidden" id="order-panel">
       <div class="shell provider-shell">
         <div class="provider-title-row provider-title-row-clean">
           <div>
@@ -58,22 +204,8 @@
             <select id="calcService" class="provider-select service-select"></select>
           </div>
 
-          <div class="provider-info-grid provider-info-grid-single">
-            <section class="provider-info-box service-dashboard-box">
-              <div class="provider-box-title">
-                <h3>Service Dashboard</h3>
-                <span id="selectedServiceId">ID</span>
-              </div>
-              <div class="provider-divider"></div>
-              <div class="status-stack" id="serviceDashboard">
-                <div class="status-line"><span>✓</span> Select a service to view details.</div>
-              </div>
-            </section>
-          </div>
-
-          <div class="provider-field compact-field">
-            <label>Average time <span class="info-dot" title="Estimated delivery time from provider notes">i</span></label>
-            <div class="readonly-field" id="averageTimeField">Select a service</div>
+          <div class="selected-service-strip" id="selectedServiceSummary" aria-live="polite">
+            <span class="summary-placeholder">Select a service to preview ID, rate, min/max, and ETA.</span>
           </div>
 
           <div class="provider-field">
@@ -103,8 +235,37 @@
             <div class="client-message" id="orderMessage">Select a service first.</div>
           </details>
 
-          <p class="panel-note" id="calcNotice">Choose a service to see minimum, maximum, average time, and final charge.</p>
+          <p class="panel-note" id="calcNotice">Choose a service, paste your link, enter quantity, and proceed through Messenger.</p>
         </form>
+      </div>
+    </section>
+
+    <section class="section digital-products-section hidden" id="digital-products">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Digital Products</span>
+            <h2>Premium accounts and subscriptions</h2>
+            <p>Browse available tools and entertainment subscriptions. Ebooks and online templates stay under LinkTech.</p>
+          </div>
+        </div>
+
+        <div class="control-panel directory-controls digital-product-controls">
+          <div class="controls-grid">
+            <div class="field">
+              <label for="digitalProductSearch">Search</label>
+              <input class="input" id="digitalProductSearch" type="search" placeholder="Search Netflix, ChatGPT, Canva, Spotify...">
+            </div>
+            <div class="field">
+              <label for="digitalProductFilter">Category</label>
+              <select class="select" id="digitalProductFilter"></select>
+            </div>
+            <button class="btn" id="clearDigitalProductFilters" type="button">Clear</button>
+          </div>
+        </div>
+
+        <div class="digital-products-grid" id="digitalProductsGrid"></div>
+        <div class="empty-state hidden" id="emptyDigitalProducts">No digital product found. Try another search/filter.</div>
       </div>
     </section>
 
@@ -157,6 +318,26 @@
       </div>
     </section>
   </main>
+
+  <div class="modal-backdrop" id="digitalProductModal" aria-hidden="true">
+    <div class="modal-card small-modal digital-product-modal-card" role="dialog" aria-modal="true" aria-labelledby="digitalProductModalTitle">
+      <div class="modal-head">
+        <div>
+          <span class="eyebrow" id="digitalProductModalCategory">Digital Product</span>
+          <h2 id="digitalProductModalTitle">Product details</h2>
+        </div>
+        <button class="btn icon-btn" type="button" id="digitalProductModalClose" aria-label="Close digital product details">×</button>
+      </div>
+      <div class="digital-product-modal-body">
+        <img id="digitalProductModalImage" src="" alt="" class="digital-product-modal-image">
+        <strong id="digitalProductModalPrice" class="digital-product-modal-price">₱0.00</strong>
+        <p id="digitalProductModalDescription"></p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn primary" type="button" id="digitalProductModalCheckout">Checkout</button>
+      </div>
+    </div>
+  </div>
 
   <footer class="footer">
     <div class="shell">

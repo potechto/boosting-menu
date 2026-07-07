@@ -175,3 +175,179 @@ https://www.facebook.com/messages/t/1240324299157071
 - Selecting a suggestion automatically sets the correct platform/category and service in the order panel.
 - Pressing Enter while suggestions are open selects the first match; Escape closes the suggestions.
 - Telegram is now visible in the public platform/service options using the existing seed placeholder service until exact provider details are added.
+
+## v2.1 Compact Order Panel Flow
+
+- Removed the large public Service Dashboard block from the order panel.
+- Removed the separate Average Time field to reduce height on mobile screens.
+- Added a compact selected-service summary directly under the Services dropdown.
+- The compact summary shows only the useful client details: platform/category, service name, ID, rate, min-max, and ETA.
+- Kept the same ID autocomplete, Telegram visibility, Proceed Order, and Messenger flow.
+- This keeps the client order panel focused on: search/select service, paste link, enter quantity, see charge, proceed to Messenger.
+
+
+### v2.2 - Telegram visibility migration
+- Added automatic seed-service merge for browsers that already have saved Novalyte service data in localStorage.
+- Telegram now appears even if the user previously loaded an older version before Telegram was added.
+- Preserves existing saved services/orders while adding missing seed services.
+
+### v2.3 - Full Telegram services import
+- Replaced the single Telegram placeholder service with the full Telegram service batch from the provider-panel screenshots.
+- Added Telegram members, cheapest members, recommended members, post views, reactions, votes, and comments.
+- Added migration cleanup so old saved browser data removes the temporary `TG-5001` placeholder and merges the new Telegram seed services without wiping saved orders.
+- Telegram service IDs, provider rates, min/max values, and average time values were encoded from the screenshots. Reaction emoji labels can still be polished later if needed.
+
+
+### v2.4 Icon background cleanup
+
+- Removed decorative colored backplates from platform/social icons.
+- Kept the original transparent PNG icons from `Resources/Icons` synced into `assets/icons/social`.
+- Changed icon images to `object-fit: contain` so transparent icon edges remain clean.
+- Kept v2.3 full Telegram import and migration behavior intact.
+
+
+### v2.5 YouTube Service Import
+- Removed the old single YouTube placeholder service.
+- Added 43 YouTube services from provider-panel screenshots.
+- Added migration cleanup so older browser data removes `YT-4001` and merges the full YouTube list without wiping saved orders/services.
+
+
+## v2.6 Disable Services and Digital Products
+
+- Admin Archive action is now Disable/Enable. Disabled services stay visible on the client side in a gray state and cannot be ordered.
+- Added client Digital Products navigation before Services.
+- Added subscription/tool cards for streaming, AI, editing, writing, music, and student tools.
+- Product checkout copies product details and opens the official Novalyte Messenger CTA.
+- Ebooks and online templates are intentionally excluded for LinkTech alignment.
+
+## v2.7 Digital Products UX Fix
+- Fixed Digital Products grid so one filtered result no longer stretches across the full screen.
+- Added compact product cards with fixed responsive sizing.
+- Added Description modal for each digital product.
+- Checkout now copies a formatted product message and redirects to Novalyte Messenger.
+- Client view/filter/order state now persists across refreshes using URL hash plus local storage.
+
+
+## v2.8 Modal and product image polish
+- Removed visible Close/Cancel-only modal buttons so modals close only through the X button or Escape.
+- Disabled outside-overlay click closing for client and admin modals.
+- Cleaned digital product image backgrounds/outer whitespace for tighter product cards.
+
+## v2.9 Digital Product Admin and Image Restore
+
+- Rebuilt digital product artwork using non-distorted square tiles so logos keep their proportions while avoiding large white canvas areas.
+- Added a dedicated Digital Product Manager in admin, separate from boosting service management.
+- Digital product name, category, price, duration, description, visibility, image filename/URL, and uploaded image data can now be edited from admin.
+- Digital products now save under their own localStorage key and are included in backup export/import.
+- Client Digital Products page now reads from the editable digital product store while boosting services remain under the separate services store.
+
+## v3.2 Digital Product Image Asset Restore
+
+- Restored the original tight digital product image assets instead of the dark padded rebuilt tiles.
+- Removed the unnecessary top capture strip from Canva Pro and Quillbot only.
+- Lightly trimmed capture-border edges on HBO Max, VivaOne, and iWantTFC.
+- Kept natural white-background product artwork such as ChatGPT, YouTube Premium, Grammarly, and CapCut.
+- Digital Products remain editable in the dedicated admin Digital Products panel.
+
+## v3.3 Digital Product Compact Centered Grid
+
+- Shrunk Digital Product cards, artwork, text, and buttons for a cleaner compact catalog view.
+- Changed the Digital Products grid to center filtered results, so one or two products stay centered instead of aligning to the far left.
+- Limited the catalog row width so rows naturally fill around four to five products before wrapping on desktop.
+- Kept restored v3.2 digital product images, description modal, checkout-to-Messenger flow, and separate admin Digital Products editing intact.
+
+## v3.4 Four-Per-Row Centered Digital Grid
+
+- Locked the desktop Digital Products catalog to a centered four-card row layout.
+- Incomplete rows now stay centered automatically, including when only one, two, or three products are visible after filtering.
+- Newly added digital products also flow into the same centered layout without stretching the row width.
+- Kept the compact card sizing, restored image behavior, description modal, checkout-to-Messenger flow, and separate admin Digital Products management intact.
+
+
+## v3.5 Digital Product Admin Control Polish
+
+- Added Disable/Enable controls to the dedicated Digital Products admin table.
+- Disabled digital products stay visible on the client page but appear gray and cannot be checked out.
+- Added Delete control for digital products while keeping seed-product deletions persistent through local storage.
+- Kept Edit for digital product name, category, price, duration, visibility, description, image filename/URL, and uploaded image.
+- Digital Products remain separate from boosting provider services and do not affect service pricing or service order data.
+
+
+## v3.6 Admin Disable Visibility and Digital Product Controls
+
+- Service Disable/Enable now keeps disabled services in the default admin list instead of making them disappear under the active filter.
+- Renamed the default service filter to Shown services so visible disabled rows remain reachable and immediately switch from Disable to Enable.
+- Added a Digital Products status filter for Shown, All, Disabled only, and Hidden only products.
+- Cleaned Digital Product action buttons so Edit, Disable/Enable, and Delete follow the same visible action flow as boosting services.
+- Fixed the Digital Products CSS brace issue from the previous polish pass and improved mobile action wrapping.
+- Added `Documentation/SUPABASE_SETUP_GUIDE.md` with the recommended Supabase table, storage, auth, RLS, and migration plan for the next backend/storage phase.
+
+## v3.7 Near-Final Presentation Polish
+
+- Applied a cleaner near-final visual pass to the client and admin interfaces.
+- Improved admin spacing, sidebar balance, section cards, table readability, action button wrapping, disabled-row visibility, and mobile behavior.
+- Polished Digital Products catalog cards, filter controls, hover states, disabled states, modal styling, and compact centered layout without changing the restored image assets.
+- Improved Services and Digital Products admin tables so disabled items remain visually reachable and easier to enable again.
+- Added a final manual testing checklist document for local review before the next backend/Supabase phase.
+
+## v3.8 Home Landing + Investment Analytics + Layout Stabilization
+
+- Added a client Home landing page introducing Novalyte, with About and Contact sections prepared for future owner/founder/team details.
+- Added Home navigation while keeping Digital Products, Services, Messenger, and the existing order panel flow.
+- Added investment analytics cards for capital, used provider budget, available fund, ROI, paid sales, receivables, and latest reload insight.
+- Stabilized admin layout width, sidebar behavior, toolbar wrapping, table overflow, and action button groups.
+- Improved Digital Products and Services admin layouts so disabled rows stay visible and Enable/Disable actions remain findable.
+- Kept ZIP cleanup workflow as the expected local apply process after successful verification.
+
+## v3.9 Admin Layout Stabilization
+
+- Locked admin pages into a stable centered content width to prevent tables and toolbars from spilling outside the viewport.
+- Reworked admin toolbar behavior so search fields, filters, and notes no longer overlap.
+- Made Services, Digital Products, and Orders action columns sticky on desktop so Edit, Disable/Enable, Delete, and Create Order stay visible even when a table scrolls horizontally.
+- Standardized action button sizing and grouping across Services, Digital Products, and Orders.
+- Improved Digital Product Manager table widths and product cells so descriptions no longer push the buttons off-screen.
+- Improved Investment Tracker layout stability while keeping analytics cards and investment form intact.
+- Kept all existing logic, pricing, disable/enable behavior, Digital Products separation, client Home page, and Supabase guide intact.
+
+
+## v4.0 Admin Compact Data Mode
+
+- Reworked the admin tables into compact data mode so service, digital product, order, and investment data fit without overlapping.
+- Removed desktop sticky action columns because they were covering status/payment columns and making buttons look missing.
+- Reduced admin data font sizes, row padding, button sizes, badges, and product thumbnails for a more stable management layout.
+- Kept all current logic intact: disable/enable stays visible, digital product management remains separate, investment analytics remain active, and client pages are unchanged.
+
+## v4.1 Layout Alignment + Permanent Site Direction
+- Added a more complete client home direction for Novalyte as a future permanent domain-ready site.
+- Equalized the three client home CTA cards and aligned their buttons.
+- Compressed the client services directory table columns for cleaner browsing.
+- Reworked admin action button alignment: paired top actions, centered solo destructive/status action below.
+- Added compact explainer cards so Investment Tracker and Order History are easier to understand.
+- Tightened admin table spacing while keeping all buttons visible and clickable.
+
+## v4.2 Admin hard layout correction
+- Admin is now forced into compact readable data mode.
+- Removed awkward header splitting by forcing table headers to stay on one line.
+- Widened admin content area while shrinking sidebar and rows.
+- Services actions now render as Create Order + Edit on top, with Disable/Enable centered below.
+- Digital Product actions now render as Edit + Disable/Enable on top, with Delete centered below.
+- Client home CTA cards are equal height and their buttons align at the bottom.
+- Investment cards/forms are compacted so the page is easier to test.
+
+## v4.3 Portal + Income Tracker Patch
+
+- Added `What We Do` and `About` as client navigation anchors.
+- Improved admin table layout stability for Services, Digital Products, Investments, and Orders.
+- Digital Products now use Disable/Enable outside the edit modal for availability control.
+- Digital Product edit modal now focuses on uploaded cover image, client price, provider price, category, duration, and description.
+- Investment Tracker is now an Income + Investment Tracker with capital logs, owner payouts, team payroll payouts, expenses, payroll rules, and finance history.
+- Added `Documentation/V4_3_PORTAL_INCOME_TRACKER_LAYOUT_NOTES.md`.
+
+## v4.4 Independent Pages + Reviews + Admin Fit
+
+- What We Do and About are now independent client screens, not scroll-only Home sections.
+- About includes scrollable client review cards and a one-review-per-browser form with a 30-minute edit window.
+- Review IDs auto-generate as Pnovalyte001, Pnovalyte002, and onward.
+- Admin tables were compressed so Actions columns stay visible at normal browser zoom.
+- Digital product modal keeps upload-based image replacement and provider/client price separation.
+
