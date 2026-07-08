@@ -48,7 +48,10 @@
   <div class="admin-layout hidden" id="dashboardView">
     <aside class="sidebar">
       <a class="brand" href="admin.html">
-        <span class="logo-mark">N</span>
+        <span class="logo-mark brand-logo-frame">
+          <img class="brand-logo-img" src="Resources/Icons/logo.png" alt="" loading="eager">
+          <span class="logo-fallback-letter">N</span>
+        </span>
         <span>
           <span class="brand-title">Novalyte Admin</span>
           <span class="brand-subtitle">Pricing + Order Tracker</span>
@@ -307,6 +310,7 @@
           <article><strong>Order History is your ledger.</strong><span>Create records from a service row. Paid, partial, and unpaid statuses affect sales and receivables.</span></article>
           <article><strong>Void keeps history clean.</strong><span>Voided or cancelled records stay visible but are excluded from dashboard totals until restored.</span></article>
         </div>
+        <div class="orders-summary-grid stats-grid compact-order-summary" id="ordersSummaryGrid"></div>
         <div class="toolbar control-panel compact-panel">
           <div class="toolbar-left">
             <input class="input" id="orderSearch" type="search" placeholder="Search client, contact, service, link..." style="min-width:min(420px,100%)">
@@ -376,27 +380,30 @@
           <label for="digitalProductCategory">Category</label>
           <input class="input" id="digitalProductCategory" required placeholder="Streaming">
         </div>
-        <div class="field">
+        <div class="field digital-product-money-field">
+          <label for="digitalProductProviderPrice">Service Provider Price</label>
+          <input class="input" id="digitalProductProviderPrice" type="number" min="0" step="0.01" placeholder="Amount you pay">
+        </div>
+        <div class="field digital-product-money-field">
           <label for="digitalProductPrice">Client Price</label>
           <input class="input" id="digitalProductPrice" type="number" min="0" step="0.01" required placeholder="70">
           <small class="field-hint" id="digitalProductProfitPreview">Provider cost: ₱0.00 · Profit: ₱0.00</small>
         </div>
         <div class="field">
-          <label for="digitalProductProviderPrice">Service Provider Price</label>
-          <input class="input" id="digitalProductProviderPrice" type="number" min="0" step="0.01" placeholder="Amount you pay">
-        </div>
-        <div class="field">
           <label for="digitalProductDuration">Duration / Access</label>
           <input class="input" id="digitalProductDuration" placeholder="1 Month Access">
         </div>
-        <div class="field">
+        <div class="field digital-product-cover-field">
           <label for="digitalProductImageUpload">Product Cover Image</label>
-          <input class="input" id="digitalProductImageUpload" type="file" accept="image/png,image/jpeg,image/webp">
+          <div class="digital-product-upload-row">
+            <input class="input" id="digitalProductImageUpload" type="file" accept="image/png,image/jpeg,image/webp">
+            <button class="btn small digital-product-view-image-btn hidden" id="digitalProductViewImageBtn" type="button">View image</button>
+          </div>
           <input type="hidden" id="digitalProductImage">
           <input type="checkbox" id="digitalProductVisible" checked class="hidden">
           <small class="field-hint">Choose a cover image. Existing image stays if no new file is selected.</small>
         </div>
-        <div class="field digital-product-admin-preview-field">
+        <div class="field digital-product-admin-preview-field hidden" id="digitalProductPreviewField">
           <label>Image Preview</label>
           <div class="digital-product-admin-preview"><img id="digitalProductImagePreview" src="" alt="Digital product image preview"></div>
         </div>
@@ -467,11 +474,8 @@
           <label for="serviceTag">Client Tag</label>
           <input class="input" id="serviceTag" placeholder="Fast & popular">
         </div>
-        <div class="field visibility-field">
-          <label>Visibility</label>
-          <label class="checkbox-line"><input type="checkbox" id="serviceVisible"> Show to clients</label>
-          <label class="checkbox-line"><input type="checkbox" id="serviceArchived"> Disabled</label>
-        </div>
+        <input type="checkbox" id="serviceVisible" checked class="hidden">
+        <input type="checkbox" id="serviceArchived" class="hidden">
         <div class="field full">
           <label for="serviceDescription">Description</label>
           <textarea class="textarea" id="serviceDescription" placeholder="Short client-friendly description"></textarea>

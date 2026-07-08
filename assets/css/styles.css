@@ -7468,3 +7468,1170 @@ body:has(.admin-layout:not(.hidden)) .digital-product-admin-preview img {
     width: 100%;
   }
 }
+
+
+body:has(.admin-layout:not(.hidden)) .compact-order-summary {
+  margin: 14px 0 16px;
+  grid-template-columns: repeat(4, minmax(130px, 1fr));
+}
+
+body:has(.admin-layout:not(.hidden)) .compact-order-summary .stat-card {
+  min-height: 74px;
+  padding: 13px 14px;
+}
+
+body:has(.admin-layout:not(.hidden)) .compact-order-summary .stat-card span {
+  font-size: 0.65rem;
+}
+
+body:has(.admin-layout:not(.hidden)) .compact-order-summary .stat-card strong {
+  font-size: clamp(1rem, 1.7vw, 1.28rem);
+}
+
+@media (max-width: 980px) {
+  body:has(.admin-layout:not(.hidden)) .compact-order-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  body:has(.admin-layout:not(.hidden)) .compact-order-summary {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* v4.6 launch polish: digital product modal + clean feedback layout */
+body:has(.admin-layout:not(.hidden)) #digitalProductAdminForm.form-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  align-items: start !important;
+  gap: 16px 18px !important;
+}
+
+body:has(.admin-layout:not(.hidden)) #digitalProductAdminForm .field {
+  gap: 9px !important;
+}
+
+body:has(.admin-layout:not(.hidden)) #digitalProductAdminForm .field label {
+  color: rgba(226, 232, 240, 0.9) !important;
+  font-size: 0.9rem !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.01em !important;
+}
+
+body:has(.admin-layout:not(.hidden)) #digitalProductAdminForm .field-hint {
+  color: rgba(203, 213, 225, 0.82) !important;
+  font-size: 0.78rem !important;
+  line-height: 1.45 !important;
+}
+
+body:has(.admin-layout:not(.hidden)) #digitalProductAdminForm .input,
+body:has(.admin-layout:not(.hidden)) #digitalProductAdminForm .textarea {
+  min-height: 46px !important;
+  font-size: 0.92rem !important;
+  border-radius: 14px !important;
+}
+
+body:has(.admin-layout:not(.hidden)) #digitalProductAdminForm .textarea {
+  min-height: 112px !important;
+}
+
+.digital-product-upload-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+.digital-product-view-image-btn {
+  min-width: 108px !important;
+  white-space: nowrap !important;
+}
+
+body:has(.admin-layout:not(.hidden)) .digital-product-admin-preview-field {
+  justify-items: center !important;
+  text-align: center !important;
+}
+
+body:has(.admin-layout:not(.hidden)) .digital-product-admin-preview {
+  width: min(100%, 380px) !important;
+  max-height: 220px !important;
+  margin-inline: auto !important;
+  display: grid !important;
+  place-items: center !important;
+  border: 1px solid rgba(148, 163, 184, 0.18) !important;
+  background: rgba(2, 6, 23, 0.28) !important;
+  overflow: hidden !important;
+  border-radius: 16px !important;
+}
+
+body:has(.admin-layout:not(.hidden)) .digital-product-admin-preview img {
+  width: 100% !important;
+  max-width: 360px !important;
+  max-height: 220px !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  margin: 0 auto !important;
+}
+
+.client-standalone-section .eyebrow,
+.client-reviews-section .eyebrow {
+  justify-self: start !important;
+  width: auto !important;
+  border: 0 !important;
+  background: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  color: rgba(125, 211, 252, 0.96) !important;
+  font-size: clamp(0.94rem, 1.3vw, 1.1rem) !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.01em !important;
+}
+
+.client-standalone-section .client-section-heading p,
+.client-standalone-section .client-about-card p,
+.client-reviews-section .client-section-heading p {
+  font-size: 0.98rem !important;
+  color: rgba(203, 213, 225, 0.78) !important;
+}
+
+.client-reviews-section {
+  gap: 20px !important;
+  background:
+    radial-gradient(circle at 6% 8%, rgba(250, 204, 21, 0.08), transparent 14rem),
+    linear-gradient(145deg, rgba(15, 23, 42, 0.90), rgba(15, 23, 42, 0.58)) !important;
+}
+
+.review-heading h2 {
+  font-size: clamp(1.85rem, 3.4vw, 3rem) !important;
+  line-height: 1 !important;
+}
+
+.review-cards-scroll {
+  display: grid !important;
+  grid-auto-flow: row !important;
+  grid-auto-columns: initial !important;
+  grid-template-columns: 1fr !important;
+  gap: 12px !important;
+  overflow-x: visible !important;
+  padding: 0 !important;
+  scroll-snap-type: none !important;
+}
+
+.review-card {
+  min-height: 0 !important;
+  display: grid !important;
+  gap: 10px !important;
+  padding: 16px 18px !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(250, 204, 21, 0.28) !important;
+  background: rgba(248, 250, 252, 0.045) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+}
+
+.review-empty-card {
+  align-items: start !important;
+}
+
+.review-card-head,
+.review-card-foot {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  flex-wrap: wrap !important;
+}
+
+.review-stars {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 2px !important;
+  color: rgba(251, 146, 60, 0.35) !important;
+  font-size: 1.08rem !important;
+  letter-spacing: 0.03em !important;
+}
+
+.review-star.active {
+  color: #fb923c !important;
+}
+
+.review-card p {
+  margin: 0 !important;
+  color: rgba(241, 245, 249, 0.92) !important;
+  font-size: 0.98rem !important;
+  line-height: 1.55 !important;
+}
+
+.review-card strong {
+  color: #f8fafc !important;
+  font-size: 0.9rem !important;
+}
+
+.review-card small,
+.review-edited {
+  color: rgba(203, 213, 225, 0.72) !important;
+  font-size: 0.78rem !important;
+}
+
+.review-id {
+  border-color: rgba(125, 211, 252, 0.24) !important;
+  background: rgba(14, 165, 233, 0.08) !important;
+  color: rgba(186, 230, 253, 0.96) !important;
+}
+
+.review-form {
+  gap: 16px !important;
+  padding-top: 18px !important;
+  border-top: 1px solid rgba(148, 163, 184, 0.14) !important;
+}
+
+.review-form .field label {
+  color: rgba(226, 232, 240, 0.9) !important;
+  font-size: 0.9rem !important;
+  font-weight: 850 !important;
+}
+
+.review-form .field-hint,
+.review-form-actions .service-desc {
+  color: rgba(203, 213, 225, 0.76) !important;
+  font-size: 0.82rem !important;
+}
+
+.review-form-actions .btn {
+  min-width: 190px !important;
+}
+
+@media (max-width: 760px) {
+  body:has(.admin-layout:not(.hidden)) #digitalProductAdminForm.form-grid,
+  .digital-product-upload-row,
+  .review-form-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .digital-product-view-image-btn,
+  .review-form-actions .btn {
+    width: 100% !important;
+  }
+}
+
+/* v4.7 feedback behavior + clean edit visibility controls */
+body:has(.admin-layout:not(.hidden)) #serviceForm > #serviceVisible,
+body:has(.admin-layout:not(.hidden)) #serviceForm > #serviceArchived,
+body:has(.admin-layout:not(.hidden)) #digitalProductVisible {
+  display: none !important;
+}
+
+.client-reviews-section .review-heading p {
+  max-width: 980px !important;
+}
+
+.review-form-grid {
+  grid-template-columns: 1fr !important;
+}
+
+.review-form .review-text-field {
+  width: 100% !important;
+}
+
+.review-form .textarea {
+  min-height: 150px !important;
+}
+
+.review-form.hidden {
+  display: none !important;
+}
+
+.review-card.is-current-review {
+  border-color: rgba(112, 225, 255, 0.52) !important;
+  background:
+    linear-gradient(135deg, rgba(14, 165, 233, 0.12), rgba(139, 92, 246, 0.08)),
+    rgba(248, 250, 252, 0.045) !important;
+}
+
+.review-card.is-current-review .review-id {
+  border-color: rgba(112, 225, 255, 0.42) !important;
+  background: rgba(14, 165, 233, 0.16) !important;
+}
+
+.review-card-foot strong {
+  letter-spacing: 0.01em !important;
+}
+
+/* v4.8 compact detail scale: shrink client/admin detail density by about 2x */
+body:has(.admin-layout:not(.hidden)) .modal-card {
+  padding: 14px !important;
+  border-radius: 18px !important;
+}
+
+body:has(.admin-layout:not(.hidden)) .modal-head {
+  margin-bottom: 10px !important;
+  gap: 10px !important;
+}
+
+body:has(.admin-layout:not(.hidden)) .modal-head h2 {
+  font-size: clamp(1.22rem, 1.8vw, 1.65rem) !important;
+  line-height: 1.05 !important;
+}
+
+body:has(.admin-layout:not(.hidden)) #serviceForm.form-grid,
+body:has(.admin-layout:not(.hidden)) #digitalProductAdminForm.form-grid {
+  gap: 10px 12px !important;
+}
+
+body:has(.admin-layout:not(.hidden)) #serviceForm .field,
+body:has(.admin-layout:not(.hidden)) #digitalProductAdminForm .field {
+  gap: 5px !important;
+}
+
+body:has(.admin-layout:not(.hidden)) #serviceForm .field label,
+body:has(.admin-layout:not(.hidden)) #digitalProductAdminForm .field label {
+  font-size: 0.76rem !important;
+  font-weight: 850 !important;
+  margin-bottom: 0 !important;
+}
+
+body:has(.admin-layout:not(.hidden)) #serviceForm .input,
+body:has(.admin-layout:not(.hidden)) #serviceForm .select,
+body:has(.admin-layout:not(.hidden)) #serviceForm .textarea,
+body:has(.admin-layout:not(.hidden)) #digitalProductAdminForm .input,
+body:has(.admin-layout:not(.hidden)) #digitalProductAdminForm .select,
+body:has(.admin-layout:not(.hidden)) #digitalProductAdminForm .textarea {
+  min-height: 36px !important;
+  padding: 0.58rem 0.72rem !important;
+  font-size: 0.8rem !important;
+  border-radius: 11px !important;
+}
+
+body:has(.admin-layout:not(.hidden)) #serviceForm .textarea,
+body:has(.admin-layout:not(.hidden)) #digitalProductAdminForm .textarea {
+  min-height: 78px !important;
+}
+
+body:has(.admin-layout:not(.hidden)) #serviceForm .field-hint,
+body:has(.admin-layout:not(.hidden)) #digitalProductAdminForm .field-hint {
+  font-size: 0.68rem !important;
+  line-height: 1.3 !important;
+}
+
+.digital-product-upload-row {
+  gap: 7px !important;
+}
+
+.digital-product-view-image-btn {
+  min-width: 86px !important;
+  min-height: 34px !important;
+  padding: 0.5rem 0.64rem !important;
+  font-size: 0.72rem !important;
+}
+
+body:has(.admin-layout:not(.hidden)) .digital-product-admin-preview {
+  width: min(100%, 260px) !important;
+  max-height: 145px !important;
+  border-radius: 12px !important;
+}
+
+body:has(.admin-layout:not(.hidden)) .digital-product-admin-preview img {
+  max-width: 240px !important;
+  max-height: 145px !important;
+}
+
+.client-standalone-section {
+  padding: 30px 0 48px !important;
+}
+
+.client-standalone-shell {
+  gap: 14px !important;
+}
+
+.client-standalone-section .client-direction-section,
+.client-standalone-section .client-process-section,
+.client-reviews-section {
+  gap: 14px !important;
+  padding: clamp(18px, 2.2vw, 26px) !important;
+  border-radius: 22px !important;
+}
+
+.client-standalone-section .eyebrow,
+.client-reviews-section .eyebrow {
+  font-size: clamp(0.76rem, 1vw, 0.88rem) !important;
+  line-height: 1.1 !important;
+}
+
+.client-section-heading {
+  gap: 5px !important;
+  max-width: 760px !important;
+}
+
+.client-section-heading h2,
+.review-heading h2 {
+  font-size: clamp(1.28rem, 2.35vw, 2.05rem) !important;
+  line-height: 1.02 !important;
+  letter-spacing: -0.052em !important;
+}
+
+.client-standalone-section .client-section-heading h1,
+.client-standalone-section .client-about-card h1 {
+  font-size: clamp(1.55rem, 3vw, 2.85rem) !important;
+  line-height: 0.98 !important;
+}
+
+.client-standalone-section .client-section-heading p,
+.client-standalone-section .client-about-card p,
+.client-reviews-section .client-section-heading p,
+.client-section-heading p {
+  font-size: 0.82rem !important;
+  line-height: 1.45 !important;
+}
+
+.review-cards-scroll {
+  gap: 8px !important;
+}
+
+.review-card {
+  gap: 6px !important;
+  padding: 10px 12px !important;
+  border-radius: 12px !important;
+}
+
+.review-card-head,
+.review-card-foot {
+  gap: 8px !important;
+}
+
+.review-stars {
+  font-size: 0.82rem !important;
+  gap: 1px !important;
+}
+
+.review-id {
+  padding: 0.24rem 0.48rem !important;
+  font-size: 0.66rem !important;
+}
+
+.review-card p {
+  font-size: 0.82rem !important;
+  line-height: 1.42 !important;
+}
+
+.review-card strong {
+  font-size: 0.74rem !important;
+}
+
+.review-card small,
+.review-edited {
+  font-size: 0.66rem !important;
+}
+
+.review-form {
+  gap: 10px !important;
+  padding-top: 12px !important;
+}
+
+.review-form .field label {
+  font-size: 0.78rem !important;
+}
+
+.review-form .textarea {
+  min-height: 98px !important;
+  font-size: 0.82rem !important;
+  padding: 0.7rem 0.78rem !important;
+}
+
+.review-form .field-hint,
+.review-form-actions .service-desc {
+  font-size: 0.68rem !important;
+}
+
+.review-form-actions .btn {
+  min-width: 150px !important;
+  min-height: 38px !important;
+  padding: 0.58rem 0.9rem !important;
+  font-size: 0.78rem !important;
+}
+
+.details-grid {
+  gap: 5px !important;
+}
+
+.detail-row {
+  grid-template-columns: 92px minmax(0, 1fr) !important;
+  gap: 8px !important;
+  padding: 6px 8px !important;
+  border-radius: 10px !important;
+}
+
+.detail-row span {
+  font-size: 0.66rem !important;
+}
+
+.detail-row strong {
+  font-size: 0.78rem !important;
+}
+
+.digital-product-modal-body {
+  gap: 8px !important;
+}
+
+.digital-product-modal-image {
+  width: min(128px, 55vw) !important;
+  border-radius: 12px !important;
+}
+
+.digital-product-modal-price {
+  font-size: 0.95rem !important;
+}
+
+.digital-product-modal-body p {
+  font-size: 0.8rem !important;
+  line-height: 1.42 !important;
+}
+
+.service-card {
+  min-height: 210px !important;
+  gap: 9px !important;
+}
+
+.service-card h3 {
+  font-size: 0.95rem !important;
+  line-height: 1.18 !important;
+}
+
+.service-desc {
+  font-size: 0.78rem !important;
+  line-height: 1.42 !important;
+}
+
+.price-row {
+  padding-top: 8px !important;
+  font-size: 0.76rem !important;
+}
+
+.price-row strong {
+  font-size: 0.92rem !important;
+}
+
+
+/* v4.9 public copy + scroll stability patch */
+html,
+body {
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+html.is-scrolling-global,
+body.is-scrolling {
+  scrollbar-width: none !important;
+}
+
+html.is-scrolling-global::-webkit-scrollbar,
+body.is-scrolling::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+}
+
+body,
+.topbar,
+.client-standalone-section,
+.provider-hero,
+.admin-layout,
+.modal-backdrop {
+  overscroll-behavior-x: none !important;
+}
+
+.shell,
+.client-standalone-shell,
+.client-direction-section,
+.client-process-section,
+.client-reviews-section,
+.client-about-card,
+.elevated-card,
+.client-feature-grid,
+.client-process-steps,
+.review-cards-scroll,
+.review-card,
+.service-grid,
+.digital-products-grid,
+.admin-main,
+.admin-main > .section {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+.client-feature-card,
+.client-process-steps > article,
+.review-card,
+.service-card,
+.digital-product-card {
+  overflow-wrap: anywhere !important;
+}
+
+.client-feature-grid,
+.client-process-steps {
+  align-items: stretch !important;
+}
+
+.client-process-steps > article:nth-child(4) p,
+.client-feature-card:nth-child(4) p {
+  color: rgba(203, 213, 225, 0.84) !important;
+}
+
+.review-card-foot strong {
+  color: rgba(226, 232, 240, 0.88) !important;
+}
+
+
+/* v5.0 launch hardening + responsive polish */
+:root {
+  --shell-wide: 1180px;
+  --section-gap: clamp(14px, 2vw, 22px);
+}
+
+html {
+  overflow-y: scroll !important;
+  scrollbar-gutter: stable !important;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+* {
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(112, 225, 255, 0.42) transparent !important;
+}
+
+*::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(112, 225, 255, 0.42) !important;
+  border-radius: 999px !important;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+body {
+  background:
+    radial-gradient(circle at 14% -10%, rgba(112, 225, 255, 0.12), transparent 28rem),
+    radial-gradient(circle at 92% 6%, rgba(167, 139, 250, 0.11), transparent 24rem),
+    linear-gradient(180deg, #070a12 0%, #0a1020 50%, #080a13 100%) !important;
+}
+
+body.client-nav-open {
+  overflow: hidden;
+}
+
+.shell {
+  width: min(var(--shell-wide), calc(100% - clamp(24px, 4vw, 44px))) !important;
+}
+
+.topbar {
+  backdrop-filter: blur(16px) saturate(140%) !important;
+  background: rgba(7, 10, 18, 0.88) !important;
+}
+
+.topbar-inner {
+  min-height: 68px !important;
+  gap: 14px !important;
+  position: relative !important;
+}
+
+.brand {
+  min-width: 0 !important;
+  flex: 0 1 auto !important;
+}
+
+.brand-logo-frame {
+  position: relative !important;
+  overflow: hidden !important;
+  isolation: isolate !important;
+  flex: 0 0 auto !important;
+  background: linear-gradient(145deg, rgba(12, 18, 32, 0.92), rgba(18, 23, 42, 0.74)) !important;
+  border: 1px solid rgba(112, 225, 255, 0.24) !important;
+}
+
+.brand-logo-img {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+
+.brand-logo-frame.has-logo .brand-logo-img {
+  opacity: 1;
+}
+
+.brand-logo-frame.has-logo .logo-fallback-letter {
+  opacity: 0;
+}
+
+.brand-logo-frame.logo-missing .brand-logo-img {
+  display: none !important;
+}
+
+.logo-fallback-letter {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.mobile-nav-toggle {
+  display: none;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.76);
+  color: var(--text);
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+  flex: 0 0 auto;
+}
+
+.mobile-nav-toggle span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 99px;
+  background: currentColor;
+  transition: transform 160ms ease, opacity 160ms ease;
+}
+
+body.client-nav-open .mobile-nav-toggle span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+body.client-nav-open .mobile-nav-toggle span:nth-child(2) {
+  opacity: 0;
+}
+body.client-nav-open .mobile-nav-toggle span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.nav-actions {
+  gap: 8px !important;
+  flex-wrap: nowrap !important;
+}
+
+.nav-actions .btn {
+  min-height: 38px !important;
+  padding: 0.58rem 0.82rem !important;
+  font-size: 0.84rem !important;
+}
+
+.client-home-section,
+.client-standalone-section,
+.provider-hero,
+.section.digital-products-section,
+.section.service-directory-section {
+  padding-block: clamp(24px, 4vw, 48px) !important;
+}
+
+.client-home-shell,
+.client-standalone-shell {
+  gap: var(--section-gap) !important;
+}
+
+.client-home-hero,
+.client-standalone-section .client-direction-section,
+.client-standalone-section .client-process-section,
+.client-reviews-section,
+.client-about-card,
+.provider-calculator-card,
+.control-panel,
+.table-wrap,
+.digital-product-card,
+.service-card,
+.client-info-card,
+.client-feature-card,
+.client-process-steps > article {
+  border-color: rgba(148, 163, 184, 0.16) !important;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.20) !important;
+}
+
+.client-home-hero {
+  grid-template-columns: minmax(0, 1.08fr) minmax(240px, 0.72fr) !important;
+  padding: clamp(20px, 3.2vw, 34px) !important;
+  border-radius: 24px !important;
+}
+
+.client-home-copy h1,
+.client-standalone-section .client-section-heading h1,
+.client-standalone-section .client-about-card h1 {
+  letter-spacing: -0.055em !important;
+}
+
+.client-home-copy h1 {
+  font-size: clamp(2rem, 4.8vw, 4.35rem) !important;
+  line-height: 0.98 !important;
+}
+
+.client-home-copy p,
+.client-section-heading p,
+.client-about-card p,
+.section-head p {
+  color: rgba(203, 213, 225, 0.82) !important;
+}
+
+.client-info-grid,
+.client-feature-grid,
+.client-process-steps,
+.digital-products-grid {
+  gap: 14px !important;
+}
+
+.client-info-card,
+.client-feature-card,
+.client-process-steps > article,
+.digital-product-card {
+  border-radius: 20px !important;
+  padding: clamp(16px, 2vw, 22px) !important;
+}
+
+.client-feature-card h3,
+.client-process-steps h3,
+.client-info-card h2,
+.digital-product-card h3 {
+  font-size: clamp(1rem, 1.4vw, 1.24rem) !important;
+  line-height: 1.16 !important;
+  letter-spacing: -0.035em !important;
+}
+
+.client-feature-card p,
+.client-process-steps p,
+.client-info-card p,
+.digital-product-card p,
+.service-desc {
+  font-size: 0.84rem !important;
+  line-height: 1.45 !important;
+}
+
+.client-process-steps strong {
+  width: 38px !important;
+  height: 38px !important;
+  font-size: 0.82rem !important;
+}
+
+.client-reviews-section {
+  overflow: hidden !important;
+}
+
+.review-cards-scroll {
+  display: grid !important;
+  grid-auto-flow: row !important;
+  grid-auto-columns: unset !important;
+  grid-template-columns: 1fr !important;
+  overflow: visible !important;
+  padding: 0 !important;
+  gap: 9px !important;
+}
+
+.review-card {
+  min-height: 0 !important;
+  border-color: rgba(245, 158, 11, 0.28) !important;
+  background: rgba(15, 23, 42, 0.62) !important;
+}
+
+.review-card-head,
+.review-card-foot {
+  display: grid !important;
+  grid-template-columns: 1fr auto !important;
+  align-items: center !important;
+}
+
+.review-form {
+  padding-top: 12px !important;
+  margin-top: 4px !important;
+}
+
+.review-form .textarea {
+  min-height: 108px !important;
+}
+
+.section-head h2,
+.review-heading h2,
+.client-section-heading h2 {
+  letter-spacing: -0.045em !important;
+}
+
+.section-head {
+  gap: 14px !important;
+}
+
+.digital-products-grid {
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)) !important;
+}
+
+.public-services-table {
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  border-radius: 18px !important;
+}
+
+.public-services-table table {
+  min-width: 880px !important;
+}
+
+.public-services-table th,
+.public-services-table td {
+  padding: 11px 10px !important;
+  font-size: 0.78rem !important;
+}
+
+.footer {
+  font-size: 0.78rem !important;
+  color: rgba(203, 213, 225, 0.70) !important;
+}
+
+@media (max-width: 980px) {
+  .client-home-hero,
+  .client-info-grid,
+  .client-feature-grid,
+  .client-process-steps {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .client-home-copy {
+    grid-column: 1 / -1;
+  }
+  .client-home-panel {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .shell {
+    width: min(100%, calc(100% - 22px)) !important;
+  }
+
+  .topbar-inner {
+    min-height: 62px !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    padding-block: 10px !important;
+  }
+
+  .brand {
+    max-width: 100% !important;
+  }
+
+  .logo-mark {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 13px !important;
+  }
+
+  .brand-title {
+    font-size: 0.98rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .brand-subtitle {
+    font-size: 0.66rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 170px !important;
+  }
+
+  .mobile-nav-toggle {
+    display: inline-flex !important;
+  }
+
+  .nav-actions {
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: calc(100% + 8px) !important;
+    display: none !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    padding: 12px !important;
+    border: 1px solid rgba(148, 163, 184, 0.18) !important;
+    border-radius: 18px !important;
+    background: rgba(8, 13, 30, 0.98) !important;
+    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.42) !important;
+    z-index: 80 !important;
+  }
+
+  body.client-nav-open .nav-actions {
+    display: grid !important;
+  }
+
+  .nav-actions .btn {
+    width: 100% !important;
+    justify-content: flex-start !important;
+    min-height: 42px !important;
+  }
+
+  .client-home-section,
+  .client-standalone-section,
+  .provider-hero,
+  .section.digital-products-section,
+  .section.service-directory-section {
+    padding-block: 18px 34px !important;
+  }
+
+  .client-home-hero,
+  .client-info-grid,
+  .client-feature-grid,
+  .client-process-steps,
+  .client-home-panel,
+  .digital-products-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .client-home-hero,
+  .client-standalone-section .client-direction-section,
+  .client-standalone-section .client-process-section,
+  .client-reviews-section,
+  .client-about-card,
+  .provider-calculator-card,
+  .control-panel {
+    padding: 16px !important;
+    border-radius: 20px !important;
+  }
+
+  .client-home-copy h1,
+  .client-standalone-section .client-section-heading h1,
+  .client-standalone-section .client-about-card h1 {
+    font-size: clamp(1.72rem, 10vw, 2.35rem) !important;
+    line-height: 1.02 !important;
+  }
+
+  .client-home-copy p,
+  .client-section-heading p,
+  .client-about-card p,
+  .section-head p {
+    font-size: 0.82rem !important;
+    line-height: 1.48 !important;
+  }
+
+  .client-home-actions,
+  .review-form-actions,
+  .provider-order-actions,
+  .controls-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 9px !important;
+  }
+
+  .client-home-actions .btn,
+  .review-form-actions .btn,
+  .provider-order-actions .btn,
+  .controls-grid .btn,
+  .new-order-btn,
+  .copy-link-btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  .review-card-head,
+  .review-card-foot {
+    grid-template-columns: 1fr !important;
+    justify-items: start !important;
+    gap: 4px !important;
+  }
+
+  .review-form .textarea {
+    min-height: 118px !important;
+  }
+
+  .public-services-table {
+    overflow: visible !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+
+  .public-services-table table,
+  .public-services-table thead,
+  .public-services-table tbody,
+  .public-services-table tr,
+  .public-services-table th,
+  .public-services-table td {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .public-services-table thead {
+    display: none !important;
+  }
+
+  .public-services-table tr {
+    margin-bottom: 10px !important;
+    padding: 12px !important;
+    border: 1px solid rgba(148, 163, 184, 0.16) !important;
+    border-radius: 18px !important;
+    background: rgba(15, 23, 42, 0.66) !important;
+  }
+
+  .public-services-table td {
+    display: grid !important;
+    grid-template-columns: 74px minmax(0, 1fr) !important;
+    gap: 10px !important;
+    padding: 7px 0 !important;
+    border: 0 !important;
+    font-size: 0.8rem !important;
+  }
+
+  .public-services-table td::before {
+    content: attr(data-label) !important;
+    color: rgba(148, 163, 184, 0.86) !important;
+    font-size: 0.66rem !important;
+    font-weight: 900 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+  }
+
+  .public-services-table td[data-label="Action"] {
+    grid-template-columns: 1fr !important;
+    padding-top: 10px !important;
+  }
+
+  .public-services-table td[data-label="Action"]::before {
+    display: none !important;
+  }
+
+  .public-services-table .btn {
+    width: 100% !important;
+  }
+
+  .modal-card,
+  .modal-card.wide-modal,
+  .modal-card.small-modal {
+    width: calc(100% - 20px) !important;
+    max-height: calc(100dvh - 20px) !important;
+    padding: 14px !important;
+    border-radius: 18px !important;
+  }
+
+  .modal-head h2 {
+    font-size: 1.2rem !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .brand-subtitle {
+    display: none !important;
+  }
+  .client-info-card,
+  .client-feature-card,
+  .client-process-steps > article,
+  .digital-product-card,
+  .review-card {
+    padding: 12px !important;
+  }
+  .section-head h2,
+  .review-heading h2,
+  .client-section-heading h2 {
+    font-size: 1.34rem !important;
+  }
+}

@@ -512,10 +512,14 @@
 
   function nextReviewId(reviews) {
     const max = reviews.reduce((highest, review) => {
-      const match = String(review.id || '').match(/^Pnovalyte(\d+)$/i);
-      return match ? Math.max(highest, Number(match[1]) || 0) : highest;
-    }, 0);
-    return `Pnovalyte${String(max + 1).padStart(3, '0')}`;
+      const id = String(review.id || '');
+      const phnovaMatch = id.match(/^phnova-00A(\d+)$/i);
+      const legacyMatch = id.match(/^Pnovalyte(\d+)$/i);
+      if (phnovaMatch) return Math.max(highest, Number(phnovaMatch[1]) || 0);
+      if (legacyMatch) return Math.max(highest, Number(legacyMatch[1]) || 0);
+      return highest;
+    }, 4);
+    return `phnova-00A${max + 1}`;
   }
 
   function addReview(displayName, message) {
@@ -527,7 +531,7 @@
     const review = normalizeReview({
       id: nextReviewId(reviews),
       token: ensureClientReviewToken(),
-      displayName: String(displayName || '').trim().slice(0, 60),
+      displayName: '',
       message: text,
       createdAt: new Date().toISOString(),
       updatedAt: ''
@@ -538,19 +542,9 @@
   }
 
   function updateReview(displayName, message) {
-    const text = String(message || '').trim().slice(0, 1000);
-    if (!text) return { ok: false, reason: 'empty' };
     const existing = getCurrentClientReview();
-    if (!existing) return addReview(displayName, text);
-    if (!canEditReview(existing)) return { ok: false, reason: 'locked', review: existing };
-    const reviews = getReviews().map(review => review.id === existing.id ? normalizeReview({
-      ...review,
-      displayName: String(displayName || '').trim().slice(0, 60),
-      message: text,
-      updatedAt: new Date().toISOString()
-    }) : review);
-    saveReviews(reviews);
-    return { ok: true, review: reviews.find(review => review.id === existing.id) };
+    if (existing) return { ok: false, reason: 'locked', review: existing };
+    return addReview('', message);
   }
 
   function formatMoney(value) {

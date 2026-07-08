@@ -5,17 +5,16 @@
   const state = { servicePage: 1, perPage: 10, view: 'home', activeDigitalProductId: null };
 
   const els = {
-    visibleServiceCount: document.getElementById('visibleServiceCount'),
-    platformCount: document.getElementById('platformCount'),
     homeSection: document.getElementById('home'),
     homeNavBtn: document.getElementById('homeNavBtn'),
+    mobileNavToggle: document.getElementById('mobileNavToggle'),
+    primaryNav: document.getElementById('primaryNav'),
     whatWeDoNavBtn: document.getElementById('whatWeDoNavBtn'),
     aboutNavBtn: document.getElementById('aboutNavBtn'),
     whatWeDoSection: document.getElementById('what-we-do'),
     aboutSection: document.getElementById('about-novalyte'),
     reviewCards: document.getElementById('reviewCards'),
     reviewForm: document.getElementById('reviewForm'),
-    reviewDisplayName: document.getElementById('reviewDisplayName'),
     reviewText: document.getElementById('reviewText'),
     reviewCharCount: document.getElementById('reviewCharCount'),
     submitReviewBtn: document.getElementById('submitReviewBtn'),
@@ -218,8 +217,6 @@
     els.calcCategory.innerHTML = '';
     platforms.forEach(platform => els.calcCategory.append(option(platform, groupLabel(platform))));
 
-    if (els.visibleServiceCount) els.visibleServiceCount.textContent = Store.formatNumber(services.length);
-    if (els.platformCount) els.platformCount.textContent = Store.formatNumber(platforms.length);
   }
 
   function calculatorCandidates() {
@@ -602,73 +599,124 @@
   }
 
 
+  const DEFAULT_PUBLIC_REVIEWS = [
+    {
+      id: 'phnova-00A1',
+      message: 'Legit to, fast transaction plus nililinaw mabuti bago i process',
+      rating: 5,
+      createdAt: '2026-07-01T09:00:00.000Z',
+      isSeed: true
+    },
+    {
+      id: 'phnova-00A2',
+      message: 'Try nyo, hindi masasayang efforts nyo, realiable and friendly',
+      rating: 5,
+      createdAt: '2026-07-02T10:30:00.000Z',
+      isSeed: true
+    },
+    {
+      id: 'phnova-00A3',
+      message: 'my new favortie boosting company/agency, sulit ang bayad XD',
+      rating: 5,
+      createdAt: '2026-07-03T12:15:00.000Z',
+      isSeed: true
+    },
+    {
+      id: 'phnova-00A4',
+      message: 'Legit nganiii ito',
+      rating: 5,
+      createdAt: '2026-07-04T15:45:00.000Z',
+      isSeed: true
+    }
+  ];
+
+  function renderReviewStars(rating = 5) {
+    const value = Math.max(1, Math.min(5, Number(rating) || 5));
+    return Array.from({ length: 5 }, (_, index) => `<span class="review-star${index < value ? ' active' : ''}">★</span>`).join('');
+  }
+
+  function formatReviewDate(dateValue) {
+    const date = new Date(dateValue || Date.now());
+    if (Number.isNaN(date.getTime())) return '';
+    return date.toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+
+  function combinedPublicReviews() {
+    const savedReviews = Store.getReviews ? Store.getReviews() : [];
+    const realIds = new Set(savedReviews.map(review => String(review.id || '').toLowerCase()));
+    const seedReviews = DEFAULT_PUBLIC_REVIEWS.filter(review => !realIds.has(String(review.id || '').toLowerCase()));
+    return [...savedReviews, ...seedReviews];
+  }
+
   function renderReviews() {
     if (!els.reviewCards) return;
-    const reviews = Store.getReviews ? Store.getReviews() : [];
-    if (!reviews.length) {
-      els.reviewCards.innerHTML = `
-        <article class="review-card review-empty-card">
-          <span class="review-id">Pnovalyte000</span>
-          <p>No reviews yet. Be the first client to leave feedback for Novalyte.</p>
-        </article>
-      `;
-    } else {
-      els.reviewCards.innerHTML = reviews.map(review => `
-        <article class="review-card">
+    const reviews = combinedPublicReviews();
+    const current = Store.getCurrentClientReview ? Store.getCurrentClientReview() : null;
+
+    els.reviewCards.innerHTML = reviews.map(review => {
+      const isCurrent = current && review.id === current.id;
+      const label = isCurrent ? 'Your feedback' : 'Client feedback';
+      return `
+        <article class="review-card${isCurrent ? ' is-current-review' : ''}">
           <div class="review-card-head">
+            <div class="review-stars" aria-label="Five star feedback">${renderReviewStars(review.rating || 5)}</div>
             <span class="review-id">${sanitize(review.id)}</span>
-            <small>${sanitize(new Date(review.createdAt).toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' }))}</small>
           </div>
           <p>${sanitize(review.message)}</p>
-          <strong>${sanitize(review.displayName || 'Novalyte Client')}</strong>
-          ${review.updatedAt ? '<small class="review-edited">Edited</small>' : ''}
+          <div class="review-card-foot">
+            <strong>${label}</strong>
+            <small>${sanitize(formatReviewDate(review.createdAt))}</small>
+          </div>
         </article>
-      `).join('');
-    }
+      `;
+    }).join('');
 
-    const current = Store.getCurrentClientReview ? Store.getCurrentClientReview() : null;
-    const editable = current && Store.canEditReview && Store.canEditReview(current);
-    if (els.reviewDisplayName && els.reviewText && current) {
-      els.reviewDisplayName.value = current.displayName || '';
-      els.reviewText.value = current.message || '';
+    if (els.reviewForm) {
+      els.reviewForm.classList.toggle('hidden', Boolean(current));
+    }
+    if (els.reviewText && !current) {
+      els.reviewText.value = els.reviewText.value.slice(0, 1000);
     }
     if (els.submitReviewBtn) {
-      els.submitReviewBtn.textContent = current ? editable ? 'Update Review' : 'Review Locked' : 'Submit Review';
-      els.submitReviewBtn.disabled = Boolean(current && !editable);
+      els.submitReviewBtn.textContent = 'Submit Feedback';
+      els.submitReviewBtn.disabled = Boolean(current);
     }
     if (els.reviewFormNotice) {
       els.reviewFormNotice.textContent = current
-        ? editable
-          ? `Your review ID is ${current.id}. You can still edit it within 30 minutes of posting.`
-          : `Your review ID is ${current.id}. The 30-minute edit window has ended.`
-        : 'No account required. Your review will receive a Novalyte client ID.';
+        ? `Your feedback ID is ${current.id}. One feedback submission is allowed per browser.`
+        : 'No account required. Your feedback will receive an auto-generated Novalyte client ID.';
     }
     updateReviewCharCount();
   }
 
   function updateReviewCharCount() {
     if (!els.reviewText || !els.reviewCharCount) return;
+    if (els.reviewText.value.length > 1000) {
+      els.reviewText.value = els.reviewText.value.slice(0, 1000);
+    }
     els.reviewCharCount.textContent = String(els.reviewText.value.length);
   }
 
   function submitClientReview(event) {
     event.preventDefault();
-    if (!Store.addReview || !Store.updateReview) return;
-    const current = Store.getCurrentClientReview ? Store.getCurrentClientReview() : null;
-    const result = current
-      ? Store.updateReview(els.reviewDisplayName.value, els.reviewText.value)
-      : Store.addReview(els.reviewDisplayName.value, els.reviewText.value);
-    if (!result.ok) {
-      const messages = {
-        empty: 'Please write a review before submitting.',
-        locked: 'This review is already locked after the 30-minute edit window.',
-        'exists-editable': 'You already have a review. You can edit it while it is still within 30 minutes.'
-      };
-      Store.toast(messages[result.reason] || 'Review was not saved.', result.reason === 'empty' ? 'error' : 'warning');
+    if (!Store.addReview) return;
+    if (Store.getCurrentClientReview && Store.getCurrentClientReview()) {
+      Store.toast('You already submitted feedback on this browser.', 'warning');
       renderReviews();
       return;
     }
-    Store.toast(current ? 'Review updated.' : 'Review submitted. Thank you for your feedback.');
+    const result = Store.addReview('', els.reviewText ? els.reviewText.value : '');
+    if (!result.ok) {
+      const messages = {
+        empty: 'Please write feedback before submitting.',
+        locked: 'You already submitted feedback on this browser.',
+        'exists-editable': 'You already submitted feedback on this browser.'
+      };
+      Store.toast(messages[result.reason] || 'Feedback was not saved.', result.reason === 'empty' ? 'error' : 'warning');
+      renderReviews();
+      return;
+    }
+    Store.toast('Feedback submitted. Thank you.');
     renderReviews();
   }
 
@@ -705,27 +753,48 @@
   }
 
   function setupAutoScrollbars() {
-    const scrollTargets = new Set([document.documentElement, document.body]);
-    document.querySelectorAll('.table-wrap, .client-message, .message-preview-panel .client-message, .modal-body, .provider-calculator-card, .admin-main, .panel-scroll, [data-auto-scrollbar]').forEach(el => scrollTargets.add(el));
+    // v5.0: keep scrollbars stable to avoid page wiggle/layout shift while scrolling.
+    document.documentElement.classList.remove('is-scrolling-global');
+    document.body.classList.remove('is-scrolling');
+  }
 
-    scrollTargets.forEach(el => {
-      let timer = null;
-      const markScrolling = () => {
-        el.classList.add('is-scrolling');
-        document.documentElement.classList.add('is-scrolling-global');
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-          el.classList.remove('is-scrolling');
-          document.documentElement.classList.remove('is-scrolling-global');
-        }, 850);
+  function setupBrandLogos() {
+    document.querySelectorAll('.brand-logo-img').forEach(img => {
+      const frame = img.closest('.brand-logo-frame');
+      if (!frame) return;
+      const markLoaded = () => {
+        if (img.naturalWidth > 0) {
+          frame.classList.add('has-logo');
+          frame.classList.remove('logo-missing');
+        } else {
+          frame.classList.add('logo-missing');
+        }
       };
-      el.addEventListener('scroll', markScrolling, { passive: true });
-      el.addEventListener('wheel', markScrolling, { passive: true });
-      el.addEventListener('touchmove', markScrolling, { passive: true });
+      const markMissing = () => {
+        frame.classList.add('logo-missing');
+        frame.classList.remove('has-logo');
+      };
+      img.addEventListener('load', markLoaded, { once: true });
+      img.addEventListener('error', markMissing, { once: true });
+      if (img.complete) markLoaded();
     });
   }
 
+  function closeMobileNav() {
+    document.body.classList.remove('client-nav-open');
+    if (els.mobileNavToggle) els.mobileNavToggle.setAttribute('aria-expanded', 'false');
+  }
+
+  function toggleMobileNav() {
+    const isOpen = document.body.classList.toggle('client-nav-open');
+    if (els.mobileNavToggle) els.mobileNavToggle.setAttribute('aria-expanded', String(isOpen));
+  }
+
   function bindEvents() {
+    if (els.mobileNavToggle) {
+      els.mobileNavToggle.addEventListener('click', toggleMobileNav);
+    }
+
     [els.serviceSearch, els.platformFilter, els.categoryFilter].forEach(el => el.addEventListener('input', () => {
       resetServicePage();
       renderServices();
@@ -839,12 +908,13 @@
     if (els.homeNavBtn) {
       els.homeNavBtn.addEventListener('click', event => {
         event.preventDefault();
+        closeMobileNav();
         showClientView('home');
       });
     }
 
     document.querySelectorAll('[data-client-view]').forEach(btn => {
-      btn.addEventListener('click', () => showClientView(btn.dataset.clientView));
+      btn.addEventListener('click', () => { closeMobileNav(); showClientView(btn.dataset.clientView); });
     });
 
     if (els.reviewText) els.reviewText.addEventListener('input', updateReviewCharCount);
@@ -854,6 +924,7 @@
     if (els.whatWeDoNavBtn) {
       els.whatWeDoNavBtn.addEventListener('click', event => {
         event.preventDefault();
+        closeMobileNav();
         showClientView('what-we-do');
       });
     }
@@ -861,6 +932,7 @@
     if (els.aboutNavBtn) {
       els.aboutNavBtn.addEventListener('click', event => {
         event.preventDefault();
+        closeMobileNav();
         showClientView('about');
       });
     }
@@ -868,6 +940,7 @@
     if (els.servicesNavBtn) {
       els.servicesNavBtn.addEventListener('click', event => {
         event.preventDefault();
+        closeMobileNav();
         showClientView('services');
       });
     }
@@ -875,6 +948,7 @@
     if (els.digitalProductsNavBtn) {
       els.digitalProductsNavBtn.addEventListener('click', event => {
         event.preventDefault();
+        closeMobileNav();
         showClientView('digital-products');
       });
     }
@@ -882,6 +956,7 @@
     if (els.homeBrand) {
       els.homeBrand.addEventListener('click', event => {
         event.preventDefault();
+        closeMobileNav();
         showClientView('home');
       });
     }
@@ -904,6 +979,7 @@
   }
 
   function init() {
+    setupBrandLogos();
     setupAutoScrollbars();
     Store.getServices();
     const saved = readClientState();

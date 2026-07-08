@@ -351,3 +351,60 @@ https://www.facebook.com/messages/t/1240324299157071
 - Admin tables were compressed so Actions columns stay visible at normal browser zoom.
 - Digital product modal keeps upload-based image replacement and provider/client price separation.
 
+
+## v4.6 Layout + Feedback Polish
+
+This version polishes the Digital Product admin modal and the public review area before launch. Provider and client price fields were reordered, image preview was converted into a cleaner View Image flow, section labels were simplified, and the Customer Feedback area now uses stacked review rows inspired by the provided sample.
+
+See `Documentation/V4_6_LAYOUT_FEEDBACK_POLISH_NOTES.md` for the exact change list and testing checklist.
+
+## v4.5 Launch-Ready Wrapup
+
+- Refined the public-facing Novalyte copy from a temporary boosting-menu tone into a cleaner Digital Growth Solutions portal direction.
+- Updated the page title, meta description, header subtitle, Home copy, About copy, and order-panel helper text for launch-readiness.
+- Removed stale client-side JavaScript references to old stat IDs that no longer exist in the current HTML.
+- Added compact Order Summary cards above the Admin Order History table for filtered records, completed orders, processing/pending records, cancelled/voided records, client sales, provider cost, revenue, and receivables.
+- Kept existing v4.4 locked behavior: independent What We Do/About pages, client reviews, Digital Products separation, Disable/Enable visibility, X/Esc-only modals, and localStorage storage until Supabase is connected.
+- Added `Documentation/V4_5_LAUNCH_READY_WRAPUP_NOTES.md` for this launch handoff.
+- Added `Documentation/LOCAL_APPLY_COMMANDS_v4_5_20260708.md` with the one-ZIP apply, verify, and delete workflow.
+
+## v4.7 Feedback Single Submission + Clean Edit Mode
+
+- Reworked Customer Feedback so visitors submit only one feedback entry per browser.
+- Removed the Display Name field; the form now uses only a 1000-character textarea.
+- After submission, the feedback form disappears and the submitted feedback remains visible in the list.
+- Review IDs now use the `phnova-00A#` format.
+- Added clean preview feedback cards so the section is not visually empty before real feedback grows.
+- Removed visible Show to clients / Disabled controls from Service edit mode because Enable/Disable already exists in the table actions.
+- Kept hidden internal fields to preserve existing service save behavior.
+- Added `Documentation/V4_7_FEEDBACK_SINGLE_SUBMISSION_CLEAN_EDIT_NOTES.md` and `Documentation/LOCAL_APPLY_COMMANDS_v4_7_20260708.md`.
+
+## v4.8 Compact Detail Scale
+
+- Compressed large detail areas by about half for a cleaner launch-ready feel.
+- Reduced Customer Feedback heading, helper copy, review cards, star row, textarea height, and submit button sizing.
+- Reduced About / What We Do detail copy and section spacing.
+- Reduced Service and Digital Product detail modal rows, text, image, and price scale.
+- Reduced Admin Service and Digital Product edit modal labels, inputs, hints, textareas, upload row, and image preview.
+- Kept v4.7 behavior intact: one feedback per browser, textarea only, `phnova-00A#` IDs, and no visible Show to clients / Disabled controls inside edit mode.
+- Added `Documentation/V4_8_COMPACT_DETAIL_SCALE_NOTES.md` and `Documentation/LOCAL_APPLY_COMMANDS_v4_8_20260708.md`.
+
+
+## v4.9 Public Copy + Scroll Stability Patch - 2026-07-08
+
+- Replaced public seed feedback copy with more natural Tagalog/Taglish feedback text while keeping `phnova-00A#` review IDs.
+- Removed the internal/admin wording from the client process step 04 and changed it to a client-safe confirmation step.
+- Replaced the public-facing future provider/team wording with a cleaner client service-flow message.
+- Added scroll stability CSS to reduce horizontal page wiggle/jitter while scrolling.
+- Kept one-submission feedback behavior from v4.7 and compact sizing from v4.8.
+
+## v5.0 Launch Hardening + Responsive Polish - 2026-07-08
+
+- Added mobile hamburger navigation for the client view to prevent squeezed header/nav layout on phones.
+- Added `Resources/Icons/logo.png` from the original Novalyte brand artwork and wired the client/admin brand mark to use it with fallback handling.
+- Refined public-facing copy so clients only see helpful order, service, and confirmation details.
+- Removed remaining client-facing language that sounded internal, provider/admin-based, or unnecessary for customers.
+- Hardened scroll stability by keeping scrollbars stable and disabling the previous auto-hide scrollbar behavior that could cause page wiggle.
+- Improved mobile spacing, card sizing, paddings, table-to-card behavior for services, modal sizing, and button layout.
+- Kept v4.7-v4.9 behavior: one feedback submission per browser, textarea-only feedback, `phnova-00A#` IDs, Tagalog/Taglish seed feedback, hidden edit visibility controls, and compact admin modals.
+- Added `Documentation/V5_0_LAUNCH_HARDENING_RESPONSIVE_POLISH_NOTES.md` and `Documentation/LOCAL_APPLY_COMMANDS_v5_0_20260708.md`.

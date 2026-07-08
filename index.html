@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Novalyte Boosting Menu</title>
-  <meta name="description" content="Client-facing Novalyte boosting service menu with panel-style order calculator.">
+  <title>Novalyte Digital Growth Portal</title>
+  <meta name="description" content="Novalyte digital growth portal for social growth services, digital subscriptions, and Messenger-ready checkout.">
   <link rel="icon" href="assets/icons/novalyte.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
@@ -12,13 +12,21 @@
   <header class="topbar">
     <div class="shell topbar-inner">
       <a class="brand" href="#top" id="homeBrand" aria-label="Novalyte home">
-        <span class="logo-mark">N</span>
+        <span class="logo-mark brand-logo-frame">
+          <img class="brand-logo-img" src="Resources/Icons/logo.png" alt="" loading="eager">
+          <span class="logo-fallback-letter">N</span>
+        </span>
         <span>
           <span class="brand-title">Novalyte</span>
-          <span class="brand-subtitle">Boosting Service Menu</span>
+          <span class="brand-subtitle">Digital Growth Solutions</span>
         </span>
       </a>
-      <nav class="nav-actions" aria-label="Primary navigation">
+      <button class="mobile-nav-toggle" id="mobileNavToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="primaryNav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav class="nav-actions" id="primaryNav" aria-label="Primary navigation">
         <a class="btn ghost" href="#home" id="homeNavBtn">Home</a>
         <a class="btn ghost" href="#what-we-do" id="whatWeDoNavBtn">What We Do</a>
         <a class="btn ghost" href="#about-novalyte" id="aboutNavBtn">About</a>
@@ -35,8 +43,8 @@
         <div class="client-home-hero elevated-card">
           <div class="client-home-copy">
             <span class="eyebrow">Digital growth solutions</span>
-            <h1>Novalyte helps brands, creators, and online sellers grow faster.</h1>
-            <p>Browse boosting services, premium digital products, and ready-to-message checkout flows in one clean client portal.</p>
+            <h1>A cleaner way to browse, prepare, and message your Novalyte order.</h1>
+            <p>Check services, digital subscriptions, and order details in one simple portal before confirming through Messenger.</p>
             <div class="client-home-actions">
               <button class="btn primary" type="button" data-client-view="order">Start an Order</button>
               <button class="btn" type="button" data-client-view="digital-products">View Digital Products</button>
@@ -47,17 +55,17 @@
             <div class="home-metric-card">
               <span>Service catalog</span>
               <strong id="homeVisibleServices">0</strong>
-              <small>Visible boosting services</small>
+              <small>Available services</small>
             </div>
             <div class="home-metric-card">
               <span>Digital products</span>
               <strong id="homeDigitalProducts">0</strong>
-              <small>Tools and subscriptions</small>
+              <small>Accounts and tools</small>
             </div>
             <div class="home-metric-card highlight">
               <span>Checkout flow</span>
               <strong>Messenger</strong>
-              <small>Auto-copy order details before redirect</small>
+              <small>Prepared order message</small>
             </div>
           </div>
         </div>
@@ -66,19 +74,19 @@
           <article class="client-info-card">
             <span class="info-icon">⚡</span>
             <h2>Boosting services</h2>
-            <p>Search by platform, category, or provider ID. Rates are client-facing and provider costs stay internal.</p>
+            <p>Browse available services by platform and check the client rate before sending an order message.</p>
             <button class="btn small" type="button" data-client-view="services">Open services</button>
           </article>
           <article class="client-info-card">
             <span class="info-icon">💎</span>
             <h2>Digital products</h2>
-            <p>Premium subscriptions and tools for streaming, editing, productivity, AI, and student use.</p>
+            <p>Selected subscriptions and digital tools for streaming, editing, AI, productivity, and student use.</p>
             <button class="btn small" type="button" data-client-view="digital-products">Open products</button>
           </article>
           <article class="client-info-card">
             <span class="info-icon">🛟</span>
             <h2>Contact us</h2>
-            <p>Questions, availability checks, and custom orders are handled through the Novalyte Messenger page.</p>
+            <p>For questions, availability, and custom requests, message Novalyte directly on Messenger.</p>
             <a class="btn small primary" href="https://www.facebook.com/messages/t/1240324299157071" target="_blank" rel="noopener">Message Novalyte</a>
           </article>
         </div>
@@ -93,29 +101,29 @@
         <div class="client-direction-section elevated-card">
           <div class="client-section-heading">
             <span class="eyebrow">What we do</span>
-            <h1 id="clientWhatWeDoTitle">A cleaner direction for Novalyte as a permanent growth portal.</h1>
-            <p>Built to start as a simple ordering menu, then grow into a full boosting and digital access platform when the brand is ready for its own domain.</p>
+            <h1 id="clientWhatWeDoTitle">A cleaner way to order social growth services and digital products.</h1>
+            <p>Novalyte keeps the process simple: browse the menu, prepare details, send a message, and confirm before anything is processed.</p>
           </div>
           <div class="client-feature-grid">
             <article class="client-feature-card">
               <span class="info-icon">📈</span>
               <h3>Social growth services</h3>
-              <p>Organized boosting services for views, reactions, followers, members, shares, and other platform-based campaigns.</p>
+              <p>Organized service options for views, reactions, followers, members, shares, and other platform-based needs.</p>
             </article>
             <article class="client-feature-card">
               <span class="info-icon">🎬</span>
               <h3>Digital subscriptions</h3>
-              <p>Selected streaming, AI, editing, and student tools with clear pricing and Messenger-based checkout.</p>
+              <p>Selected streaming, AI, editing, and student tools with clear client pricing.</p>
             </article>
             <article class="client-feature-card">
               <span class="info-icon">🧾</span>
               <h3>Order coordination</h3>
-              <p>Clients can copy or send formatted order details so inquiries stay consistent and easier to process.</p>
+              <p>Order details are prepared in a clear format so the conversation is easier to confirm.</p>
             </article>
             <article class="client-feature-card">
               <span class="info-icon">🤝</span>
-              <h3>Future booster network</h3>
-              <p>The structure is ready to support a larger team, more providers, and a stronger brand workflow as Novalyte grows.</p>
+              <h3>Clear service flow</h3>
+              <p>A guided flow from browsing to Messenger confirmation, without unnecessary steps.</p>
             </article>
           </div>
         </div>
@@ -123,14 +131,14 @@
         <div class="client-process-section elevated-card" aria-labelledby="clientProcessTitle">
           <div class="client-section-heading compact-heading">
             <span class="eyebrow">Simple process</span>
-            <h2 id="clientProcessTitle">Choose, preview, message, then confirm.</h2>
-            <p>A practical flow for clients today, with room to become a full checkout system later.</p>
+            <h2 id="clientProcessTitle">Browse, prepare, message, then confirm.</h2>
+            <p>A simple client flow that keeps details clear before processing.</p>
           </div>
           <div class="client-process-steps">
-            <article><strong>01</strong><h3>Browse</h3><p>Select boosting services or digital products from a focused catalog.</p></article>
-            <article><strong>02</strong><h3>Prepare</h3><p>Enter links, usernames, quantities, or product requests with clean order details.</p></article>
-            <article><strong>03</strong><h3>Message</h3><p>Checkout details are copied or sent through Messenger for fast confirmation.</p></article>
-            <article><strong>04</strong><h3>Track</h3><p>Admin records can monitor status, income, provider cost, and investment usage.</p></article>
+            <article><strong>01</strong><h3>Browse</h3><p>Choose a service or digital product from the available menu.</p></article>
+            <article><strong>02</strong><h3>Prepare</h3><p>Add links, usernames, quantity, or product request details.</p></article>
+            <article><strong>03</strong><h3>Message</h3><p>Send the prepared details through Messenger for review.</p></article>
+            <article><strong>04</strong><h3>Confirm</h3><p>Confirm the final details before the order moves forward.</p></article>
           </div>
         </div>
       </div>
@@ -140,32 +148,26 @@
       <div class="shell client-standalone-shell">
         <div class="client-about-card elevated-card">
           <span class="eyebrow">About Novalyte</span>
-          <h1 id="aboutNovalyteTitle">Simple, organized, and client-friendly digital growth ordering.</h1>
-          <p>Novalyte is being built as a clean service portal for social growth services and selected digital subscriptions. Founder, owner, and development team details can be added here once the brand is ready for a public launch story.</p>
+          <h1 id="aboutNovalyteTitle">Simple, organized, and client-friendly ordering.</h1>
+          <p>Novalyte is a clean portal for social growth services and selected digital subscriptions. It helps clients review options, prices, and order details before confirming through Messenger.</p>
         </div>
 
         <div class="client-reviews-section elevated-card" aria-labelledby="clientReviewsTitle">
           <div class="client-section-heading review-heading">
-            <span class="eyebrow">Client reviews</span>
-            <h2 id="clientReviewsTitle">What clients say about Novalyte</h2>
-            <p>Public feedback cards can grow here over time. Each browser can leave one review only, with a 30-minute edit window after submitting.</p>
+            <span class="eyebrow">Customer Feedback</span>
+            <h2 id="clientReviewsTitle">Feedback from our customers</h2>
+            <p>Read client feedback and leave one short review for Novalyte. After submitting, your review will appear with a Novalyte client ID and the form will lock on this browser.</p>
           </div>
           <div class="review-cards-scroll" id="reviewCards" aria-live="polite"></div>
           <form class="review-form" id="reviewForm">
-            <div class="review-form-grid">
-              <div class="field">
-                <label for="reviewDisplayName">Display Name</label>
-                <input class="input" id="reviewDisplayName" type="text" maxlength="60" placeholder="Optional name or nickname">
-              </div>
-              <div class="field review-text-field">
-                <label for="reviewText">Your Review</label>
-                <textarea class="textarea" id="reviewText" maxlength="1000" rows="5" placeholder="Share your experience with Novalyte. Maximum 1000 characters."></textarea>
-                <small class="field-hint"><span id="reviewCharCount">0</span>/1000 characters</small>
-              </div>
+            <div class="field review-text-field">
+              <label for="reviewText">Share Your Feedback</label>
+              <textarea class="textarea" id="reviewText" maxlength="1000" rows="5" placeholder="Write your feedback for Novalyte. Maximum 1000 characters."></textarea>
+              <small class="field-hint"><span id="reviewCharCount">0</span>/1000 characters</small>
             </div>
             <div class="review-form-actions">
-              <p class="service-desc" id="reviewFormNotice">No account required. Your review will receive a Novalyte client ID.</p>
-              <button class="btn primary" id="submitReviewBtn" type="submit">Submit Review</button>
+              <p class="service-desc" id="reviewFormNotice">No account required. Your feedback will receive an auto-generated Novalyte client ID.</p>
+              <button class="btn primary" id="submitReviewBtn" type="submit">Submit Feedback</button>
             </div>
           </form>
         </div>
@@ -178,7 +180,7 @@
           <div>
             <span class="eyebrow">⚡ SMM-style order preview</span>
             <h1>Choose a service, enter your link, and see your total.</h1>
-            <p>Client-friendly ordering panel. Provider costs stay hidden; only final edited prices are shown.</p>
+            <p>Final client prices are shown clearly before you proceed to Messenger.</p>
           </div>
         </div>
 
@@ -246,7 +248,7 @@
           <div>
             <span class="eyebrow">Digital Products</span>
             <h2>Premium accounts and subscriptions</h2>
-            <p>Browse available tools and entertainment subscriptions. Ebooks and online templates stay under LinkTech.</p>
+            <p>Browse available accounts, tools, and subscriptions with clear client pricing.</p>
           </div>
         </div>
 
@@ -275,7 +277,7 @@
           <div>
             <span class="eyebrow">Service directory</span>
             <h2>Available Services</h2>
-            <p>Browse public services in panel format. Provider charges are hidden from client view.</p>
+            <p>Browse available services, check the rate, then prepare your order message.</p>
           </div>
         </div>
 
@@ -341,7 +343,7 @@
 
   <footer class="footer">
     <div class="shell">
-      Novalyte service menu. Rates are estimates and may change depending on availability, quantity, and provider status.
+      Novalyte service menu. Rates may change depending on availability and quantity.
     </div>
   </footer>
 

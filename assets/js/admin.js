@@ -54,7 +54,9 @@
     digitalProductDuration: document.getElementById('digitalProductDuration'),
     digitalProductImage: document.getElementById('digitalProductImage'),
     digitalProductImageUpload: document.getElementById('digitalProductImageUpload'),
+    digitalProductViewImageBtn: document.getElementById('digitalProductViewImageBtn'),
     digitalProductVisible: document.getElementById('digitalProductVisible'),
+    digitalProductPreviewField: document.getElementById('digitalProductPreviewField'),
     digitalProductImagePreview: document.getElementById('digitalProductImagePreview'),
     digitalProductDescription: document.getElementById('digitalProductDescription'),
     exportBackupBtn: document.getElementById('exportBackupBtn'),
@@ -65,6 +67,7 @@
     orderStatusFilter: document.getElementById('orderStatusFilter'),
     paymentStatusFilter: document.getElementById('paymentStatusFilter'),
     ordersTable: document.getElementById('ordersTable'),
+    ordersSummaryGrid: document.getElementById('ordersSummaryGrid'),
     serviceModal: document.getElementById('serviceModal'),
     serviceForm: document.getElementById('serviceForm'),
     serviceModalTitle: document.getElementById('serviceModalTitle'),
@@ -341,12 +344,26 @@
     return Store.getDigitalProducts().find(product => product.id === id);
   }
 
-  function updateDigitalProductPreview() {
+  function getDigitalProductImageSrc() {
+    const data = pendingDigitalImageData || (els.digitalProductImage ? els.digitalProductImage.value.trim() : '');
+    return /^(data:|https?:|blob:)/i.test(data) ? data : data ? `assets/img/digital/${encodeURIComponent(data)}` : '';
+  }
+
+  function setDigitalProductPreviewVisible(visible) {
+    if (!els.digitalProductPreviewField) return;
+    els.digitalProductPreviewField.classList.toggle('hidden', !visible);
+  }
+
+  function updateDigitalProductPreview(showPreview = false) {
     if (!els.digitalProductImagePreview) return;
-    const data = pendingDigitalImageData || els.digitalProductImage.value.trim();
-    const src = /^(data:|https?:|blob:)/i.test(data) ? data : data ? `assets/img/digital/${encodeURIComponent(data)}` : '';
+    const src = getDigitalProductImageSrc();
     els.digitalProductImagePreview.src = src;
     els.digitalProductImagePreview.alt = els.digitalProductName.value || 'Digital product preview';
+    if (els.digitalProductViewImageBtn) {
+      els.digitalProductViewImageBtn.classList.toggle('hidden', !src);
+      els.digitalProductViewImageBtn.textContent = showPreview && src ? 'Hide image' : 'View image';
+    }
+    setDigitalProductPreviewVisible(Boolean(showPreview && src));
   }
 
   function updateDigitalProductProfitPreview() {
@@ -374,7 +391,7 @@
     els.digitalProductVisible.checked = data.visible !== false;
     els.digitalProductDescription.value = data.description || '';
     if (els.digitalProductImageUpload) els.digitalProductImageUpload.value = '';
-    updateDigitalProductPreview();
+    updateDigitalProductPreview(false);
     updateDigitalProductProfitPreview();
     openModal(els.digitalProductAdminModal);
   }
@@ -659,6 +676,29 @@
     }).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }
 
+  function renderOrderSummary() {
+    if (!els.ordersSummaryGrid) return;
+    const totals = Store.getTotals();
+    const filtered = filteredOrders();
+    const closedCount = (totals.cancelledCount || 0) + (totals.voidedCount || 0);
+    const cards = [
+      { label: 'FILTERED RECORDS', value: Store.formatNumber(filtered.length), className: '' },
+      { label: 'COMPLETED ORDERS', value: Store.formatNumber(totals.completedCount), className: 'good' },
+      { label: 'PROCESSING / PENDING', value: Store.formatNumber((totals.processingCount || 0) + (totals.pendingCount || 0)), className: '' },
+      { label: 'CANCELLED / VOIDED', value: Store.formatNumber(closedCount), className: closedCount ? 'warn' : '' },
+      { label: 'CLIENT SALES', value: Store.formatMoney(totals.clientSales), className: '' },
+      { label: 'PROVIDER COST', value: Store.formatMoney(totals.providerCharges), className: '' },
+      { label: 'REVENUE', value: Store.formatMoney(totals.revenue), className: 'good' },
+      { label: 'RECEIVABLES', value: Store.formatMoney(totals.receivables), className: totals.receivables ? 'warn' : '' }
+    ];
+    els.ordersSummaryGrid.innerHTML = cards.map(item => `
+      <article class="stat-card ${item.className}">
+        <span>${item.label}</span>
+        <strong>${item.value}</strong>
+      </article>
+    `).join('');
+  }
+
   function renderAdminOrdersPagination(total) {
     const wrapper = els.ordersTable.closest('.table-wrap');
     const pager = ensurePagination('adminOrdersPagination', wrapper);
@@ -733,6 +773,7 @@
     renderTeamMembers();
     renderServicesTable();
     renderDigitalProductsTable();
+    renderOrderSummary();
     renderOrdersTable();
   }
 
@@ -1149,6 +1190,7 @@
 
     [els.orderSearch, els.orderStatusFilter, els.paymentStatusFilter].forEach(el => el.addEventListener('input', () => {
       orderPage = 1;
+      renderOrderSummary();
       renderOrdersTable();
     }));
 
@@ -1203,9 +1245,15 @@
     }
     if (els.digitalProductImage) els.digitalProductImage.addEventListener('input', () => {
       pendingDigitalImageData = '';
-      updateDigitalProductPreview();
+      updateDigitalProductPreview(false);
     });
-    if (els.digitalProductName) els.digitalProductName.addEventListener('input', updateDigitalProductPreview);
+    if (els.digitalProductName) els.digitalProductName.addEventListener('input', () => updateDigitalProductPreview(!els.digitalProductPreviewField || !els.digitalProductPreviewField.classList.contains('hidden')));
+    if (els.digitalProductViewImageBtn) {
+      els.digitalProductViewImageBtn.addEventListener('click', () => {
+        const isHidden = !els.digitalProductPreviewField || els.digitalProductPreviewField.classList.contains('hidden');
+        updateDigitalProductPreview(isHidden);
+      });
+    }
     if (els.digitalProductPrice) els.digitalProductPrice.addEventListener('input', updateDigitalProductProfitPreview);
     if (els.digitalProductProviderPrice) els.digitalProductProviderPrice.addEventListener('input', updateDigitalProductProfitPreview);
     if (els.digitalProductImageUpload) {
@@ -1215,7 +1263,7 @@
         const reader = new FileReader();
         reader.onload = () => {
           pendingDigitalImageData = String(reader.result || '');
-          updateDigitalProductPreview();
+          updateDigitalProductPreview(true);
         };
         reader.readAsDataURL(file);
       });
