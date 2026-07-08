@@ -8635,3 +8635,693 @@ body.client-nav-open .mobile-nav-toggle span:nth-child(3) {
     font-size: 1.34rem !important;
   }
 }
+
+/* v5.1 mobile rescue polish: fixes mobile overflow, vertical text squeezing, and scroll wiggle. */
+html,
+body {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  background-color: #070a12 !important;
+}
+
+body {
+  overscroll-behavior-x: none !important;
+  -webkit-text-size-adjust: 100% !important;
+  text-rendering: geometricPrecision !important;
+}
+
+html.is-scrolling-global,
+body.is-scrolling,
+.is-scrolling {
+  scrollbar-width: none !important;
+}
+
+html.is-scrolling-global::-webkit-scrollbar,
+body.is-scrolling::-webkit-scrollbar,
+.is-scrolling::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+}
+
+main,
+section,
+.topbar,
+.shell,
+.client-home-shell,
+.client-standalone-shell,
+.provider-shell,
+.admin-layout,
+.admin-main,
+.section,
+.elevated-card,
+.control-panel,
+.table-wrap,
+.public-services-table,
+.digital-products-grid,
+.provider-calculator-card,
+.modal-card {
+  max-width: 100% !important;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100% !important;
+}
+
+.provider-select,
+.provider-input,
+.input,
+.select,
+.textarea,
+button,
+.btn {
+  max-width: 100% !important;
+}
+
+@media (max-width: 760px) {
+  body {
+    background:
+      radial-gradient(circle at 0% -6%, rgba(112, 225, 255, 0.10), transparent 18rem),
+      radial-gradient(circle at 110% 12%, rgba(255, 107, 214, 0.08), transparent 16rem),
+      #070a12 !important;
+  }
+
+  .shell {
+    width: min(100%, calc(100% - 20px)) !important;
+    padding-inline: 0 !important;
+  }
+
+  .topbar {
+    width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+  }
+
+  .topbar-inner {
+    position: relative !important;
+    min-height: 58px !important;
+    gap: 8px !important;
+  }
+
+  .brand {
+    gap: 8px !important;
+    overflow: hidden !important;
+  }
+
+  .brand > span:last-child {
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .logo-mark {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    border-radius: 12px !important;
+  }
+
+  .brand-title {
+    max-width: 170px !important;
+    font-size: 0.92rem !important;
+  }
+
+  .mobile-nav-toggle {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    border-radius: 13px !important;
+  }
+
+  .nav-actions {
+    position: fixed !important;
+    top: 66px !important;
+    left: 10px !important;
+    right: 10px !important;
+    width: auto !important;
+    max-height: calc(100dvh - 82px) !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+  }
+
+  body.client-nav-open {
+    overflow: hidden !important;
+  }
+
+  .client-home-section,
+  .client-standalone-section,
+  .provider-hero,
+  .section.digital-products-section,
+  .section.service-directory-section {
+    padding-block: 14px 28px !important;
+  }
+
+  .client-home-hero,
+  .client-about-card,
+  .client-direction-section,
+  .client-process-section,
+  .client-reviews-section,
+  .provider-calculator-card,
+  .control-panel,
+  .section {
+    padding: 14px !important;
+    border-radius: 18px !important;
+  }
+
+  .client-home-copy h1,
+  .client-section-heading h1,
+  .client-about-card h1,
+  .provider-title-row h1,
+  .provider-title-row-clean h1,
+  .section-head h2,
+  .review-heading h2 {
+    font-size: clamp(1.55rem, 8.6vw, 2.06rem) !important;
+    line-height: 1.04 !important;
+    letter-spacing: -0.055em !important;
+  }
+
+  .client-home-copy p,
+  .client-section-heading p,
+  .client-about-card p,
+  .provider-title-row p,
+  .provider-title-row-clean p,
+  .section-head p,
+  .review-heading p {
+    font-size: 0.78rem !important;
+    line-height: 1.45 !important;
+  }
+
+  .client-info-grid,
+  .client-feature-grid,
+  .client-process-steps,
+  .client-home-panel,
+  .cards-grid,
+  .stats-grid,
+  .controls-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .client-info-card,
+  .client-feature-card,
+  .client-process-steps > article,
+  .home-metric-card {
+    min-height: 0 !important;
+    padding: 13px !important;
+    border-radius: 17px !important;
+  }
+
+  .client-info-card h2,
+  .client-feature-card h3,
+  .client-process-steps h3 {
+    font-size: 0.95rem !important;
+    margin-block: 6px !important;
+  }
+
+  .client-info-card p,
+  .client-feature-card p,
+  .client-process-steps p {
+    font-size: 0.78rem !important;
+    line-height: 1.42 !important;
+  }
+
+  .client-home-actions .btn,
+  .provider-order-actions .btn,
+  .review-form-actions .btn,
+  .control-panel .btn {
+    min-height: 38px !important;
+    padding: 0.66rem 0.86rem !important;
+    font-size: 0.78rem !important;
+  }
+
+  .digital-products-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    align-items: stretch !important;
+    width: 100% !important;
+  }
+
+  .digital-product-card {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    padding: 10px !important;
+    border-radius: 16px !important;
+  }
+
+  .digital-product-media {
+    width: 100% !important;
+    height: 104px !important;
+    border-radius: 13px !important;
+  }
+
+  .digital-product-card h3 {
+    font-size: 0.82rem !important;
+    line-height: 1.18 !important;
+    margin: 7px 0 3px !important;
+  }
+
+  .digital-product-category,
+  .digital-product-price,
+  .digital-product-card p {
+    font-size: 0.66rem !important;
+    line-height: 1.3 !important;
+  }
+
+  .digital-product-actions {
+    gap: 6px !important;
+  }
+
+  .digital-product-actions .btn {
+    width: 100% !important;
+    min-height: 31px !important;
+    padding: 0.48rem 0.55rem !important;
+    font-size: 0.68rem !important;
+  }
+
+  .provider-calculator-card,
+  .provider-search-group,
+  .provider-field,
+  .select-with-platform-icon,
+  .provider-searchbar {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .provider-field {
+    gap: 5px !important;
+  }
+
+  .provider-field label {
+    font-size: 0.72rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .provider-select,
+  .provider-input,
+  .provider-searchbar input,
+  .select,
+  .input {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    padding: 0.58rem 0.72rem !important;
+    font-size: 0.78rem !important;
+    line-height: 1.15 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    writing-mode: horizontal-tb !important;
+  }
+
+  .select-with-platform-icon .provider-select {
+    padding-left: 2.1rem !important;
+  }
+
+  .provider-select option {
+    white-space: normal !important;
+    font-size: 0.84rem !important;
+  }
+
+  .selected-service-strip {
+    padding: 9px !important;
+    gap: 6px !important;
+    overflow: hidden !important;
+  }
+
+  .selected-summary-title,
+  .selected-summary-name,
+  .selected-summary-chips span {
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+  }
+
+  .selected-summary-name {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+
+  .selected-summary-chips span {
+    white-space: normal !important;
+    line-height: 1.25 !important;
+  }
+
+  .service-directory-section .public-services-table {
+    overflow: visible !important;
+    border: 0 !important;
+    background: transparent !important;
+    scrollbar-gutter: auto !important;
+  }
+
+  .service-directory-section .public-services-table table,
+  .service-directory-section .public-services-table thead,
+  .service-directory-section .public-services-table tbody,
+  .service-directory-section .public-services-table tr,
+  .service-directory-section .public-services-table th,
+  .service-directory-section .public-services-table td {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    table-layout: auto !important;
+  }
+
+  .service-directory-section .public-services-table thead {
+    display: none !important;
+  }
+
+  .service-directory-section .public-services-table table {
+    min-width: 0 !important;
+    background: transparent !important;
+  }
+
+  .service-directory-section .public-services-table tr {
+    margin: 0 0 10px !important;
+    padding: 11px !important;
+    border: 1px solid rgba(148, 163, 184, 0.16) !important;
+    border-radius: 16px !important;
+    background: rgba(15, 23, 42, 0.62) !important;
+  }
+
+  .service-directory-section .public-services-table td {
+    display: grid !important;
+    grid-template-columns: 72px minmax(0, 1fr) !important;
+    gap: 8px !important;
+    padding: 6px 0 !important;
+    border: 0 !important;
+    font-size: 0.76rem !important;
+    line-height: 1.35 !important;
+    overflow: visible !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    white-space: normal !important;
+  }
+
+  .service-directory-section .public-services-table td::before {
+    content: attr(data-label) !important;
+    font-size: 0.62rem !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.05em !important;
+    text-transform: uppercase !important;
+    color: rgba(148, 163, 184, 0.92) !important;
+  }
+
+  .service-directory-section .public-services-table td[data-label="Action"] {
+    grid-template-columns: 1fr !important;
+    padding-top: 8px !important;
+  }
+
+  .service-directory-section .public-services-table td[data-label="Action"]::before {
+    display: none !important;
+  }
+
+  .service-directory-section .service-name-cell strong,
+  .service-directory-section .service-name-cell span,
+  .service-directory-section .platform-pill,
+  .service-directory-section .id-chip,
+  .service-directory-section .range-chip,
+  .rate-unit {
+    max-width: 100% !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    white-space: normal !important;
+  }
+
+  .service-directory-section .public-services-table .btn.primary.small {
+    width: 100% !important;
+    min-height: 34px !important;
+  }
+
+  .review-cards-scroll {
+    gap: 9px !important;
+  }
+
+  .review-card {
+    padding: 10px !important;
+    border-radius: 14px !important;
+  }
+
+  .review-card p {
+    font-size: 0.76rem !important;
+    line-height: 1.38 !important;
+  }
+
+  .review-form .textarea {
+    min-height: 104px !important;
+    font-size: 0.78rem !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .shell {
+    width: min(100%, calc(100% - 16px)) !important;
+  }
+
+  .brand-title {
+    max-width: 135px !important;
+  }
+
+  .digital-products-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  .digital-product-media {
+    height: 96px !important;
+  }
+
+  .section-head h2,
+  .review-heading h2,
+  .client-section-heading h2,
+  .client-home-copy h1,
+  .client-section-heading h1,
+  .provider-title-row h1,
+  .provider-title-row-clean h1 {
+    font-size: clamp(1.42rem, 8vw, 1.86rem) !important;
+  }
+}
+
+@media (max-width: 820px) {
+  body:has(.admin-layout:not(.hidden)) {
+    overflow-x: hidden !important;
+    background: #020617 !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) .admin-layout {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: hidden !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) .sidebar {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 50 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    padding: 10px !important;
+    border-right: 0 !important;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.16) !important;
+    background: rgba(2, 6, 23, 0.96) !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) .sidebar .brand {
+    gap: 8px !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) .sidebar-nav {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) .sidebar-nav a,
+  body:has(.admin-layout:not(.hidden)) .sidebar-nav button {
+    min-height: 34px !important;
+    padding: 7px 8px !important;
+    font-size: 0.72rem !important;
+    line-height: 1.12 !important;
+    border-radius: 10px !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) .sidebar-note,
+  body:has(.admin-layout:not(.hidden)) .admin-hero-card p,
+  body:has(.admin-layout:not(.hidden)) .section-head p {
+    font-size: 0.72rem !important;
+    line-height: 1.35 !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) .admin-main {
+    padding: 10px 8px 34px !important;
+    width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) .admin-main > .section,
+  body:has(.admin-layout:not(.hidden)) .admin-main > .admin-hero-card {
+    padding: 12px !important;
+    border-radius: 16px !important;
+    margin-bottom: 12px !important;
+    overflow: hidden !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) .admin-main > .section > .section-head {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 9px !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) .admin-main > .section > .section-head h2,
+  body:has(.admin-layout:not(.hidden)) .page-title h1 {
+    font-size: 1.42rem !important;
+    line-height: 1.05 !important;
+    letter-spacing: -0.055em !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) .stats-grid,
+  body:has(.admin-layout:not(.hidden)) .investment-analytics-grid,
+  body:has(.admin-layout:not(.hidden)) .investment-card .form-grid,
+  body:has(.admin-layout:not(.hidden)) .investment-insights-card,
+  body:has(.admin-layout:not(.hidden)) #services .toolbar-left,
+  body:has(.admin-layout:not(.hidden)) #digital-products .toolbar-left,
+  body:has(.admin-layout:not(.hidden)) #orders .toolbar-left {
+    grid-template-columns: 1fr !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) .toolbar.control-panel.compact-panel {
+    padding: 10px !important;
+    border-radius: 14px !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) .responsive-table {
+    overflow: visible !important;
+    border: 0 !important;
+    background: transparent !important;
+    scrollbar-gutter: auto !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) .responsive-table table,
+  body:has(.admin-layout:not(.hidden)) .responsive-table thead,
+  body:has(.admin-layout:not(.hidden)) .responsive-table tbody,
+  body:has(.admin-layout:not(.hidden)) .responsive-table th,
+  body:has(.admin-layout:not(.hidden)) .responsive-table td,
+  body:has(.admin-layout:not(.hidden)) .responsive-table tr,
+  body:has(.admin-layout:not(.hidden)) #services .table-wrap table,
+  body:has(.admin-layout:not(.hidden)) #digital-products .table-wrap table,
+  body:has(.admin-layout:not(.hidden)) #orders .table-wrap table {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    table-layout: auto !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) .responsive-table thead {
+    display: none !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) .responsive-table tr {
+    margin: 0 0 9px !important;
+    padding: 10px !important;
+    border: 1px solid rgba(148, 163, 184, 0.16) !important;
+    border-radius: 14px !important;
+    background: rgba(15, 23, 42, 0.58) !important;
+    overflow: hidden !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) .responsive-table td {
+    display: grid !important;
+    grid-template-columns: 82px minmax(0, 1fr) !important;
+    gap: 7px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 6px 0 !important;
+    border: 0 !important;
+    font-size: 0.72rem !important;
+    line-height: 1.32 !important;
+    overflow: visible !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    white-space: normal !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) .responsive-table td::before {
+    content: attr(data-label) !important;
+    font-size: 0.58rem !important;
+    font-weight: 900 !important;
+    line-height: 1.15 !important;
+    letter-spacing: 0.045em !important;
+    text-transform: uppercase !important;
+    color: rgba(148, 163, 184, 0.92) !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) .responsive-table td[data-label="Actions"] {
+    display: block !important;
+    padding-top: 8px !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) .responsive-table td[data-label="Actions"]::before {
+    display: none !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) .admin-product-cell {
+    grid-template-columns: 38px minmax(0, 1fr) !important;
+    gap: 7px !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) .admin-product-cell img {
+    width: 38px !important;
+    height: 38px !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) .actions-cell,
+  body:has(.admin-layout:not(.hidden)) #services .actions-cell,
+  body:has(.admin-layout:not(.hidden)) #digital-products .actions-cell,
+  body:has(.admin-layout:not(.hidden)) #orders .actions-cell {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 6px !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) .actions-cell .btn,
+  body:has(.admin-layout:not(.hidden)) #services .actions-cell .btn,
+  body:has(.admin-layout:not(.hidden)) #digital-products .actions-cell .btn,
+  body:has(.admin-layout:not(.hidden)) #orders .actions-cell .btn {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 30px !important;
+    min-height: 30px !important;
+    font-size: 0.62rem !important;
+    padding: 0.34rem 0.38rem !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) .platform-pill,
+  body:has(.admin-layout:not(.hidden)) .status-pill,
+  body:has(.admin-layout:not(.hidden)) .id-chip,
+  body:has(.admin-layout:not(.hidden)) .service-desc,
+  body:has(.admin-layout:not(.hidden)) .admin-product-cell strong {
+    white-space: normal !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) .modal-card,
+  body:has(.admin-layout:not(.hidden)) .modal-card.wide-modal,
+  body:has(.admin-layout:not(.hidden)) .modal-card.small-modal {
+    width: calc(100% - 14px) !important;
+    max-height: calc(100dvh - 14px) !important;
+    padding: 12px !important;
+    border-radius: 16px !important;
+  }
+}

@@ -1058,23 +1058,10 @@
   }
 
   function setupAutoScrollbars() {
-    const scrollTargets = new Set([document.documentElement, document.body]);
-    document.querySelectorAll('.table-wrap, .modal-body, .admin-main, .panel-scroll, [data-auto-scrollbar]').forEach(el => scrollTargets.add(el));
-    scrollTargets.forEach(el => {
-      let timer = null;
-      const markScrolling = () => {
-        el.classList.add('is-scrolling');
-        document.documentElement.classList.add('is-scrolling-global');
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-          el.classList.remove('is-scrolling');
-          document.documentElement.classList.remove('is-scrolling-global');
-        }, 850);
-      };
-      el.addEventListener('scroll', markScrolling, { passive: true });
-      el.addEventListener('wheel', markScrolling, { passive: true });
-      el.addEventListener('touchmove', markScrolling, { passive: true });
-    });
+    // v5.1: no dynamic scrollbar toggling. Mobile browsers were shifting/wiggling
+    // when scroll classes were added and removed during touch scrolling.
+    document.documentElement.classList.remove('is-scrolling-global');
+    document.body.classList.remove('is-scrolling');
   }
 
   function bindEvents() {

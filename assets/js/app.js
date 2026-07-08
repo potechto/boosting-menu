@@ -293,7 +293,9 @@
 
   function serviceOptionLabel(service) {
     const availability = isServiceDisabled(service) ? ' - Disabled' : '';
-    return `${service.providerId} | ${service.name} - ${Store.formatMoney(service.clientRate)} per ${Store.formatNumber(service.rateUnit)}${availability}`;
+    const rawName = String(service.name || 'Service').replace(/\s+/g, ' ').trim();
+    const shortName = rawName.length > 74 ? `${rawName.slice(0, 71)}...` : rawName;
+    return `ID ${service.providerId} - ${shortName} (${Store.formatMoney(service.clientRate)} / ${Store.formatNumber(service.rateUnit)})${availability}`;
   }
 
   function fillCalculatorServices(keepSelected = true) {

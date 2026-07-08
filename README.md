@@ -408,3 +408,7 @@ See `Documentation/V4_6_LAYOUT_FEEDBACK_POLISH_NOTES.md` for the exact change li
 - Improved mobile spacing, card sizing, paddings, table-to-card behavior for services, modal sizing, and button layout.
 - Kept v4.7-v4.9 behavior: one feedback submission per browser, textarea-only feedback, `phnova-00A#` IDs, Tagalog/Taglish seed feedback, hidden edit visibility controls, and compact admin modals.
 - Added `Documentation/V5_0_LAUNCH_HARDENING_RESPONSIVE_POLISH_NOTES.md` and `Documentation/LOCAL_APPLY_COMMANDS_v5_0_20260708.md`.
+## v5.1 Mobile Rescue + Stability
+
+This patch fixes the mobile layout issues observed in screen recordings after v5.0. It hardens overflow handling, stops dynamic scrollbar wiggle, converts mobile client/admin tables into card layouts, shortens the order service dropdown labels, and tightens mobile spacing for the hamburger layout, service cards, digital products, feedback, and admin pages.
+
