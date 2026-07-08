@@ -6,10 +6,10 @@
   <title>Novalyte Digital Growth Portal</title>
   <meta name="description" content="Novalyte digital growth portal for social growth services, digital subscriptions, and Messenger-ready checkout.">
   <link rel="icon" href="assets/icons/novalyte.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/css/styles.css">
-  <link rel="stylesheet" href="assets/css/mobile.css">
+  <link rel="stylesheet" href="assets/css/styles.css?v=5.3.0">
+  <link rel="stylesheet" href="assets/css/mobile.css?v=5.3.0">
 </head>
-<body>
+<body data-build="v5.3">
   <header class="topbar">
     <div class="shell topbar-inner">
       <a class="brand" href="#top" id="homeBrand" aria-label="Novalyte home">
@@ -258,7 +258,7 @@
             </div>
             <div class="field">
               <label for="digitalProductFilter">Category</label>
-              <select class="select" id="digitalProductFilter"></select>
+              <select class="select mobile-enhanced-select" id="digitalProductFilter"></select>
             </div>
             <button class="btn" id="clearDigitalProductFilters" type="button">Clear</button>
           </div>
@@ -287,11 +287,11 @@
             </div>
             <div class="field">
               <label for="platformFilter">Platform</label>
-              <select class="select" id="platformFilter"></select>
+              <select class="select mobile-enhanced-select" id="platformFilter"></select>
             </div>
             <div class="field">
               <label for="categoryFilter">Category</label>
-              <select class="select" id="categoryFilter"></select>
+              <select class="select mobile-enhanced-select" id="categoryFilter"></select>
             </div>
             <button class="btn" id="clearFilters" type="button">Clear</button>
           </div>
@@ -313,6 +313,7 @@
             <tbody id="servicesGrid"></tbody>
           </table>
         </div>
+        <div class="mobile-service-card-list hidden" id="mobileServiceCards" aria-label="Services mobile list"></div>
         <div class="pagination-bar" id="servicePagination" aria-label="Services pagination"></div>
         <div class="empty-state hidden" id="emptyServices">No visible service found. Try another search/filter.</div>
       </div>
@@ -339,14 +340,17 @@
     </div>
   </div>
 
+
+  <div class="build-marker" aria-label="Current site build">Novalyte v5.3 Mobile Build</div>
+
   <footer class="footer">
     <div class="shell">
       Novalyte service menu. Message us on Messenger to confirm availability and final details.
     </div>
   </footer>
 
-  <script src="assets/js/data.js"></script>
-  <script src="assets/js/store.js"></script>
-  <script src="assets/js/app.js"></script>
+  <script src="assets/js/data.js?v=5.3.0"></script>
+  <script src="assets/js/store.js?v=5.3.0"></script>
+  <script src="assets/js/app.js?v=5.3.0"></script>
 </body>
 </html>

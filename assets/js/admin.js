@@ -141,7 +141,14 @@
     else sessionStorage.removeItem(Store.KEYS.session);
   }
 
+  function setAdminBodyMode(mode) {
+    document.body.classList.toggle('admin-dashboard-mode', mode === 'dashboard');
+    document.body.classList.toggle('admin-login-mode', mode !== 'dashboard');
+    if (mode !== 'dashboard') document.body.classList.remove('admin-nav-open');
+  }
+
   function showDashboard() {
+    setAdminBodyMode('dashboard');
     els.loginView.classList.add('hidden');
     els.dashboardView.classList.remove('hidden');
     renderAll();
@@ -149,6 +156,7 @@
   }
 
   function showLogin() {
+    setAdminBodyMode('login');
     els.loginView.classList.remove('hidden');
     els.dashboardView.classList.add('hidden');
   }
@@ -1382,6 +1390,7 @@
   }
 
   function init() {
+    document.body.classList.add('v53-mobile-build');
     setupBrandLogos();
     setupAutoScrollbars();
     Store.getServices();

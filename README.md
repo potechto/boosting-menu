@@ -417,3 +417,8 @@ This patch fixes the mobile layout issues observed in screen recordings after v5
 ## v5.2 Mobile Rebuild + Admin Lockdown
 
 Mobile fixes now live in `assets/css/mobile.css` to keep desktop and small-screen styling easier to maintain. This patch also improves the mobile dropdowns, service cards, digital product modal, admin login, and admin hamburger layout.
+
+
+## v5.3 True Mobile Rebuild + Cache Bust
+
+Added a visible mobile build marker, cache-busted assets, direct mobile service cards, stronger mobile product/modal layouts, and admin body-mode isolation for safer real-phone testing.

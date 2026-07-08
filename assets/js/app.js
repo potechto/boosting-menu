@@ -48,6 +48,7 @@
     clearFilters: document.getElementById('clearFilters'),
     servicesGrid: document.getElementById('servicesGrid'),
     servicePagination: document.getElementById('servicePagination'),
+    mobileServiceCards: document.getElementById('mobileServiceCards'),
     emptyServices: document.getElementById('emptyServices'),
     digitalProductSearch: document.getElementById('digitalProductSearch'),
     digitalProductFilter: document.getElementById('digitalProductFilter'),
@@ -213,6 +214,8 @@
     els.categoryFilter.innerHTML = '';
     els.categoryFilter.append(option('all', 'All categories'));
     categories.forEach(category => els.categoryFilter.append(option(category, category)));
+
+    refreshMobileSelectMenus();
 
     els.calcCategory.innerHTML = '';
     platforms.forEach(platform => els.calcCategory.append(option(platform, groupLabel(platform))));
@@ -582,16 +585,19 @@
   function renderServices() {
     const services = filteredServices();
     els.servicesGrid.innerHTML = '';
+    if (els.mobileServiceCards) els.mobileServiceCards.innerHTML = '';
     els.emptyServices.classList.toggle('hidden', services.length > 0);
     const serviceTableWrap = document.querySelector('.public-services-table');
     if (serviceTableWrap) serviceTableWrap.classList.toggle('hidden', services.length === 0);
+    if (els.mobileServiceCards) els.mobileServiceCards.classList.toggle('hidden', services.length === 0);
     renderPagination(services.length);
 
     const start = (state.servicePage - 1) * state.perPage;
     const paged = services.slice(start, start + state.perPage);
     paged.forEach(service => {
+      const disabled = isServiceDisabled(service);
       const row = document.createElement('tr');
-      row.className = `public-service-row${isServiceDisabled(service) ? ' is-service-disabled' : ''}`;
+      row.className = `public-service-row${disabled ? ' is-service-disabled' : ''}`;
       row.innerHTML = `
         <td data-label="Platform"><span class="platform-pill ${platformClass(service.platform)}"><span class="platform-icon">${platformIcon(service.platform)}</span>${sanitize(service.platform)}</span></td>
         <td data-label="ID"><span class="id-chip">${sanitize(service.providerId)}</span></td>
@@ -599,10 +605,32 @@
         <td data-label="Rate"><strong>${Store.formatMoney(service.clientRate)}</strong><span class="rate-unit"> / ${Store.formatNumber(service.rateUnit)}</span></td>
         <td data-label="Min / Max"><span class="range-chip">${Store.formatNumber(service.min)} - ${Store.formatNumber(service.max)}</span></td>
         <td data-label="ETA">${sanitize(service.avgTime || 'Varies')}</td>
-        <td data-label="Action"><button class="btn primary small" type="button" data-use-service="${service.id}" ${isServiceDisabled(service) ? 'disabled' : ''}>${isServiceDisabled(service) ? 'Disabled' : 'Order Now'}</button></td>
+        <td data-label="Action"><button class="btn primary small" type="button" data-use-service="${service.id}" ${disabled ? 'disabled' : ''}>${disabled ? 'Disabled' : 'Order Now'}</button></td>
       `;
       els.servicesGrid.append(row);
     });
+
+    if (els.mobileServiceCards) {
+      els.mobileServiceCards.innerHTML = paged.map(service => {
+        const disabled = isServiceDisabled(service);
+        return `
+          <article class="mobile-service-card${disabled ? ' is-service-disabled' : ''}">
+            <div class="mobile-service-card-head">
+              <span class="platform-pill ${platformClass(service.platform)}"><span class="platform-icon">${platformIcon(service.platform)}</span>${sanitize(service.platform)}</span>
+              <span class="id-chip">ID ${sanitize(service.providerId)}</span>
+            </div>
+            <h3>${sanitize(service.name)}</h3>
+            <p>${sanitize(service.description || service.tag || service.category || 'Available service')}</p>
+            <div class="mobile-service-details">
+              <span><small>Rate</small><strong>${Store.formatMoney(service.clientRate)} / ${Store.formatNumber(service.rateUnit)}</strong></span>
+              <span><small>Min-Max</small><strong>${Store.formatNumber(service.min)} - ${Store.formatNumber(service.max)}</strong></span>
+              <span><small>ETA</small><strong>${sanitize(service.avgTime || 'Varies')}</strong></span>
+            </div>
+            <button class="btn primary small" type="button" data-use-service="${service.id}" ${disabled ? 'disabled' : ''}>${disabled ? 'Disabled' : 'Order Now'}</button>
+          </article>
+        `;
+      }).join('');
+    }
   }
 
 
@@ -1053,6 +1081,7 @@
   }
 
   function init() {
+    document.body.classList.add('v53-mobile-build');
     setupBrandLogos();
     setupMobileSelectMenus();
     setupAutoScrollbars();
