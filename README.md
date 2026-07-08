@@ -412,3 +412,8 @@ See `Documentation/V4_6_LAYOUT_FEEDBACK_POLISH_NOTES.md` for the exact change li
 
 This patch fixes the mobile layout issues observed in screen recordings after v5.0. It hardens overflow handling, stops dynamic scrollbar wiggle, converts mobile client/admin tables into card layouts, shortens the order service dropdown labels, and tightens mobile spacing for the hamburger layout, service cards, digital products, feedback, and admin pages.
 
+
+
+## v5.2 Mobile Rebuild + Admin Lockdown
+
+Mobile fixes now live in `assets/css/mobile.css` to keep desktop and small-screen styling easier to maintain. This patch also improves the mobile dropdowns, service cards, digital product modal, admin login, and admin hamburger layout.

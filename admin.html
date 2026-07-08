@@ -7,12 +7,13 @@
   <meta name="description" content="Novalyte admin dashboard for pricing control and income tracking.">
   <link rel="icon" href="assets/icons/novalyte.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/mobile.css">
 </head>
 <body>
   <main class="login-page" id="loginView">
     <section class="login-card elevated-card">
       <div class="login-brand-row">
-        <div class="lock-visual">N</div>
+        <div class="lock-visual brand-logo-frame"><img class="brand-logo-img" src="Resources/Icons/logo.png" alt="Novalyte" loading="eager"><span class="logo-fallback-letter">N</span></div>
         <div>
           <span class="eyebrow">Protected workspace</span>
           <h1>Admin Login</h1>
@@ -34,7 +35,7 @@
           <label for="loginPin">Security PIN</label>
           <div class="password-field single-credential-toggle">
             <input class="input" id="loginPin" type="password" inputmode="numeric" required placeholder="4-digit PIN" maxlength="8">
-            <button class="eye-btn" type="button" data-toggle-login-credentials aria-label="Show password and PIN">👁</button>
+            <button class="eye-btn" type="button" data-toggle-login-credentials aria-label="Show password and PIN"><span class="eye-icon" aria-hidden="true"></span></button>
           </div>
           <small class="field-hint">One eye button controls both password and PIN visibility.</small>
         </div>
@@ -57,7 +58,12 @@
           <span class="brand-subtitle">Pricing + Order Tracker</span>
         </span>
       </a>
-      <nav class="sidebar-nav" aria-label="Admin navigation">
+      <button class="admin-mobile-nav-toggle" id="adminMobileNavToggle" type="button" aria-label="Open admin menu" aria-expanded="false" aria-controls="adminSidebarNav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav class="sidebar-nav" id="adminSidebarNav" aria-label="Admin navigation">
         <a href="#dashboard" class="active">Dashboard</a>
         <a href="#services">Services</a>
         <a href="#digital-products">Digital Products</a>
@@ -72,8 +78,8 @@
     <main class="admin-main">
       <section id="dashboard" class="page-title admin-hero-card">
         <span class="eyebrow">Internal dashboard</span>
-        <h1>Price control + <span class="gradient-text">income tracker</span></h1>
-        <p>Control client-facing prices, protect provider costs, create order records, track investment, and void/restore mistakes cleanly.</p>
+        <h1>Welcome, Admin</h1>
+        <p>Manage Novalyte services, digital products, orders, and finance records in one protected workspace.</p>
         <div class="quick-links">
           <a class="btn small" href="#services">Manage Services</a>
           <a class="btn small" href="#digital-products">Manage Digital Products</a>

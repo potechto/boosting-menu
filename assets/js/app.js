@@ -316,6 +316,7 @@
       if (firstOrderable) els.calcService.value = firstOrderable.id;
     }
 
+    refreshMobileSelectMenus();
     updateCategoryIcon();
     renderCalculator();
   }
@@ -498,6 +499,7 @@
     els.digitalProductFilter.append(option('all', 'All digital products'));
     digitalProductCategories().forEach(category => els.digitalProductFilter.append(option(category, category)));
     if ([...els.digitalProductFilter.options].some(opt => opt.value === current)) els.digitalProductFilter.value = current;
+    refreshMobileSelectMenus();
   }
 
   function renderHomeMetrics() {
@@ -520,6 +522,7 @@
     if (!els.digitalProductsGrid) return;
     const products = filteredDigitalProducts();
     els.emptyDigitalProducts.classList.toggle('hidden', products.length > 0);
+    els.digitalProductsGrid.classList.toggle('has-one-item', products.length === 1);
     els.digitalProductsGrid.innerHTML = products.map(product => `
       <article class="digital-product-card${product.disabled ? ' is-digital-product-disabled' : ''}">
         <div class="digital-product-media">
@@ -580,6 +583,8 @@
     const services = filteredServices();
     els.servicesGrid.innerHTML = '';
     els.emptyServices.classList.toggle('hidden', services.length > 0);
+    const serviceTableWrap = document.querySelector('.public-services-table');
+    if (serviceTableWrap) serviceTableWrap.classList.toggle('hidden', services.length === 0);
     renderPagination(services.length);
 
     const start = (state.servicePage - 1) * state.perPage;
@@ -683,11 +688,6 @@
       els.submitReviewBtn.textContent = 'Submit Feedback';
       els.submitReviewBtn.disabled = Boolean(current);
     }
-    if (els.reviewFormNotice) {
-      els.reviewFormNotice.textContent = current
-        ? `Your feedback ID is ${current.id}. One feedback submission is allowed per browser.`
-        : 'No account required. Your feedback will receive an auto-generated Novalyte client ID.';
-    }
     updateReviewCharCount();
   }
 
@@ -758,6 +758,78 @@
     // v5.0: keep scrollbars stable to avoid page wiggle/layout shift while scrolling.
     document.documentElement.classList.remove('is-scrolling-global');
     document.body.classList.remove('is-scrolling');
+  }
+
+
+  function mobileSelectLabel(select) {
+    if (!select) return '';
+    const opt = select.options[select.selectedIndex];
+    return opt ? opt.textContent : 'Select';
+  }
+
+  function refreshMobileSelectMenu(select) {
+    if (!select || !select.classList.contains('mobile-enhanced-select')) return;
+    let proxy = select.nextElementSibling;
+    if (!proxy || !proxy.classList || !proxy.classList.contains('mobile-select-proxy')) {
+      proxy = document.createElement('div');
+      proxy.className = 'mobile-select-proxy';
+      proxy.innerHTML = '<button class="mobile-select-btn" type="button" aria-expanded="false"><span></span><i aria-hidden="true"></i></button><div class="mobile-select-list hidden" role="listbox"></div>';
+      select.insertAdjacentElement('afterend', proxy);
+    }
+    const btn = proxy.querySelector('.mobile-select-btn');
+    const label = btn ? btn.querySelector('span') : null;
+    const list = proxy.querySelector('.mobile-select-list');
+    if (label) label.textContent = mobileSelectLabel(select);
+    if (!list) return;
+    list.innerHTML = Array.from(select.options).map(optionItem => `
+      <button class="mobile-select-option${optionItem.value === select.value ? ' active' : ''}" type="button" data-mobile-select-value="${sanitize(optionItem.value)}" ${optionItem.disabled ? 'disabled' : ''}>${sanitize(optionItem.textContent)}</button>
+    `).join('');
+  }
+
+  function refreshMobileSelectMenus() {
+    document.querySelectorAll('select.mobile-enhanced-select').forEach(refreshMobileSelectMenu);
+  }
+
+  function closeMobileSelectMenus(except) {
+    document.querySelectorAll('.mobile-select-proxy').forEach(proxy => {
+      if (except && proxy === except) return;
+      proxy.classList.remove('open');
+      const btn = proxy.querySelector('.mobile-select-btn');
+      const list = proxy.querySelector('.mobile-select-list');
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+      if (list) list.classList.add('hidden');
+    });
+  }
+
+  function setupMobileSelectMenus() {
+    refreshMobileSelectMenus();
+    document.addEventListener('click', event => {
+      const proxy = event.target.closest('.mobile-select-proxy');
+      if (!proxy) {
+        closeMobileSelectMenus();
+        return;
+      }
+      const select = proxy.previousElementSibling;
+      if (!select || !select.matches('select.mobile-enhanced-select')) return;
+      const btn = event.target.closest('.mobile-select-btn');
+      const optionBtn = event.target.closest('[data-mobile-select-value]');
+      if (btn) {
+        const willOpen = !proxy.classList.contains('open');
+        closeMobileSelectMenus(proxy);
+        proxy.classList.toggle('open', willOpen);
+        btn.setAttribute('aria-expanded', String(willOpen));
+        const list = proxy.querySelector('.mobile-select-list');
+        if (list) list.classList.toggle('hidden', !willOpen);
+        return;
+      }
+      if (optionBtn) {
+        select.value = optionBtn.dataset.mobileSelectValue;
+        select.dispatchEvent(new Event('input', { bubbles: true }));
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+        refreshMobileSelectMenu(select);
+        closeMobileSelectMenus();
+      }
+    });
   }
 
   function setupBrandLogos() {
@@ -837,7 +909,7 @@
       });
     }
     document.addEventListener('keydown', event => {
-      if (event.key === 'Escape') closeDigitalProductModal();
+      if (event.key === 'Escape') { closeDigitalProductModal(); closeMobileSelectMenus(); }
     });
 
     els.clearFilters.addEventListener('click', () => {
@@ -982,6 +1054,7 @@
 
   function init() {
     setupBrandLogos();
+    setupMobileSelectMenus();
     setupAutoScrollbars();
     Store.getServices();
     const saved = readClientState();

@@ -15,6 +15,7 @@
     loginPin: document.getElementById('loginPin'),
     loginAlert: document.getElementById('loginAlert'),
     logoutBtn: document.getElementById('logoutBtn'),
+    adminMobileNavToggle: document.getElementById('adminMobileNavToggle'),
     statsGrid: document.getElementById('statsGrid'),
     investAmount: document.getElementById('investAmount'),
     addInvestAmount: document.getElementById('addInvestAmount'),
@@ -305,7 +306,7 @@
     const products = filteredDigitalProducts();
     renderDigitalProductsPagination(products.length);
     if (!products.length) {
-      els.digitalProductsTable.innerHTML = '<tr><td colspan="6"><div class="empty-state">No digital products found.</div></td></tr>';
+      els.digitalProductsTable.innerHTML = '<tr class="empty-table-row"><td colspan="6"><div class="empty-state">No digital products found.</div></td></tr>';
       return;
     }
     const start = (digitalProductPage - 1) * digitalProductPageSize;
@@ -527,7 +528,7 @@
     const entries = Store.getFinanceEntries ? Store.getFinanceEntries() : Store.getInvestments().map(entry => ({ ...entry, type: 'capital-in', person: 'Novalyte Capital', source: 'investment', sourceId: entry.id }));
     if (!els.investmentsTable) return;
     if (!entries.length) {
-      els.investmentsTable.innerHTML = '<tr><td colspan="6"><div class="empty-state">No finance logs yet.</div></td></tr>';
+      els.investmentsTable.innerHTML = '<tr class="empty-table-row"><td colspan="6"><div class="empty-state">No finance logs yet.</div></td></tr>';
       return;
     }
 
@@ -548,7 +549,7 @@
     const members = Store.getTeamMembers();
     const totals = Store.getFinanceTotals ? Store.getFinanceTotals() : Store.getTotals();
     if (!members.length) {
-      els.teamMembersTable.innerHTML = '<tr><td colspan="4"><div class="empty-state">No team payroll rules yet.</div></td></tr>';
+      els.teamMembersTable.innerHTML = '<tr class="empty-table-row"><td colspan="4"><div class="empty-state">No team payroll rules yet.</div></td></tr>';
       return;
     }
     els.teamMembersTable.innerHTML = members.map(member => {
@@ -623,7 +624,7 @@
     const services = filteredServices();
     renderAdminServicesPagination(services.length);
     if (!services.length) {
-      els.servicesTable.innerHTML = '<tr><td colspan="8"><div class="empty-state">No service found.</div></td></tr>';
+      els.servicesTable.innerHTML = '<tr class="empty-table-row"><td colspan="8"><div class="empty-state">No service found.</div></td></tr>';
       return;
     }
 
@@ -725,7 +726,7 @@
     const orders = filteredOrders();
     renderAdminOrdersPagination(orders.length);
     if (!orders.length) {
-      els.ordersTable.innerHTML = '<tr><td colspan="10"><div class="empty-state">No orders yet.</div></td></tr>';
+      els.ordersTable.innerHTML = '<tr class="empty-table-row"><td colspan="10"><div class="empty-state">No orders yet.</div></td></tr>';
       return;
     }
 
@@ -1057,6 +1058,34 @@
     Store.downloadFile(`novalyte-orders-${new Date().toISOString().slice(0, 10)}.csv`, csv, 'text/csv');
   }
 
+
+  function setupBrandLogos() {
+    document.querySelectorAll('.brand-logo-img').forEach(img => {
+      const frame = img.closest('.brand-logo-frame');
+      if (!frame) return;
+      const markLoaded = () => {
+        if (img.naturalWidth > 0) {
+          frame.classList.add('has-logo');
+          frame.classList.remove('logo-missing');
+        } else {
+          frame.classList.add('logo-missing');
+        }
+      };
+      const markMissing = () => {
+        frame.classList.add('logo-missing');
+        frame.classList.remove('has-logo');
+      };
+      img.addEventListener('load', markLoaded, { once: true });
+      img.addEventListener('error', markMissing, { once: true });
+      if (img.complete) markLoaded();
+    });
+  }
+
+  function closeAdminMobileNav() {
+    document.body.classList.remove('admin-nav-open');
+    if (els.adminMobileNavToggle) els.adminMobileNavToggle.setAttribute('aria-expanded', 'false');
+  }
+
   function setupAutoScrollbars() {
     // v5.1: no dynamic scrollbar toggling. Mobile browsers were shifting/wiggling
     // when scroll classes were added and removed during touch scrolling.
@@ -1065,6 +1094,16 @@
   }
 
   function bindEvents() {
+    if (els.adminMobileNavToggle) {
+      els.adminMobileNavToggle.addEventListener('click', () => {
+        const isOpen = document.body.classList.toggle('admin-nav-open');
+        els.adminMobileNavToggle.setAttribute('aria-expanded', String(isOpen));
+      });
+    }
+    document.querySelectorAll('.sidebar-nav a, .sidebar-nav button').forEach(item => {
+      item.addEventListener('click', closeAdminMobileNav);
+    });
+
     const credentialToggle = document.querySelector('[data-toggle-login-credentials]');
     if (credentialToggle) {
       credentialToggle.addEventListener('click', () => {
@@ -1343,14 +1382,15 @@
   }
 
   function init() {
+    setupBrandLogos();
     setupAutoScrollbars();
     Store.getServices();
     Store.getDigitalProducts();
     Store.getInvestments();
     setupAdminPanels();
     bindEvents();
-    if (isLoggedIn()) showDashboard();
-    else showLogin();
+    setLoggedIn(false);
+    showLogin();
   }
 
   document.addEventListener('DOMContentLoaded', init);

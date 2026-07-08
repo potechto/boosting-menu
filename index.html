@@ -7,6 +7,7 @@
   <meta name="description" content="Novalyte digital growth portal for social growth services, digital subscriptions, and Messenger-ready checkout.">
   <link rel="icon" href="assets/icons/novalyte.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/mobile.css">
 </head>
 <body>
   <header class="topbar">
@@ -78,13 +79,13 @@
             <button class="btn small" type="button" data-client-view="services">Open services</button>
           </article>
           <article class="client-info-card">
-            <span class="info-icon">💎</span>
+            <span class="info-icon info-icon-phone" aria-hidden="true"></span>
             <h2>Digital products</h2>
             <p>Selected subscriptions and digital tools for streaming, editing, AI, productivity, and student use.</p>
             <button class="btn small" type="button" data-client-view="digital-products">Open products</button>
           </article>
           <article class="client-info-card">
-            <span class="info-icon">🛟</span>
+            <span class="info-icon info-icon-message" aria-hidden="true"></span>
             <h2>Contact us</h2>
             <p>For questions, availability, and custom requests, message Novalyte directly on Messenger.</p>
             <a class="btn small primary" href="https://www.facebook.com/messages/t/1240324299157071" target="_blank" rel="noopener">Message Novalyte</a>
@@ -149,14 +150,12 @@
         <div class="client-about-card elevated-card">
           <span class="eyebrow">About Novalyte</span>
           <h1 id="aboutNovalyteTitle">Simple, organized, and client-friendly ordering.</h1>
-          <p>Novalyte is a clean portal for social growth services and selected digital subscriptions. It helps clients review options, prices, and order details before confirming through Messenger.</p>
         </div>
 
         <div class="client-reviews-section elevated-card" aria-labelledby="clientReviewsTitle">
           <div class="client-section-heading review-heading">
             <span class="eyebrow">Customer Feedback</span>
             <h2 id="clientReviewsTitle">Feedback from our customers</h2>
-            <p>Read client feedback and leave one short review for Novalyte. After submitting, your review will appear with a Novalyte client ID and the form will lock on this browser.</p>
           </div>
           <div class="review-cards-scroll" id="reviewCards" aria-live="polite"></div>
           <form class="review-form" id="reviewForm">
@@ -166,7 +165,6 @@
               <small class="field-hint"><span id="reviewCharCount">0</span>/1000 characters</small>
             </div>
             <div class="review-form-actions">
-              <p class="service-desc" id="reviewFormNotice">No account required. Your feedback will receive an auto-generated Novalyte client ID.</p>
               <button class="btn primary" id="submitReviewBtn" type="submit">Submit Feedback</button>
             </div>
           </form>
@@ -197,13 +195,13 @@
             <label for="calcCategory">Category</label>
             <div class="select-with-platform-icon">
               <span class="select-platform-icon" id="categoryIcon" aria-hidden="true"></span>
-              <select id="calcCategory" class="provider-select"></select>
+              <select id="calcCategory" class="mobile-enhanced-select provider-select"></select>
             </div>
           </div>
 
           <div class="provider-field">
             <label for="calcService">Services</label>
-            <select id="calcService" class="provider-select service-select"></select>
+            <select id="calcService" class="mobile-enhanced-select provider-select service-select"></select>
           </div>
 
           <div class="selected-service-strip" id="selectedServiceSummary" aria-live="polite">
@@ -343,7 +341,7 @@
 
   <footer class="footer">
     <div class="shell">
-      Novalyte service menu. Rates may change depending on availability and quantity.
+      Novalyte service menu. Message us on Messenger to confirm availability and final details.
     </div>
   </footer>
 
