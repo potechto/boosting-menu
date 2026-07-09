@@ -1351,7 +1351,7 @@
 }
 
 
-/* v5.3.2 desktop-safe mobile review hotfix
+/* v5.3.3 desktop-safe mobile review hotfix
    Important: this file is loaded with media="screen and (max-width: 820px)" in HTML.
    Keep all new rules inside mobile breakpoints so PC / laptop layouts are protected. */
 @media (max-width: 820px) {
@@ -1618,5 +1618,142 @@
   body.admin-dashboard-mode .responsive-table td,
   body.admin-dashboard-mode .mini-table td {
     grid-template-columns: 86px minmax(0, 1fr) !important;
+  }
+}
+
+
+/* v5.3.3 mobile layout cleanup - only responsive differences live here. */
+@media (max-width: 820px) {
+  .topbar,
+  body.admin-dashboard-mode .sidebar {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1800 !important;
+  }
+
+  .brand-logo-frame,
+  .logo-mark,
+  .lock-visual {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    padding: 5px !important;
+    display: grid !important;
+    place-items: center !important;
+    border-color: rgba(112, 225, 255, 0.44) !important;
+    background: radial-gradient(circle at center, rgba(30, 41, 59, 0.92), rgba(2, 6, 23, 0.98)) !important;
+  }
+
+  .brand-logo-img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+    transform: none !important;
+  }
+
+  .client-info-card .info-icon,
+  .client-feature-card .info-icon {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+  }
+
+  .mobile-nav-toggle {
+    display: inline-grid !important;
+    place-items: center !important;
+  }
+
+  body.client-nav-open .nav-actions {
+    position: fixed !important;
+    top: var(--client-nav-top, 70px) !important;
+    left: 12px !important;
+    right: 12px !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    padding: 10px !important;
+    border-radius: 18px !important;
+    max-height: calc(100dvh - var(--client-nav-top, 70px) - 12px) !important;
+    overflow-y: auto !important;
+    z-index: 1790 !important;
+  }
+
+  .nav-actions .btn {
+    width: 100% !important;
+    min-height: 42px !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+  }
+
+  .admin-mobile-nav-toggle {
+    display: inline-grid !important;
+    place-items: center !important;
+  }
+
+  body.admin-dashboard-mode .sidebar {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+
+  body.admin-dashboard-mode .sidebar .brand {
+    min-width: 0 !important;
+  }
+
+  body.admin-dashboard-mode .sidebar-nav {
+    display: none !important;
+  }
+
+  body.admin-dashboard-mode.admin-nav-open .sidebar-nav {
+    position: fixed !important;
+    top: var(--admin-nav-top, 70px) !important;
+    left: 12px !important;
+    right: 12px !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    padding: 10px !important;
+    border: 1px solid rgba(148, 163, 184, 0.18) !important;
+    border-radius: 18px !important;
+    background: rgba(2, 6, 23, 0.98) !important;
+    box-shadow: 0 24px 70px rgba(2, 6, 23, 0.58) !important;
+    max-height: calc(100dvh - var(--admin-nav-top, 70px) - 12px) !important;
+    overflow-y: auto !important;
+    z-index: 1790 !important;
+  }
+
+  body.admin-dashboard-mode .sidebar-nav a,
+  body.admin-dashboard-mode .sidebar-nav button {
+    width: 100% !important;
+    min-height: 42px !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+    border-radius: 13px !important;
+  }
+
+  body.admin-dashboard-mode .sidebar-nav a[href="index.html"] {
+    border-color: transparent !important;
+    background: transparent !important;
+  }
+
+  body.admin-dashboard-mode .sidebar-nav a.active[href="index.html"] {
+    border-color: rgba(112, 225, 255, 0.52) !important;
+    background: rgba(112, 225, 255, 0.10) !important;
+  }
+
+  .sidebar-note {
+    display: none !important;
+  }
+
+  .eye-btn {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .eye-icon {
+    width: 24px !important;
+    height: 24px !important;
   }
 }

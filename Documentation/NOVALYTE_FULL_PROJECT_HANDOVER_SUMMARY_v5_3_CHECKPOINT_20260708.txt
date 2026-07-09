@@ -589,3 +589,28 @@ END OF v5.3.2 HOTFIX NOTES.
 
 
 END OF HANDOVER.
+
+================================================================================
+V5.3.3 VISUAL CLEANUP HOTFIX - 2026-07-09
+================================================================================
+Source review: User screenshots after v5.3.2 showed desktop/mobile visual cleanup still needed.
+
+Applied fixes:
+1. Replaced homepage/What We Do emoji icons with CSS-built UI icons so Boosting, Digital Products, Messenger, Growth, Subscription, Order, and Flow cards no longer use emojis.
+2. Added Resources/Icons/logo-clean.png and switched client/admin logo usage to this centered transparent asset.
+3. Forced logo frames to center the logo image in both desktop and mobile.
+4. Rebuilt the password/PIN eye viewer:
+   - hidden password/PIN = eye with slash line;
+   - visible password/PIN = open eye with no slash line.
+5. Removed the accidental desktop/mobile gray hamburger line above the admin Dashboard by hiding .admin-mobile-nav-toggle on desktop.
+6. Removed the localStorage/Supabase sidebar note from admin UI.
+7. Flattened platform name chips so the platform name/icon is no longer inside a pill/container.
+8. Corrected mobile client hamburger layout to one navigation item per row, not two columns.
+9. Corrected mobile admin hamburger layout to one navigation item per row, with Logout still present.
+10. Kept responsive-only changes in mobile.css and shared visual/content cleanup in styles.css.
+
+MANDATORY PATCH DEPLOYMENT SOP - ALWAYS INCLUDE IN FUTURE HANDOVERS:
+- Provide one VS Code PowerShell command that applies the downloaded ZIP into the main Novalyte folder.
+- The command must copy from Downloads if needed, expand into the main project, run JS syntax checks, open local PC pages, git add/commit/push to GitHub, open live GitHub Pages cache-busted URLs, and delete ZIP copies afterward.
+- Include desktop checklist, phone checklist, and pushed/live verification checklist.
+- Never treat the patch as complete without the apply/push/test/cleanup command and checklist.

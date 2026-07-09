@@ -181,8 +181,8 @@
 
   function platformFallback(platform) {
     const key = String(platform || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
-    const map = { facebook: 'f', instagram: '◎', tiktok: '♪', youtube: '▶', telegram: '✈', twitter: '𝕏', x: '𝕏' };
-    return map[key] || '•';
+    const map = { facebook: 'f', instagram: 'ig', tiktok: 'tt', youtube: 'yt', telegram: 'tg', twitter: 'x', x: 'x' };
+    return map[key] || String(platform || '?').trim().slice(0, 2).toLowerCase();
   }
 
   function platformIcon(platform) {

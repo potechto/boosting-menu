@@ -91,8 +91,8 @@
   }
 
   function platformFallback(platform) {
-    const map = { facebook: 'f', instagram: '◎', tiktok: '♪', youtube: '▶', telegram: '✈', twitter: '𝕏', x: '𝕏' };
-    return map[platformKey(platform)] || '•';
+    const map = { facebook: 'f', instagram: 'ig', tiktok: 'tt', youtube: 'yt', telegram: 'tg', twitter: 'x', x: 'x' };
+    return map[platformKey(platform)] || String(platform || '?').trim().slice(0, 2).toLowerCase();
   }
 
   function platformIcon(platform) {
