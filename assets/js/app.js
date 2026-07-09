@@ -156,7 +156,7 @@
   }
 
 
-  // v5.3.23: keep public service table and mobile cards mutually exclusive.
+  // v5.3.24: keep public service table/mobile cards exclusive; ID column now appears before Platform.
   // Desktop/laptop shows only the table. Phones show only the mobile cards.
   function isServiceMobileCardsMode() {
     try {
@@ -647,8 +647,8 @@
       const row = document.createElement('tr');
       row.className = `public-service-row${disabled ? ' is-service-disabled' : ''}`;
       row.innerHTML = `
-        <td data-label="Platform"><span class="platform-pill ${platformClass(service.platform)}"><span class="platform-icon">${platformIcon(service.platform)}</span>${sanitize(service.platform)}</span></td>
         <td data-label="ID"><span class="id-chip">${sanitize(service.providerId)}</span></td>
+        <td data-label="Platform"><span class="platform-pill ${platformClass(service.platform)}"><span class="platform-icon">${platformIcon(service.platform)}</span>${sanitize(service.platform)}</span></td>
         <td data-label="Service"><div class="service-name-cell"><strong>${sanitize(service.name)}</strong><span>${sanitize(service.description || service.tag || service.category || 'Available service')}</span></div></td>
         <td data-label="Rate"><strong>${Store.formatMoney(service.clientRate)}</strong><span class="rate-unit"> / ${Store.formatNumber(service.rateUnit)}</span></td>
         <td data-label="Min / Max"><span class="range-chip">${compactServiceRange(service)}</span></td>
