@@ -10010,3 +10010,25 @@ body.admin-nav-open .admin-mobile-nav-toggle span:nth-child(3) {
 }
 
 /* v5.3.10 CONFIRM FALLBACK CHECKER FIX */
+
+
+/* v5.3.11 PUBLIC REVIEW + VIEWPORT NAV FIX */
+@media (max-width: 820px) {
+  .topbar {
+    z-index: 2200 !important;
+  }
+
+  body.client-nav-open .nav-actions.client-floating-nav {
+    position: fixed !important;
+    top: var(--client-nav-top, 66px) !important;
+    left: 12px !important;
+    right: 12px !important;
+    z-index: 9999 !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    max-height: calc(100dvh - var(--client-nav-top, 66px) - 12px) !important;
+    overflow-y: auto !important;
+    transform: none !important;
+  }
+}

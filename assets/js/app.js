@@ -2,6 +2,7 @@
   const Store = window.NovalyteStore;
   const MESSENGER_URL = 'https://www.facebook.com/messages/t/1240324299157071';
   const CLIENT_STATE_KEY = 'novalyte-client-view-state-v2';
+  // v5.3.11: public review seed + viewport-safe floating mobile navigation.
   const state = { servicePage: 1, perPage: 10, view: 'home', activeDigitalProductId: null };
 
   const els = {
@@ -64,6 +65,9 @@
     digitalProductModalPrice: document.getElementById('digitalProductModalPrice'),
     digitalProductModalDescription: document.getElementById('digitalProductModalDescription')
   };
+
+  const primaryNavHomeParent = els.primaryNav ? els.primaryNav.parentElement : null;
+  const primaryNavNextSibling = els.primaryNav ? els.primaryNav.nextSibling : null;
 
   function sanitize(text) {
     return String(text ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
@@ -647,7 +651,17 @@
   }
 
 
+  const UNIVERSAL_CLIENT_REVIEW_ID = 'Pnovalyte001';
+  const UNIVERSAL_CLIENT_REVIEW_MESSAGE = 'They responded quickly and processed my order fast, even for an international client like me.';
+
   const DEFAULT_PUBLIC_REVIEWS = [
+    {
+      id: UNIVERSAL_CLIENT_REVIEW_ID,
+      message: UNIVERSAL_CLIENT_REVIEW_MESSAGE,
+      rating: 5,
+      createdAt: '2026-07-07T09:00:00.000Z',
+      isSeed: true
+    },
     {
       id: 'phnova-00A1',
       message: 'Legit to, fast transaction plus nililinaw mabuti bago i process',
@@ -689,8 +703,23 @@
     return date.toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' });
   }
 
+  function normalizePublicReview(review) {
+    const id = String(review && review.id ? review.id : '').toLowerCase();
+    const message = String(review && review.message ? review.message : '').trim().toLowerCase();
+    if (id === UNIVERSAL_CLIENT_REVIEW_ID.toLowerCase() || message === 'test 001') {
+      return {
+        ...review,
+        id: UNIVERSAL_CLIENT_REVIEW_ID,
+        message: UNIVERSAL_CLIENT_REVIEW_MESSAGE,
+        rating: review.rating || 5,
+        createdAt: review.createdAt || '2026-07-07T09:00:00.000Z'
+      };
+    }
+    return review;
+  }
+
   function combinedPublicReviews() {
-    const savedReviews = Store.getReviews ? Store.getReviews() : [];
+    const savedReviews = Store.getReviews ? Store.getReviews().map(normalizePublicReview) : [];
     const realIds = new Set(savedReviews.map(review => String(review.id || '').toLowerCase()));
     const seedReviews = DEFAULT_PUBLIC_REVIEWS.filter(review => !realIds.has(String(review.id || '').toLowerCase()));
     return [...savedReviews, ...seedReviews];
@@ -895,18 +924,48 @@
     });
   }
 
+  function restorePrimaryNavHome() {
+    if (!els.primaryNav || !primaryNavHomeParent || els.primaryNav.parentElement === primaryNavHomeParent) return;
+    primaryNavHomeParent.insertBefore(els.primaryNav, primaryNavNextSibling);
+    els.primaryNav.classList.remove('client-floating-nav');
+  }
+
+  function floatPrimaryNavToViewport() {
+    if (!els.primaryNav) return;
+    if (!window.matchMedia('(max-width: 820px)').matches) {
+      restorePrimaryNavHome();
+      return;
+    }
+    if (els.primaryNav.parentElement !== document.body) {
+      document.body.appendChild(els.primaryNav);
+    }
+    els.primaryNav.classList.add('client-floating-nav');
+  }
+
+  function updateClientNavViewportPosition() {
+    if (!els.mobileNavToggle || !window.matchMedia('(max-width: 820px)').matches) return;
+    const rect = els.mobileNavToggle.getBoundingClientRect();
+    const fallbackTop = 66;
+    const rawTop = Number.isFinite(rect.bottom) ? rect.bottom + 8 : fallbackTop;
+    const top = Math.max(58, Math.min(rawTop, window.innerHeight - 68));
+    document.documentElement.style.setProperty('--client-nav-top', `${top}px`);
+  }
+
   function closeMobileNav() {
     document.body.classList.remove('client-nav-open');
     if (els.mobileNavToggle) els.mobileNavToggle.setAttribute('aria-expanded', 'false');
+    restorePrimaryNavHome();
   }
 
   function toggleMobileNav() {
-    if (els.mobileNavToggle && window.matchMedia('(max-width: 820px)').matches) {
-      const rect = els.mobileNavToggle.getBoundingClientRect();
-      document.documentElement.style.setProperty('--client-nav-top', `${Math.max(62, rect.bottom + 8)}px`);
+    const willOpen = !document.body.classList.contains('client-nav-open');
+    if (willOpen) {
+      floatPrimaryNavToViewport();
+      updateClientNavViewportPosition();
     }
-    const isOpen = document.body.classList.toggle('client-nav-open');
-    if (els.mobileNavToggle) els.mobileNavToggle.setAttribute('aria-expanded', String(isOpen));
+    document.body.classList.toggle('client-nav-open', willOpen);
+    if (els.mobileNavToggle) els.mobileNavToggle.setAttribute('aria-expanded', String(willOpen));
+    if (!willOpen) restorePrimaryNavHome();
   }
 
   function bindEvents() {

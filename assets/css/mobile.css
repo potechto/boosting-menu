@@ -2025,3 +2025,19 @@
 }
 
 /* v5.3.10 confirm fallback checker fix */
+
+
+/* v5.3.11 viewport-safe client hamburger dropdown */
+@media (max-width: 820px) {
+  body.client-nav-open .nav-actions.client-floating-nav {
+    position: fixed !important;
+    top: var(--client-nav-top, 66px) !important;
+    left: 12px !important;
+    right: 12px !important;
+    z-index: 9999 !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    max-height: calc(100dvh - var(--client-nav-top, 66px) - 12px) !important;
+    overflow-y: auto !important;
+  }
+}

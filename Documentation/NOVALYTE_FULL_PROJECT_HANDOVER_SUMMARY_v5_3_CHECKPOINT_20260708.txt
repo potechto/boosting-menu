@@ -669,3 +669,11 @@ Root cause addressed: v5.3.4 used newly generated logo/icon files that may not b
 - Replaced fallback behavior with an in-site toast and safe false return if the modal mount is unavailable.
 - Updated cache-bust markers from v5.3.9 to v5.3.10.
 - No logo asset overwrite; Resources/Brand/novalyte.png remains user-managed.
+
+
+=== V5.3.11 PUBLIC REVIEW + VIEWPORT NAV FIX (2026-07-09) ===
+- Added Pnovalyte001 as a public default review so the updated testimonial appears on every device, not only the browser where it was submitted.
+- Replaced the local Test 001 display with: "They responded quickly and processed my order fast, even for an international client like me."
+- Existing browser-local review with id Pnovalyte001 or message Test 001 is normalized at render time so it shows the updated wording.
+- Client mobile hamburger navigation is moved to body while open so its dropdown is fixed to the current viewport, even when opened from the middle/bottom of a scrolled page.
+- No logo file is included or overwritten. The site still references Resources/Brand/novalyte.png.
