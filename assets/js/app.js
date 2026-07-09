@@ -619,7 +619,7 @@
     const start = (state.servicePage - 1) * state.perPage + 1;
     const end = Math.min(total, state.servicePage * state.perPage);
     els.servicePagination.innerHTML = `
-      <div class="page-summary">Showing ${Store.formatNumber(start)}-${Store.formatNumber(end)} of ${Store.formatNumber(total)} services</div>
+      <div class="page-summary">Page ${state.servicePage} of ${pages} • Showing services ${Store.formatNumber(start)}-${Store.formatNumber(end)} of ${Store.formatNumber(total)}</div>
       <div class="page-buttons">
         <button class="btn small" type="button" data-service-page="prev" ${state.servicePage === 1 ? 'disabled' : ''}>Previous</button>
         <span class="page-chip">Page ${state.servicePage} / ${pages}</span>

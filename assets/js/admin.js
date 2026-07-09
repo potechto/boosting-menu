@@ -792,7 +792,7 @@
     const start = (servicePage - 1) * servicePageSize + 1;
     const end = Math.min(total, servicePage * servicePageSize);
     pager.innerHTML = `
-      <div class="page-summary">Showing ${Store.formatNumber(start)}-${Store.formatNumber(end)} of ${Store.formatNumber(total)} services</div>
+      <div class="page-summary">Page ${servicePage} of ${pages} • Showing services ${Store.formatNumber(start)}-${Store.formatNumber(end)} of ${Store.formatNumber(total)}</div>
       <div class="page-buttons">
         <button class="btn small" type="button" data-admin-service-page="prev" ${servicePage === 1 ? 'disabled' : ''}>Previous</button>
         <span class="page-chip">Page ${servicePage} / ${pages}</span>
