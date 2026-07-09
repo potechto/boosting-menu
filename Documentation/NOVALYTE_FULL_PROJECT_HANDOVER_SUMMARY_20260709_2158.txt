@@ -1,0 +1,32 @@
+﻿NOVALYTE FULL PROJECT HANDOVER SUMMARY
+Checkpoint: 20260709_2158
+
+STATUS:
+- Continue from latest confirmed working version.
+- Documentation must always be created before ZIP.
+- This handover must be included in the full project ZIP.
+
+LOCKED RULES:
+- Do not touch unrelated code/files.
+- Do not remove anything not requested.
+- Do not add anything not requested.
+- Do only the requested update, nothing more, nothing less.
+- Every handover must include previous accomplishments, errors assessed, current updates, ongoing tasks, pending patches, future plan, and locked process notes.
+
+PREVIOUS ACCOMPLISHMENTS:
+- Add full details here before zipping.
+
+CURRENT UPDATES:
+- Add exact changes made in this checkpoint.
+
+ASSESSED PROBLEMS / ERRORS:
+- Add exact errors found and what was done.
+
+ONGOING / PENDING TASKS:
+- Add pending patches and skipped items.
+
+FUTURE PLAN:
+- Add next-chat continuation plan.
+
+NEXT CHAT STARTER:
+- Continue from this handover/checkpoint.
