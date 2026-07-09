@@ -221,7 +221,7 @@
       [dashboard, stats, services, digitalProductsAdmin, investments, orders].forEach(el => el && el.classList.add('hidden'));
       if (activePanel === 'dashboard') {
         dashboard && dashboard.classList.remove('hidden');
-        stats && stats.classList.remove('hidden');
+        stats && stats.classList.add('hidden');
       }
       if (activePanel === 'services') services && services.classList.remove('hidden');
       if (activePanel === 'digital-products') digitalProductsAdmin && digitalProductsAdmin.classList.remove('hidden');
@@ -542,12 +542,12 @@
 
     els.investmentsTable.innerHTML = entries.map(entry => `
       <tr>
-        <td>${sanitize(dateText(entry.createdAt))}</td>
-        <td><span class="status-pill ${financeAmountClass(entry.type)}">${sanitize(financeTypeLabel(entry.type))}</span></td>
-        <td>${sanitize(entry.person || (entry.type === 'owner-payout' ? 'Self' : '-'))}</td>
-        <td><strong>${Store.formatMoney(entry.amount)}</strong></td>
-        <td>${sanitize(entry.note || 'No note')}</td>
-        <td><button class="btn small danger" type="button" data-remove-finance-entry="${sanitize(entry.id)}" data-finance-source="${sanitize(entry.source || 'finance')}" data-source-id="${sanitize(entry.sourceId || '')}">Remove</button></td>
+        <td data-label="Date">${sanitize(dateText(entry.createdAt))}</td>
+        <td data-label="Type"><span class="status-pill ${financeAmountClass(entry.type)}">${sanitize(financeTypeLabel(entry.type))}</span></td>
+        <td data-label="Person">${sanitize(entry.person || (entry.type === 'owner-payout' ? 'Self' : '-'))}</td>
+        <td data-label="Amount"><strong>${Store.formatMoney(entry.amount)}</strong></td>
+        <td data-label="Note">${sanitize(entry.note || 'No note')}</td>
+        <td data-label="Action"><button class="btn small danger" type="button" data-remove-finance-entry="${sanitize(entry.id)}" data-finance-source="${sanitize(entry.source || 'finance')}" data-source-id="${sanitize(entry.sourceId || '')}">Remove</button></td>
       </tr>
     `).join('');
   }
@@ -567,10 +567,10 @@
         : `${Store.formatMoney(member.amount)} ${member.frequency}`;
       return `
         <tr>
-          <td><strong>${sanitize(member.name)}</strong></td>
-          <td>${sanitize(rule)}</td>
-          <td>${Store.formatMoney(estimated)}</td>
-          <td><button class="btn small danger" type="button" data-remove-team-member="${sanitize(member.id)}">Remove</button></td>
+          <td data-label="Person"><strong>${sanitize(member.name)}</strong></td>
+          <td data-label="Rule">${sanitize(rule)}</td>
+          <td data-label="Est. Share">${Store.formatMoney(estimated)}</td>
+          <td data-label="Action"><button class="btn small danger" type="button" data-remove-team-member="${sanitize(member.id)}">Remove</button></td>
         </tr>
       `;
     }).join('');
@@ -1104,6 +1104,8 @@
   function bindEvents() {
     if (els.adminMobileNavToggle) {
       els.adminMobileNavToggle.addEventListener('click', () => {
+        const rect = els.adminMobileNavToggle.getBoundingClientRect();
+        document.documentElement.style.setProperty('--admin-nav-top', `${Math.max(62, rect.bottom + 8)}px`);
         const isOpen = document.body.classList.toggle('admin-nav-open');
         els.adminMobileNavToggle.setAttribute('aria-expanded', String(isOpen));
       });
@@ -1358,8 +1360,8 @@
     [els.orderQuantity, els.orderStatus, els.orderPaymentStatus].forEach(el => el.addEventListener('input', updateOrderCalcPreview));
     els.orderForm.addEventListener('submit', saveOrder);
 
-    els.exportBackupBtn.addEventListener('click', Store.exportBackup);
-    els.importBackupInput.addEventListener('change', async event => {
+    if (els.exportBackupBtn) els.exportBackupBtn.addEventListener('click', Store.exportBackup);
+    if (els.importBackupInput) els.importBackupInput.addEventListener('change', async event => {
       const file = event.target.files[0];
       if (!file) return;
       try {

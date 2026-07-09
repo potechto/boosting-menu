@@ -324,6 +324,20 @@
     renderCalculator();
   }
 
+  function compactQuantity(value) {
+    const number = Number(value) || 0;
+    const abs = Math.abs(number);
+    const trim = value => String(value).replace(/\.0$/, '').replace(/(\.\d*[1-9])0$/, '$1');
+    if (abs >= 1000000000) return `${trim((number / 1000000000).toFixed(abs >= 10000000000 ? 0 : 1))}B`;
+    if (abs >= 1000000) return `${trim((number / 1000000).toFixed(abs >= 10000000 ? 0 : 1))}M`;
+    if (abs >= 1000) return Store.formatNumber(number);
+    return Store.formatNumber(number);
+  }
+
+  function compactServiceRange(service) {
+    return `${compactQuantity(service.min)}-${compactQuantity(service.max)}`;
+  }
+
   function selectedCalcService() {
     return visibleServices().find(service => service.id === els.calcService.value);
   }
@@ -362,7 +376,7 @@
     const items = [
       { label: 'ID', value: service.providerId },
       { label: 'Rate', value: `${Store.formatMoney(service.clientRate)} / ${Store.formatNumber(service.rateUnit)}` },
-      { label: 'Min-Max', value: `${Store.formatNumber(service.min)} - ${Store.formatNumber(service.max)}` },
+      { label: 'Min-Max', value: compactServiceRange(service) },
       { label: 'ETA', value: service.avgTime || 'Varies' }
     ];
 
@@ -392,7 +406,7 @@
     const validation = validationFor(service, calc);
 
     els.clientTotal.textContent = Store.formatMoney(calc.clientCharge);
-    els.quantityHint.textContent = `Min: ${Store.formatNumber(service.min)} - Max: ${Store.formatNumber(service.max)}`;
+    els.quantityHint.textContent = `Min-Max: ${compactServiceRange(service)}`;
     els.chargeHint.textContent = `${Store.formatMoney(service.clientRate)} per ${Store.formatNumber(service.rateUnit)} • Service ID ${service.providerId}`;
     els.calcNotice.textContent = validation.message;
     els.calcNotice.classList.toggle('warning-notice', !validation.ok);
@@ -603,7 +617,7 @@
         <td data-label="ID"><span class="id-chip">${sanitize(service.providerId)}</span></td>
         <td data-label="Service"><div class="service-name-cell"><strong>${sanitize(service.name)}</strong><span>${sanitize(service.description || service.tag || service.category || 'Available service')}</span></div></td>
         <td data-label="Rate"><strong>${Store.formatMoney(service.clientRate)}</strong><span class="rate-unit"> / ${Store.formatNumber(service.rateUnit)}</span></td>
-        <td data-label="Min / Max"><span class="range-chip">${Store.formatNumber(service.min)} - ${Store.formatNumber(service.max)}</span></td>
+        <td data-label="Min / Max"><span class="range-chip">${compactServiceRange(service)}</span></td>
         <td data-label="ETA">${sanitize(service.avgTime || 'Varies')}</td>
         <td data-label="Action"><button class="btn primary small" type="button" data-use-service="${service.id}" ${disabled ? 'disabled' : ''}>${disabled ? 'Disabled' : 'Order Now'}</button></td>
       `;
@@ -623,7 +637,7 @@
             <p>${sanitize(service.description || service.tag || service.category || 'Available service')}</p>
             <div class="mobile-service-details">
               <span><small>Rate</small><strong>${Store.formatMoney(service.clientRate)} / ${Store.formatNumber(service.rateUnit)}</strong></span>
-              <span><small>Min-Max</small><strong>${Store.formatNumber(service.min)} - ${Store.formatNumber(service.max)}</strong></span>
+              <span class="min-max-detail"><small>Min-Max</small><strong>${compactServiceRange(service)}</strong></span>
               <span><small>ETA</small><strong>${sanitize(service.avgTime || 'Varies')}</strong></span>
             </div>
             <button class="btn primary small" type="button" data-use-service="${service.id}" ${disabled ? 'disabled' : ''}>${disabled ? 'Disabled' : 'Order Now'}</button>
@@ -888,6 +902,10 @@
   }
 
   function toggleMobileNav() {
+    if (els.mobileNavToggle) {
+      const rect = els.mobileNavToggle.getBoundingClientRect();
+      document.documentElement.style.setProperty('--client-nav-top', `${Math.max(62, rect.bottom + 8)}px`);
+    }
     const isOpen = document.body.classList.toggle('client-nav-open');
     if (els.mobileNavToggle) els.mobileNavToggle.setAttribute('aria-expanded', String(isOpen));
   }

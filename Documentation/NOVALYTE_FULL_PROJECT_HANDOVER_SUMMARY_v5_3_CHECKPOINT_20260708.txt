@@ -1,0 +1,781 @@
+NOVALYTE FULL PROJECT HANDOVER SUMMARY - v5.3.1 MOBILE REVIEW PATCH
+Generated: 2026-07-09
+Project: Novalyte / boosting-menu
+Local Windows project path: C:\Users\Ralph John\OneDrive\Desktop\ME FILES\Novalyte
+Base Windows folder: C:\Users\Ralph John\OneDrive\Desktop\ME FILES
+GitHub repo used in this chat: https://github.com/potechto/boosting-menu.git
+Expected live GitHub Pages URL used in diagnostics: https://potechto.github.io/boosting-menu
+Current checkpoint version: v5.3.1 Mobile Review Patch created, packaged, and now includes the mandatory Patch Deployment SOP.
+
+================================================================================
+1. PURPOSE OF THIS HANDOVER
+================================================================================
+This handover is meant to transfer the complete working context into a new chat without losing any project decisions, rules, patch history, bugs, fixes, pending tasks, or future direction.
+
+The user wants to continue tomorrow in a fresh chat because the current chat is already long and may cause browser crashes. The new chat should continue from the exact same process and assumptions used here.
+
+IMPORTANT: The new chat should not restart from scratch. It should continue from v5.3 checkpoint and use the actual phone review/screen recording/transcript that the user will provide tomorrow.
+
+================================================================================
+2. CORE PROJECT DESCRIPTION
+================================================================================
+Novalyte is a static web portal for social growth services and digital products.
+
+Current implementation:
+- Static HTML/CSS/JavaScript.
+- Uses localStorage through the Store layer.
+- No Supabase/auth/database yet.
+- Public/client page: index.html.
+- Admin page: admin.html.
+- Main CSS: assets/css/styles.css.
+- Mobile CSS introduced: assets/css/mobile.css.
+- Main JS files: assets/js/data.js, assets/js/store.js, assets/js/app.js, assets/js/admin.js.
+- Documentation is stored inside Documentation/.
+- Branding/logo resources are under Resources/, especially Resources/Icons/logo.png.
+
+Future backend plan:
+- Supabase/Auth is not yet started.
+- v6.0 is reserved for database/auth/multi-device sync/real admin login.
+
+================================================================================
+3. USER WORKING STYLE AND LOCKED RULES
+================================================================================
+The user prefers a practical patch workflow, not long theory.
+
+LOCKED PATCH WORKFLOW RULES:
+1. Use one ZIP patch per update unless user asks otherwise.
+2. Every apply command must be a one-paste PowerShell command.
+3. The apply command must:
+   - Define $base as C:\Users\Ralph John\OneDrive\Desktop\ME FILES.
+   - Define $project as $base\Novalyte.
+   - Define $downloads as $env:USERPROFILE\Downloads.
+   - Find the patch ZIP from Downloads or ME FILES.
+   - Copy from Downloads to ME FILES when needed.
+   - Expand-Archive into the main Novalyte folder with -Force.
+   - Run node --check on all JS files.
+   - Run Select-String markers proving the patch landed.
+   - Auto-open index.html and admin.html when relevant.
+   - Delete the patch ZIP from Downloads and ME FILES.
+   - End in the Novalyte project folder.
+4. Use absolute paths for cleanup:
+   - $downloadZip
+   - $baseZip
+   Do not delete with a relative $zip after changing directories.
+5. After every patch apply command, give a separate git add/commit/push command.
+6. Always use node --check for:
+   - .\assets\js\data.js
+   - .\assets\js\store.js
+   - .\assets\js\app.js
+   - .\assets\js\admin.js
+7. Always include Select-String verification markers that are specific to the patch.
+8. For public/client side, never expose internal/admin/provider details.
+9. When user provides screenshots, screen recordings, and audio transcripts, treat them as the source of truth.
+10. When mobile changes do not appear, run diagnostics before assuming CSS is wrong.
+11. If diagnostics show live files are updated but visual output is unchanged, stop cache/deploy troubleshooting and rebuild the layout harder.
+12. Mobile CSS should stay separated as assets/css/mobile.css so desktop and mobile development do not keep fighting each other.
+13. Future mobile patches should avoid soft overrides only. If layout is structurally bad, rebuild the rendered markup/cards.
+14. The user often asks for commands and ZIPs together; keep commands clean and copy-paste ready.
+15. The user speaks casual Taglish; concise practical Taglish responses are preferred.
+
+
+
+MANDATORY PATCH DEPLOYMENT SOP - NEVER OMIT IN FUTURE HANDOVERS/RESPONSES:
+This is a locked operating rule for every Novalyte patch from this point forward.
+The assistant must not only create a ZIP. Every final patch response and every handover must include the complete deployment flow below.
+
+A. Required one-paste terminal command
+- Always include a copy-paste-ready PowerShell command for VS Code terminal.
+- The command must automatically locate the downloaded patch ZIP from Downloads or ME FILES.
+- The command must copy the ZIP into the base ME FILES folder if it came from Downloads.
+- The command must expand/update everything directly into the main Novalyte folder.
+- The command must run syntax verification after extraction.
+- The command must run marker checks proving the patch landed.
+- The command must auto-open index.html and admin.html locally for PC/browser testing.
+- The command must git add/commit/push to GitHub so the phone can test the GitHub Pages/live site.
+- The command must auto-open the live client/admin GitHub Pages URLs after push.
+- The command must clean/delete the patch ZIP from both Downloads and ME FILES after the main file/project is updated.
+- The command must finish inside the Novalyte project folder.
+
+B. Required cleanup behavior
+- After the patch is successfully expanded into the main Novalyte folder, delete temporary patch ZIP copies.
+- Use absolute cleanup variables such as $downloadZip and $baseZip only.
+- Never rely on a relative $zip path after Set-Location.
+- Do not leave patch guide/readme/checklist extra files unless the user specifically asks for them.
+- Put the commands and verification checklist inside the handover itself instead of creating extra clutter files.
+
+C. Required browser and GitHub behavior
+- Auto-open local PC test files:
+  - index.html
+  - admin.html
+- Push to GitHub after verification using git add -A, git commit, and git push origin main.
+- If there are no git changes, the command should say so and continue without failing.
+- Auto-open live GitHub Pages test links with a cache-busting query string.
+- Phone testing should be done on the live GitHub Pages URL after push, not only local PC files.
+
+D. Required verification checklist
+Every patch handover must include a checklist with:
+- ZIP was found from Downloads or ME FILES.
+- ZIP was extracted into C:\Users\Ralph John\OneDrive\Desktop\ME FILES\Novalyte.
+- JS syntax checks passed for data.js, store.js, app.js, and admin.js.
+- Patch markers were found through Select-String.
+- Local PC client/admin opened.
+- Git status checked.
+- Commit/push completed or no-change state confirmed.
+- Live GitHub Pages client/admin opened with cache-busting query.
+- Phone test checklist included for mobile issues.
+- Temporary ZIP copies deleted from Downloads and ME FILES.
+
+E. Required response format for future Novalyte patch deliveries
+When delivering a Novalyte patch, always include these sections:
+1. What changed.
+2. Download link to the ZIP.
+3. ONE-PASTE PowerShell apply + verify + open + push + cleanup command.
+4. Phone verification checklist.
+5. Any known limitations or items still pending.
+
+F. Current v5.3.1 mobile review patch command template
+Use this as the base command pattern for v5.3.1 and adapt only filenames, commit message, version query, and Select-String markers for future versions.
+
+```powershell
+$ErrorActionPreference = "Stop"
+$base = "C:\Users\Ralph John\OneDrive\Desktop\ME FILES"
+$project = Join-Path $base "Novalyte"
+$downloads = Join-Path $env:USERPROFILE "Downloads"
+$zipName = "NOVALYTE_v5.3.1_MOBILE_REVIEW_PATCH_WITH_SOP_20260709.zip"
+$downloadZip = Join-Path $downloads $zipName
+$baseZip = Join-Path $base $zipName
+
+Write-Host "=== NOVALYTE v5.3.1 FULL AUTO PATCH/APPLY/PUSH ===" -ForegroundColor Cyan
+
+if (Test-Path $downloadZip) {
+    Copy-Item $downloadZip $baseZip -Force
+    Write-Host "Patch ZIP copied from Downloads to ME FILES." -ForegroundColor Green
+} elseif (Test-Path $baseZip) {
+    Write-Host "Patch ZIP already found in ME FILES." -ForegroundColor Green
+} else {
+    throw "Patch ZIP not found. Put $zipName in Downloads or ME FILES first."
+}
+
+if (!(Test-Path $project)) {
+    throw "Project folder not found: $project"
+}
+
+Set-Location $project
+Expand-Archive -Path $baseZip -DestinationPath $project -Force
+Write-Host "Patch extracted into main Novalyte folder." -ForegroundColor Green
+
+Write-Host "Running JS syntax checks..." -ForegroundColor Cyan
+node --check .\assets\js\data.js
+node --check .\assets\js\store.js
+node --check .\assets\js\app.js
+node --check .\assets\js\admin.js
+
+Write-Host "Running marker checks..." -ForegroundColor Cyan
+Select-String -Path .\index.html -Pattern "v=5.3.1|messenger|mobileServiceCards"
+Select-String -Path .\admin.html -Pattern "v=5.3.1|Welcome, Admin|admin-login-mode"
+Select-String -Path .\assets\css\mobile.css -Pattern "mobile-service-card|admin-login-mode|admin-dashboard-mode"
+Select-String -Path .\assets\js\app.js -Pattern "mobileServiceCards|mobile-service-card|serviceMinMax"
+Select-String -Path .\assets\js\admin.js -Pattern "admin-login-mode|admin-dashboard-mode|setAdminMode"
+
+Write-Host "Opening local PC test pages..." -ForegroundColor Cyan
+Start-Process (Join-Path $project "index.html")
+Start-Process (Join-Path $project "admin.html")
+
+Write-Host "Git status before push:" -ForegroundColor Cyan
+git status --short
+
+$changes = (git status --porcelain) -join "`n"
+if ($changes.Trim().Length -gt 0) {
+    git add -A
+    git commit -m "Novalyte v5.3.1 mobile review patch"
+    git push origin main
+    Write-Host "GitHub push completed." -ForegroundColor Green
+} else {
+    Write-Host "No git changes detected after apply. Skipping commit/push." -ForegroundColor Yellow
+}
+
+Write-Host "Opening live GitHub Pages test links..." -ForegroundColor Cyan
+Start-Process "https://potechto.github.io/boosting-menu/index.html?v=5311"
+Start-Process "https://potechto.github.io/boosting-menu/admin.html?v=5311"
+
+Set-Location $base
+if (Test-Path $downloadZip) { Remove-Item $downloadZip -Force }
+if (Test-Path $baseZip) { Remove-Item $baseZip -Force }
+Set-Location $project
+
+Write-Host "DONE. Patch applied, verified, local pages opened, GitHub pushed if changes existed, live pages opened, ZIP copies cleaned." -ForegroundColor Green
+```
+
+LOCKED CONTENT/PRIVACY RULES:
+- Public/client side must not expose provider cost, provider price, profit, internal income, investment tracking, or admin-only operations.
+- Client price is allowed on public side.
+- Provider price, service provider price, income, profit, and investment are admin-only.
+- Public copy should stay customer-friendly and not sound like internal documentation.
+
+LOCKED FEEDBACK RULES:
+- No Display Name field.
+- Textarea only.
+- Maximum 1000 characters.
+- Only one feedback submission per browser.
+- After submission, textarea and submit button disappear.
+- Submitted feedback appears with other cards.
+- IDs use phnova-00A# style.
+- Starter feedback text should preserve user-provided Taglish wording unless the user asks to rewrite it.
+
+================================================================================
+4. PROJECT VERSION TIMELINE AND ACCOMPLISHMENTS
+================================================================================
+
+v4.5 - Launch Ready Wrap-up
+- Public copy updated to Novalyte Digital Growth Portal / Digital Growth Solutions.
+- Admin Order History received compact order summary cards.
+- Old JS references were cleaned.
+- Launch wrap-up notes and local apply docs were added.
+- Apply command cleanup issue was learned: never delete patch ZIP with a relative path after Set-Location changes. Always use $downloadZip and $baseZip.
+
+v4.6 - Layout + Feedback Polish
+- Service Provider Price and Client Price order swapped in Digital Product edit modal.
+- Edit label hierarchy improved.
+- Product Cover Image area cleaned.
+- Added View image button near Choose File if an existing image is present.
+- Image preview centered when viewing or selecting a file.
+- Removed stretched pill labels like About Novalyte / What we do.
+- Review section redesigned as Customer Feedback stacked cards.
+- No fake sample names were added.
+
+v4.7 - Feedback Single Submission + Clean Edit
+- Removed Display Name field in feedback.
+- Textarea only with max 1000 characters.
+- One feedback submission per browser.
+- Form/button disappear after submission.
+- Submitted feedback appears among reviews.
+- Feedback IDs use phnova-00A#.
+- Removed visible Show to clients / Disabled inside Service edit modal because Enable/Disable already exists outside edit mode.
+- Important future note: make sure this remains removed in both services and digital product edit forms if it comes back.
+
+v4.8 - Compact Detail Scale
+- Made details/admin edit fields/review cards/text/textarea/button smaller by about half.
+- Reduced overly bulky UI.
+- Preserved v4.7 one-submission feedback behavior.
+
+v4.9 - Public Copy + Scroll Stability
+- Replaced the four starter customer feedback texts with user-provided Taglish/random-looking reviews:
+  1. Legit to, fast transaction plus nililinaw mabuti bago i process
+  2. Try nyo, hindi masasayang efforts nyo, realiable and friendly
+  3. my new favortie boosting company/agency, sulit ang bayad XD
+  4. Legit nganiii ito
+- Kept user typos intentionally because the user provided the exact wording.
+- Assigned IDs like phnova-00A1 to phnova-00A4.
+- Removed Preview feedback label; changed client-facing label to Client feedback.
+- Replaced public Step 04 from Track/admin records/internal monitoring wording to safer Confirm wording.
+- Removed Future booster network/internal provider wording.
+- Added scroll stability patch because the user reported page/screen wiggle while scrolling.
+
+v5.0 - Launch Hardening + Responsive Polish
+- Added mobile hamburger menu on client view.
+- Header/nav adjusted to reduce logo/text squeeze on mobile.
+- Added Resources/Icons/logo.png from original Novalyte artwork.
+- Client/admin brand mark uses logo.png with fallback if missing.
+- Public wording cleaned to avoid internal/admin/provider/investment wording.
+- Improved paddings, spacing, cards, radius, fonts, buttons, sections.
+- Services table received initial mobile card conversion attempt.
+- Scroll stability hardened to reduce wiggle.
+- Preserved v4.7-v4.9 behavior: one feedback per browser, Taglish feedback, compact admin modals, hidden visibility controls.
+- v5.0 was successfully applied and pushed.
+
+v5.1 - Mobile Rescue + Stability
+- Created because user provided phone screen recordings and said mobile was very bad.
+- Attempted fixes:
+  - Mobile wiggle / horizontal shifting.
+  - Admin mobile tables squeezed/vertical text.
+  - Client services converted into cleaner mobile card layout.
+  - Admin Services / Digital Products / Orders tables converted into mobile card layout.
+  - Order service dropdown label shortened.
+  - Mobile hamburger/header tightened.
+  - Digital products mobile cards made more compact.
+  - Mobile paddings/cards/headings/forms/buttons cleaned.
+  - Dynamic scrollbar effect on admin disabled because it might cause wiggle.
+- v5.1 was successfully applied and pushed.
+
+v5.2 - Mobile Rebuild + Admin Lockdown
+- Created after the user gave a detailed Mobile Review transcript and Mobile Preview screen recording.
+- Added separate assets/css/mobile.css.
+- Linked mobile.css to client and admin.
+- Strengthened logo visibility on mobile/client/admin.
+- Removed unnecessary About/Feedback helper notes.
+- Replaced mobile select behavior with custom scrollable dropdown proxies.
+- Digital Products stay two-column on mobile when multiple items.
+- Single filtered digital product centers itself.
+- Digital product modal improved and centered/tighter on mobile.
+- Services table mobile cards cleaned.
+- Empty service table shell hidden when no result.
+- Pagination aligned: summary centered, Previous/Page/Next in one row.
+- Admin starts at login view instead of restoring old session automatically.
+- Admin mobile hamburger added.
+- Eye emoji replaced with CSS-drawn eye icon.
+- Admin mobile tables/cards/buttons cleaned.
+- Empty admin table rows fixed.
+- v5.2 initially appeared to have no effect because it was applied locally but not pushed; later it was committed and pushed successfully.
+- Diagnostic later confirmed v5.2 was live/deployed, but the visual fixes were still insufficient.
+
+v5.3 - True Mobile Rebuild + Cache Bust
+- Created because v5.2 was confirmed live but visually ineffective.
+- This means the issue was not deployment/cache anymore; the patch was not strong enough visually/structurally.
+- v5.3 changes prepared:
+  - Visible build marker: Novalyte v5.3 Mobile Build.
+  - Cache-busted asset links: ?v=5.3.0 for CSS/JS.
+  - Real mobile service cards instead of relying only on table conversion.
+  - Stronger mobile product grid.
+  - Single product centering.
+  - Stronger mobile modal centering.
+  - Service/category/product filters use mobile custom dropdowns.
+  - Admin login/dashboard mode uses body classes instead of fragile :has().
+  - Stronger admin mobile card/table layout.
+  - Logo visibility strengthened.
+- Current status: v5.3 patch exists but must be applied, pushed, and tested on actual phone.
+
+
+
+v5.3.1 - Mobile Review Patch + Handover SOP Lock
+- Created after the user uploaded Mobile Preview 2 and MOBILE PREVIEW transcript on 2026-07-09.
+- Removed the visible Novalyte v5.3 Mobile Build badge because clients should not see internal version labels.
+- Updated cache-busting references to v=5.3.1.
+- Strengthened mobile logo visibility.
+- Changed Contact Us wording/icon intent to Messenger because the CTA routes users to Messenger.
+- Shortened Services mobile min/max display with compact M/B quantity identifiers where appropriate.
+- Reduced pagination button/card padding to avoid edge-to-edge cramped layout.
+- Improved Digital Products description modal spacing/alignment on mobile.
+- Fixed hamburger dropdown behavior so the menu appears near the sticky hamburger even when the user is scrolled down.
+- Admin home now starts with centered Welcome, Admin only, instead of showing cluttered dashboard stats/quick links immediately.
+- Hid extra admin choices under the header because those choices already belong in the hamburger/menu panel.
+- Made modal X/close button visible/sticky on mobile.
+- Replaced the camera-looking password/PIN icon with a proper eye-style control.
+- Improved mobile admin Services, Investments/Financial Logs, and Orders card/table responsiveness.
+- Removed false/extra navigation highlight from Client View when another admin tab is selected.
+- Updated this handover with mandatory deployment rules so every future patch includes apply command, cleanup, browser run, GitHub push, phone test links, and verification checklist.
+- Current patch ZIP to deliver/use: NOVALYTE_v5.3.1_MOBILE_REVIEW_PATCH_WITH_SOP_20260709.zip
+
+================================================================================
+5. USER MOBILE REVIEW - ASSESSED PROBLEMS TO CARRY FORWARD
+================================================================================
+The user uploaded screen recordings and a transcript of mobile review. The following issues must remain top priority until verified fixed:
+
+CLIENT HEADER / NAV:
+- Novalyte logo was not visible properly on mobile.
+- It appeared as Nova Light text/letter/fallback instead of the original Novalyte logo.
+- The user wants the original Novalyte logo from Resources/Icons/logo.png.
+- Hamburger is accepted/good, but logo/header should not be squeezed.
+- Digital Products nav icon should feel like a phone/product icon.
+- Contact Us icon should be phone or Messenger because the button routes to Messenger.
+
+ABOUT / FEEDBACK TEXT:
+- Remove note: No account required, feedback will receive an auto-generated Novalyte client ID.
+- Remove helper text: Read client feedback and leave one short review.
+- Remove other awkward public copy in About/Feedback that is no longer needed.
+
+DIGITAL PRODUCTS MOBILE:
+- On one phone only one product appeared per row; on another phone two appeared. The goal is two products per row on mobile when there are multiple products.
+- If only one product is visible after filtering, it should be centered.
+- Product cards should stay clean and balanced.
+- Product images/icons should be visible.
+- Description modal was very ugly on mobile: too low, not centered, close button/layout bad.
+- Modal should look like desktop version as much as possible, just scaled down/responsive.
+- Checkout button should still work.
+- Category dropdown should not open as ugly native phone modal if possible; should behave like an on-page scrollable dropdown/list.
+
+SERVICES MOBILE:
+- Services layout was very bad: too much open space in some parts, while details were squeezed in other parts.
+- Text was cut off and overlapping.
+- Some details were too compressed.
+- Layout should be responsive, not completely changed into unreadable stacked mess.
+- Prefer clean cards if table cannot fit.
+- Category/platform dropdowns should be on-page dropdown/list, not ugly phone modal.
+- If no service found, do not leave an empty shell/padding/card; show only clean No visible service found state.
+- Pagination should be clean: Previous left, Page center, Next right; summary centered.
+
+ORDER PANEL / CALCULATOR:
+- Service dropdown label was too long and bad on mobile.
+- Inputs/buttons should fit cleanly.
+- Copy Order Details and Message Novalyte should work.
+- Messenger destination should be preserved.
+
+ADMIN LOGIN MOBILE:
+- Before login, only admin login/security panel should appear.
+- No sidebar/dashboard/services buttons should show below login.
+- Eye icon should not be a literal eye emoji.
+- Login card should be clean with proper padding.
+- Logo should be visible.
+
+ADMIN DASHBOARD MOBILE:
+- After login, admin needs hamburger menu.
+- Admin logo should be visible.
+- Welcome/Admin header should look clean and positioned properly.
+- Dashboard was cluttered.
+- Services, Digital Products, and Orders admin views were cramped.
+- Buttons were ugly/too wide/awkward.
+- Pagination should follow the same clean layout.
+- Empty orders/no orders state should not create overlapping/piled cards.
+
+DEVELOPMENT PROCESS REQUEST:
+- User suggested and approved separating CSS for desktop/big screens and mobile/small screens to avoid messy code and side effects.
+- assets/css/mobile.css should stay as the mobile-specific file.
+
+================================================================================
+6. DEPLOYMENT AND CACHE DIAGNOSTICS THAT WERE DONE
+================================================================================
+There was a long confusion where v5.2 seemed to do nothing.
+
+Important facts:
+1. v5.2 was initially applied locally but not pushed. This was detected because:
+   - local index/admin had mobile.css
+   - assets/css/mobile.css existed
+   - git status showed v5.2 files unstaged/uncommitted
+   - git log -1 still showed v5.1
+2. User then ran the push command, and v5.2 was successfully pushed:
+   - Commit: 4fe78e2 Novalyte v5.2 mobile rebuild admin lockdown
+   - origin/main matched local HEAD
+3. User waited hours and still saw no meaningful visual change.
+4. Diagnostic command compared local, raw GitHub, and live GitHub Pages:
+   - Local git was v5.2.
+   - Local index/admin had mobile.css.
+   - Raw GitHub main index/admin had mobile.css.
+   - Raw mobile.css had v5.2 marker.
+   - Live index returned 200.
+   - Live index had mobile.css.
+   - Live index had v5.2 markers.
+   - Live mobile.css returned 200.
+   - Live mobile.css had v5.2 marker.
+5. Conclusion:
+   - Deployment was working.
+   - GitHub Pages was serving v5.2 files.
+   - The problem was not push/deployment anymore.
+   - The problem was that the v5.2 visual/mobile fixes were not strong enough.
+
+Because of this, v5.3 was created with a visible build marker and cache-busted assets.
+
+================================================================================
+7. CURRENT EXACT STATUS AT CHECKPOINT
+================================================================================
+- v5.3.1 mobile review patch has been created from the user's 2026-07-09 mobile preview transcript/video review.
+- Current ZIP/package name:
+  NOVALYTE_v5.3.1_MOBILE_REVIEW_PATCH_WITH_SOP_20260709.zip
+- The updated handover now includes the mandatory Patch Deployment SOP requiring:
+  apply-to-main command, auto cleanup, local PC browser run, git push to GitHub, live phone test links, and verification checklist.
+- The visible v5.3 build marker was intentionally removed because clients should not see internal version/build labels.
+- v5.3.1 still needs to be applied on the user's Windows Novalyte project folder, pushed to GitHub, and verified on actual phone using the live GitHub Pages links.
+- The next assistant should not deliver only a ZIP. It must always include the one-paste PowerShell command and phone verification checklist.
+
+================================================================================
+8. WHAT TO VERIFY FIRST IN v5.3.1
+================================================================================
+FIRST TEST ONLY:
+- Run the full one-paste PowerShell command from Section 3.
+- Confirm the command:
+  1. Finds the ZIP.
+  2. Expands it into the main Novalyte folder.
+  3. Passes node --check.
+  4. Finds v=5.3.1 markers.
+  5. Opens local index/admin.
+  6. Pushes or confirms no git changes.
+  7. Opens live GitHub Pages URLs.
+  8. Deletes temporary ZIP copies.
+
+Live test links after push:
+- Client: https://potechto.github.io/boosting-menu/index.html?v=5311
+- Admin: https://potechto.github.io/boosting-menu/admin.html?v=5311
+
+Interpretation:
+- If v=5.3.1 markers are NOT found locally: stop and fix the patch/apply step.
+- If local markers are found but live site does not update: diagnose git push/GitHub Pages/cache.
+- If live site is updated but visual issues remain: do not repeat deployment troubleshooting; continue with the next visual patch.
+
+================================================================================
+9. FULL v5.3.1 MOBILE TESTING CHECKLIST
+================================================================================
+
+CLIENT HOME / HEADER:
+- No internal build marker is visible to clients.
+- Logo visible and not just N/fallback.
+- Header not squeezed.
+- Hamburger visible and clean.
+- Hamburger opens/closes properly while at top and while scrolled.
+- Navigation buttons fit.
+- No horizontal wiggle while scrolling.
+- Contact/Messenger card clearly feels like Messenger/contact route.
+
+WHAT WE DO / ABOUT / FEEDBACK:
+- What We Do cards readable and spaced.
+- About section has no unnecessary helper note.
+- Feedback section has no No account required helper note.
+- Feedback cards look readable.
+- Textarea/button not too large.
+- One feedback per browser still works.
+
+DIGITAL PRODUCTS:
+- Default view shows two products per row on mobile when multiple products exist.
+- One filtered product is centered.
+- Product cards are not stretched/awkward.
+- Product image/logo/icon visible.
+- Description button opens centered modal.
+- Description text aligns properly with the product title/body.
+- Modal close/X button visible and easy to tap.
+- Modal not stuck at bottom.
+- Checkout button works.
+- Category dropdown behaves like custom dropdown/list where possible.
+
+SERVICES:
+- Services show as clean cards, not squeezed table.
+- Min-Max is as close to one-line as possible and uses M/B identifiers when appropriate.
+- No overlapping text.
+- No cut-off platform/category/rate/details.
+- Filters/dropdowns usable.
+- Empty state does not leave awkward blank shell.
+- No visible service found card is clean.
+- Pagination has enough breathing room; Previous/Page/Next are not edge-to-edge cramped.
+- Order Now button works and brings selected service to calculator/order panel.
+
+ORDER PANEL / CALCULATOR:
+- Service dropdown is readable.
+- Selected service summary clean.
+- Quantity input fits.
+- Target link/username field fits.
+- Total price updates correctly.
+- Copy Order Details works.
+- Message Novalyte opens Messenger/target link properly.
+
+ADMIN LOGIN / DASHBOARD:
+- Before login, only login/security panel visible.
+- Logo visible.
+- Eye icon is a proper eye-style control, not camera-looking.
+- Login card spacing clean.
+- After login, admin top/header is clean.
+- Admin home initially shows centered Welcome, Admin only.
+- Extra dashboard stats/quick links are not shown on initial admin view.
+- Admin hamburger appears and opens near current scroll/topbar position.
+- No false extra highlight appears on Client View when another tab is selected.
+
+ADMIN PANELS:
+- Services admin layout readable.
+- Digital Products admin layout readable.
+- Orders section no overlapping empty cards.
+- Finance/Investment logs no longer collapse into unreadable unlabeled rows.
+- Buttons not too wide/tall/weird.
+- Pagination clean if present.
+- Add/Edit modal close X stays visible on mobile.
+- Edit modals remain compact and usable.
+
+GENERAL MOBILE BEHAVIOR:
+- Scroll slowly from top to bottom.
+- Open/close hamburger while at top and while scrolled.
+- Change filters.
+- Open a digital product description modal.
+- Go to admin login.
+- Login and open admin menu.
+- Navigate to Services / Digital Products / Orders / Financial Logs.
+- Record any horizontal wiggle, overlap, cut-off, squeezed text, missing icon/logo, or dead buttons.
+
+
+
+================================================================================
+9B. v5.3.1 DEPLOYMENT VERIFICATION CHECKLIST - REQUIRED
+================================================================================
+Use this checklist after running the one-paste PowerShell command.
+
+APPLY / CLEANUP:
+[ ] Patch ZIP was found in Downloads or ME FILES.
+[ ] Patch ZIP was copied to ME FILES if it started in Downloads.
+[ ] Patch was expanded directly into C:\Users\Ralph John\OneDrive\Desktop\ME FILES\Novalyte.
+[ ] Temporary patch ZIP copies were deleted from Downloads and ME FILES after apply.
+
+SYNTAX / MARKERS:
+[ ] node --check passed for assets/js/data.js.
+[ ] node --check passed for assets/js/store.js.
+[ ] node --check passed for assets/js/app.js.
+[ ] node --check passed for assets/js/admin.js.
+[ ] Select-String found v=5.3.1 markers in index/admin.
+[ ] Select-String found mobile/admin patch markers in CSS/JS.
+[ ] Select-String found MANDATORY PATCH DEPLOYMENT SOP in the handover.
+
+LOCAL PC TEST:
+[ ] index.html opened locally.
+[ ] admin.html opened locally.
+[ ] Client header/logo/hamburger checked on PC responsive view.
+[ ] Admin login/dashboard/menu checked on PC responsive view.
+
+GITHUB / PHONE TEST:
+[ ] git status checked.
+[ ] git add/commit/push completed, or no-change state confirmed.
+[ ] Live client link opened: https://potechto.github.io/boosting-menu/index.html?v=5311
+[ ] Live admin link opened: https://potechto.github.io/boosting-menu/admin.html?v=5311
+[ ] Phone tested using the live GitHub Pages links.
+[ ] Phone cache refreshed/hard reloaded if old layout still appears.
+
+PHONE REVIEW FOCUS:
+[ ] No visible internal build badge.
+[ ] Logo visible on mobile.
+[ ] Messenger/contact card uses Messenger intent/icon.
+[ ] Services min/max stays one-line where possible and uses M/B identifiers.
+[ ] Pagination buttons have enough breathing room.
+[ ] Digital Product description modal is aligned and not too low/stuck.
+[ ] Hamburger menu appears where tapped, even while scrolled.
+[ ] Admin initial screen shows Welcome, Admin only after login/dashboard start.
+[ ] Admin Services/Digital Products/Orders/Financial Logs are readable on mobile.
+[ ] No false extra highlight appears on Client View when another menu item is selected.
+
+================================================================================
+10. IMMEDIATE NEXT STEPS FOR NEW CHAT
+================================================================================
+1. Upload this handover TXT or the full project ZIP.
+2. Tell the new chat to continue from Novalyte v5.3 checkpoint.
+3. Apply v5.3 if not applied yet.
+4. Push v5.3 if not pushed yet.
+5. Test exact links with ?v=5300.
+6. Confirm if marker is visible.
+7. Send phone screen recording and transcript.
+8. Create v5.4 based only on confirmed v5.3 remaining issues.
+
+================================================================================
+11. FUTURE ROADMAP
+================================================================================
+
+v5.4 - Actual Phone-Based Mobile Correction Pass
+- Use user's new v5.3 screen recording and transcript.
+- Fix only the issues that remain after marker is confirmed visible.
+- Likely targets: product cards, service cards, dropdown behavior, modals, admin hamburger/login/dashboard, pagination.
+
+v5.5 - Client UX Polish
+- Improve public copy and icons.
+- Better Digital Products nav icon and Contact/Messenger icon.
+- Refine product cards, service cards, filter flow, order calculator spacing.
+- Improve empty states and modal transitions.
+
+v5.6 - Admin Mobile/Desktop Polish
+- Improve admin dashboard compactness.
+- Refine mobile admin cards and buttons.
+- Improve edit modals and order history.
+- Ensure admin tables/cards are readable on mobile and still good on desktop.
+
+v5.7 - QA / Launch Hardening
+- Browser console cleanup.
+- Regression checklist.
+- Accessibility basics.
+- Image fallback checks.
+- Link validation.
+- Ensure no public internal financial exposure.
+
+v6.0 - Supabase/Auth Phase
+- Real database.
+- Real admin authentication.
+- Online order/review persistence.
+- Multi-device sync.
+- Deployment-ready backend.
+- Data migration from localStorage where needed.
+
+================================================================================
+12. IMPORTANT FILES AND ARTIFACTS
+================================================================================
+Latest/current patch for this handover:
+- NOVALYTE_v5.3.1_MOBILE_REVIEW_PATCH_WITH_SOP_20260709.zip
+
+This checkpoint should create/update:
+- Documentation/NOVALYTE_FULL_PROJECT_HANDOVER_SUMMARY_v5_3_CHECKPOINT_20260708.txt
+- Full project ZIP with the updated handover included
+- No separate patch guide/checklist files unless the user specifically asks for them
+
+Existing previous documentation files may include:
+- ADMIN_COMPACT_LAYOUT_NOTES.md
+- FINAL_TESTING_CHECKLIST.md
+- LAYOUT_STABILITY_PATCH_NOTES.md
+- LOCAL_APPLY_COMMANDS_v4_5_20260708.md through LOCAL_APPLY_COMMANDS_v5_3_20260708.md
+- NEAR_FINAL_ADMIN_LAYOUT_NOTES.md
+- SUPABASE_SETUP_GUIDE.md
+- V4_1_LAYOUT_ALIGNMENT_NOTES.md through V5_3_TRUE_MOBILE_REBUILD_CACHE_BUST_NOTES.md
+- NOVALYTE_FULL_PROJECT_HANDOVER_SUMMARY_v4_4_20260707.docx
+- NOVALYTE_FULL_PROJECT_HANDOVER_SUMMARY_v5_3_CHECKPOINT_20260708.docx/md from earlier handover attempt
+
+================================================================================
+13. COMMANDS TO PRESERVE
+================================================================================
+
+A. Current v5.3.1 full auto apply/push command:
+Use the one-paste PowerShell command in Section 3 under MANDATORY PATCH DEPLOYMENT SOP.
+That command must be included in the assistant response when delivering this patch.
+It handles:
+- locating the ZIP from Downloads or ME FILES;
+- expanding it into the main Novalyte folder;
+- running node --check;
+- running Select-String marker checks;
+- opening local PC client/admin files;
+- git add/commit/push when changes exist;
+- opening live GitHub Pages client/admin links;
+- deleting temporary ZIP copies from Downloads and ME FILES.
+
+B. Current v5.3.1 markers to verify:
+- index.html: v=5.3.1, messenger, mobileServiceCards
+- admin.html: v=5.3.1, Welcome, Admin, admin-login-mode
+- mobile.css: mobile-service-card-list, admin-login-mode/admin-dashboard-mode responsive rules
+- app.js: mobileServiceCards, formatCompactQty, Messenger/contact behavior
+- admin.js: admin-login-mode, admin-dashboard-mode, setAdminMode
+- handover: MANDATORY PATCH DEPLOYMENT SOP - NEVER OMIT
+
+C. Current v5.3.1 commit message:
+Novalyte v5.3.1 mobile review patch
+
+D. Full project zip command for current handover package:
+$ErrorActionPreference = "Stop"
+$base = "C:\Users\Ralph John\OneDrive\Desktop\ME FILES"
+$project = Join-Path $base "Novalyte"
+$outZip = Join-Path $base "NOVALYTE_v5.3.1_MOBILE_REVIEW_PATCH_WITH_SOP_20260709.zip"
+Set-Location $base
+if (Test-Path $outZip) { Remove-Item $outZip -Force }
+Compress-Archive -Path (Join-Path $project "*") -DestinationPath $outZip -Force
+Write-Host "DONE: Full Novalyte project ZIP created:"
+Write-Host $outZip
+
+================================================================================
+14. SPECIAL NOTES FOR THE NEXT CHAT
+================================================================================
+- Do not repeat the same deployment troubleshooting unless marker is missing.
+- If marker is visible, immediately work on visible layout issues only.
+- Keep using the exact patch/apply/push workflow.
+- User will likely provide a new screen recording and audio transcript tomorrow. Convert it into a concrete issue checklist first, then patch.
+- Do not ask user to inspect too many technical things unless needed. The user wants practical patch results.
+- Keep all future fixes organized by version.
+- Always keep public vs admin/internal information separation.
+- Always keep mobile testing and desktop safety in mind.
+
+END OF HANDOVER.
+
+============================================================
+V5.3.1 MOBILE PREVIEW REVIEW PATCH - 2026-07-09
+============================================================
+Source reviewed: MOBILE PREVIEW transcript/video review uploaded with the v5.3 package.
+
+Applied cleanup items:
+1. Removed the visible "Novalyte v5.3 Mobile Build" badge from both client and admin pages.
+2. Updated cache-busting query strings from v5.3.0 to v5.3.1.
+3. Client mobile logo frame was enlarged and given stronger contrast/glow so the actual logo remains visible on small screens.
+4. Client home "Contact us" card was renamed to "Messenger" and its CTA was changed to "Open Messenger".
+5. Reworked the Messenger card icon with CSS only; no external icon API/CDN dependency was added.
+6. Client Services mobile cards now show Min-Max in a compact single-line format using M/B suffixes when appropriate, e.g., 2M or 1.5B.
+7. Reduced mobile pagination button/card padding so Previous/Page/Next stays inside the available width with better side allowance.
+8. Adjusted the Digital Products description modal: tighter vertical spacing, description lifted slightly, and price/description aligned left with the product heading/body rhythm.
+9. Client hamburger menu now anchors to the actual hamburger position using runtime CSS variables, so opening it while scrolled should show the menu near the current topbar instead of requiring a scroll back upward.
+10. Admin landing page is now simplified to a centered "Welcome, Admin" only. Quick links and totals/stats are no longer shown on the initial admin dashboard.
+11. Admin mobile hamburger menu is also anchored to the actual hamburger position and no longer exposes the sidebar note inside the dropdown.
+12. Admin service/digital/order modal headers were made sticky on mobile so the X close button stays visible while adding/editing records.
+13. Password/PIN visibility icon was rebuilt as a normal eye icon and the extra pseudo-icon that made it look like a camera was suppressed.
+14. Admin finance/team mini tables received data-labels and mobile card styling so Finance Logs / History no longer collapses into unlabeled cramped rows.
+15. Admin responsive tables for Services, Investments, and Orders were tightened with smaller labels, better two-column card rows, and smaller action buttons.
+16. Removed the false extra highlight/border treatment from the Client View sidebar link; only the current active admin panel should receive selected styling.
+
+Still recommended for future visual QA:
+- Recheck the full Admin Services, Investments, and Orders screens on an actual phone after deployment because their data density is high and may need another layout-specific pass.
+- Confirm that the deployed host preserves the Resources/Icons/logo.png path and case exactly; if logo still fails on production, move/copy the final logo into assets/icons/logo.png and update both HTML references.
+- Review whether the admin dashboard should later include dedicated summary cards only after the user selects a panel, not on initial login.
+
+
+================================================================================
+13B. CURRENT v5.3.1 FULL AUTO COMMAND
+================================================================================
+The latest command template is already written in Section 3 under MANDATORY PATCH DEPLOYMENT SOP. Future assistants must copy that pattern into the user response, update the filename/version/commit markers, and never omit it again.

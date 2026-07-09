@@ -6,10 +6,10 @@
   <title>Novalyte Admin Dashboard</title>
   <meta name="description" content="Novalyte admin dashboard for pricing control and income tracking.">
   <link rel="icon" href="assets/icons/novalyte.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/css/styles.css?v=5.3.0">
-  <link rel="stylesheet" href="assets/css/mobile.css?v=5.3.0">
+  <link rel="stylesheet" href="assets/css/styles.css?v=5.3.1">
+  <link rel="stylesheet" href="assets/css/mobile.css?v=5.3.1">
 </head>
-<body data-build="v5.3" class="admin-login-mode">
+<body data-build="v5.3.1" class="admin-login-mode">
   <main class="login-page" id="loginView">
     <section class="login-card elevated-card">
       <div class="login-brand-row">
@@ -76,18 +76,9 @@
     </aside>
 
     <main class="admin-main">
-      <section id="dashboard" class="page-title admin-hero-card">
-        <span class="eyebrow">Internal dashboard</span>
+      <section id="dashboard" class="page-title admin-hero-card admin-welcome-only">
         <h1>Welcome, Admin</h1>
-        <p>Manage Novalyte services, digital products, orders, and finance records in one protected workspace.</p>
-        <div class="quick-links">
-          <a class="btn small" href="#services">Manage Services</a>
-          <a class="btn small" href="#digital-products">Manage Digital Products</a>
-          <a class="btn small" href="#orders">View Orders</a>
-          <button class="btn small" type="button" id="exportBackupBtn">Export Backup</button>
-          <label class="btn small" for="importBackupInput">Import Backup</label>
-          <input id="importBackupInput" class="hidden" type="file" accept="application/json">
-        </div>
+        <input id="importBackupInput" class="hidden" type="file" accept="application/json">
       </section>
 
       <section class="stats-grid" id="statsGrid"></section>
@@ -589,10 +580,8 @@
     </div>
   </div>
 
-  <div class="build-marker admin-build-marker" aria-label="Current admin build">Novalyte v5.3 Mobile Build</div>
-
-  <script src="assets/js/data.js?v=5.3.0"></script>
-  <script src="assets/js/store.js?v=5.3.0"></script>
-  <script src="assets/js/admin.js?v=5.3.0"></script>
+  <script src="assets/js/data.js?v=5.3.1"></script>
+  <script src="assets/js/store.js?v=5.3.1"></script>
+  <script src="assets/js/admin.js?v=5.3.1"></script>
 </body>
 </html>
