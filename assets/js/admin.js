@@ -62,6 +62,12 @@
     digitalProductDescription: document.getElementById('digitalProductDescription'),
     digitalProductImageModal: document.getElementById('digitalProductImageModal'),
     digitalProductImageModalPreview: document.getElementById('digitalProductImageModalPreview'),
+    adminConfirmModal: document.getElementById('adminConfirmModal'),
+    adminConfirmTitle: document.getElementById('adminConfirmTitle'),
+    adminConfirmMessage: document.getElementById('adminConfirmMessage'),
+    adminConfirmOkBtn: document.getElementById('adminConfirmOkBtn'),
+    adminConfirmCancelBtn: document.getElementById('adminConfirmCancelBtn'),
+    adminConfirmCloseBtn: document.getElementById('adminConfirmCloseBtn'),
     exportBackupBtn: document.getElementById('exportBackupBtn'),
     importBackupInput: document.getElementById('importBackupInput'),
     exportOrdersCsvBtn: document.getElementById('exportOrdersCsvBtn'),
@@ -791,6 +797,36 @@
     if (!document.querySelector('.modal-backdrop.open')) document.body.classList.remove('modal-open');
   }
 
+  let activeConfirmResolve = null;
+
+  function closeAdminConfirmModal(value = false) {
+    if (!els.adminConfirmModal) return;
+    closeModal(els.adminConfirmModal);
+    if (activeConfirmResolve) {
+      const resolve = activeConfirmResolve;
+      activeConfirmResolve = null;
+      resolve(Boolean(value));
+    }
+  }
+
+  // v5.3.10 modal cleanup: browser confirmation dialogs are replaced by the in-site modal.
+  function adminConfirm(message, options = {}) {
+    if (!els.adminConfirmModal || !els.adminConfirmMessage || !els.adminConfirmOkBtn || !els.adminConfirmCancelBtn) {
+      if (Store && Store.toast) Store.toast(message, 'info');
+      return Promise.resolve(false);
+    }
+    if (activeConfirmResolve) closeAdminConfirmModal(false);
+    if (els.adminConfirmTitle) els.adminConfirmTitle.textContent = options.title || 'Please confirm';
+    els.adminConfirmMessage.textContent = message;
+    els.adminConfirmOkBtn.textContent = options.okText || 'OK';
+    els.adminConfirmCancelBtn.textContent = options.cancelText || 'Cancel';
+    openModal(els.adminConfirmModal);
+    els.adminConfirmOkBtn.focus({ preventScroll: true });
+    return new Promise(resolve => {
+      activeConfirmResolve = resolve;
+    });
+  }
+
   function getServiceById(id) {
     return Store.getServices().find(service => service.id === id);
   }
@@ -1163,18 +1199,18 @@
       renderAll();
     });
 
-    if (els.saveInvestBtn) els.saveInvestBtn.addEventListener('click', () => {
-      const confirmed = confirm('Override total capital? This replaces the capital reload log with one correction entry.');
+    if (els.saveInvestBtn) els.saveInvestBtn.addEventListener('click', async () => {
+      const confirmed = await adminConfirm('Override total capital? This replaces the capital reload log with one correction entry.');
       if (!confirmed) return;
       Store.setInvest(els.investAmount.value || 0, 'Manual capital correction / override');
       Store.toast('Total capital overridden.');
       renderAll();
     });
 
-    if (els.investmentsTable) els.investmentsTable.addEventListener('click', event => {
+    if (els.investmentsTable) els.investmentsTable.addEventListener('click', async event => {
       const btn = event.target.closest('[data-remove-finance-entry]');
       if (!btn) return;
-      const confirmed = confirm('Remove this finance log?');
+      const confirmed = await adminConfirm('Remove this finance log?');
       if (!confirmed) return;
       if (btn.dataset.financeSource === 'investment') Store.removeInvestment(btn.dataset.sourceId);
       else if (Store.removeFinanceEntry) Store.removeFinanceEntry(btn.dataset.removeFinanceEntry);
@@ -1200,10 +1236,10 @@
       renderAll();
     });
 
-    if (els.teamMembersTable) els.teamMembersTable.addEventListener('click', event => {
+    if (els.teamMembersTable) els.teamMembersTable.addEventListener('click', async event => {
       const btn = event.target.closest('[data-remove-team-member]');
       if (!btn || !Store.removeTeamMember) return;
-      const confirmed = confirm('Remove this team payroll rule?');
+      const confirmed = await adminConfirm('Remove this team payroll rule?');
       if (!confirmed) return;
       Store.removeTeamMember(btn.dataset.removeTeamMember);
       Store.toast('Team payroll rule removed.');
@@ -1256,7 +1292,7 @@
 
     if (els.addDigitalProductBtn) els.addDigitalProductBtn.addEventListener('click', () => fillDigitalProductForm(null));
     if (els.digitalProductsTable) {
-      els.digitalProductsTable.addEventListener('click', event => {
+      els.digitalProductsTable.addEventListener('click', async event => {
         const editBtn = event.target.closest('[data-edit-digital-product]');
         const toggleBtn = event.target.closest('[data-toggle-digital-product]');
         const deleteBtn = event.target.closest('[data-delete-digital-product]');
@@ -1266,12 +1302,12 @@
         }
         if (toggleBtn) {
           const disabled = toggleBtn.dataset.toggleValue === 'true';
-          const confirmed = confirm(disabled ? 'Disable this digital product? It will stay visible but checkout will be blocked.' : 'Enable this digital product and allow checkout again?');
+          const confirmed = await adminConfirm(disabled ? 'Disable this digital product? It will stay visible but checkout will be blocked.' : 'Enable this digital product and allow checkout again?');
           if (confirmed) toggleDigitalProduct(toggleBtn.dataset.toggleDigitalProduct, disabled);
         }
         if (deleteBtn) {
           const product = getDigitalProductById(deleteBtn.dataset.deleteDigitalProduct);
-          const confirmed = product && confirm(`Delete ${product.name}? This removes it from Digital Products until you reset or add it again.`);
+          const confirmed = product && await adminConfirm(`Delete ${product.name}? This removes it from Digital Products until you reset or add it again.`);
           if (confirmed) deleteDigitalProduct(deleteBtn.dataset.deleteDigitalProduct);
         }
       });
@@ -1303,7 +1339,7 @@
     if (els.digitalProductAdminForm) els.digitalProductAdminForm.addEventListener('submit', saveDigitalProductFromForm);
 
     els.addServiceBtn.addEventListener('click', () => fillServiceForm(null));
-    els.servicesTable.addEventListener('click', event => {
+    els.servicesTable.addEventListener('click', async event => {
       const editBtn = event.target.closest('[data-edit-service]');
       const orderBtn = event.target.closest('[data-create-order]');
       const archiveBtn = event.target.closest('[data-archive-service]');
@@ -1317,7 +1353,7 @@
       }
       if (archiveBtn) {
         const archived = archiveBtn.dataset.archiveValue === 'true';
-        const confirmed = confirm(archived ? 'Disable this service? It will stay visible but unorderable for clients.' : 'Enable this service and make it orderable again?');
+        const confirmed = await adminConfirm(archived ? 'Disable this service? It will stay visible but unorderable for clients.' : 'Enable this service and make it orderable again?');
         if (confirmed) archiveService(archiveBtn.dataset.archiveService, archived);
       }
     });
@@ -1338,6 +1374,10 @@
       closeModal(els.voidModal);
     });
 
+    if (els.adminConfirmOkBtn) els.adminConfirmOkBtn.addEventListener('click', () => closeAdminConfirmModal(true));
+    if (els.adminConfirmCancelBtn) els.adminConfirmCancelBtn.addEventListener('click', () => closeAdminConfirmModal(false));
+    if (els.adminConfirmCloseBtn) els.adminConfirmCloseBtn.addEventListener('click', () => closeAdminConfirmModal(false));
+
     document.querySelectorAll('[data-close-modal]').forEach(btn => {
       btn.addEventListener('click', () => closeModal(document.getElementById(btn.dataset.closeModal)));
     });
@@ -1345,6 +1385,10 @@
 
     document.addEventListener('keydown', event => {
       if (event.key !== 'Escape') return;
+      if (els.adminConfirmModal && els.adminConfirmModal.classList.contains('open')) {
+        closeAdminConfirmModal(false);
+        return;
+      }
       document.querySelectorAll('.modal-backdrop.open').forEach(closeModal);
     });
 
@@ -1373,8 +1417,8 @@
     });
 
     els.exportOrdersCsvBtn.addEventListener('click', exportOrdersCsv);
-    els.resetDemoBtn.addEventListener('click', () => {
-      const confirmed = confirm('Reset services to demo data and clear all orders/investments?');
+    els.resetDemoBtn.addEventListener('click', async () => {
+      const confirmed = await adminConfirm('Reset services to demo data and clear all orders/investments?');
       if (!confirmed) return;
       Store.resetServices();
       Store.resetDigitalProducts();

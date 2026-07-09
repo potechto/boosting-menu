@@ -655,3 +655,17 @@ Root cause addressed: v5.3.4 used newly generated logo/icon files that may not b
 - Removed/hid Finance Insight card and container from Investments.
 - Tightened mobile topbar height and hamburger button size.
 - Forced client/admin mobile nav toggle to become an X when opened, not a chevron/arrow.
+
+
+=== V5.3.9 SELECT + MODAL WARNING FIX (2026-07-09) ===
+- Fixed broken unstyled select proxy blocks by hiding mobile select proxies on desktop and showing them only under mobile media.
+- Replaced browser confirm/localhost-style warnings in admin actions with an in-site confirmation modal.
+- No logo file included or overwritten; logo remains user-managed at Resources/Brand/novalyte.png.
+- No unrelated layout/content removals were applied.
+
+
+=== V5.3.10 CONFIRM FALLBACK CHECKER FIX (2026-07-09) ===
+- Corrected the v5.3.9 modal warning patch by removing the remaining window.confirm fallback in admin.js.
+- Replaced fallback behavior with an in-site toast and safe false return if the modal mount is unavailable.
+- Updated cache-bust markers from v5.3.9 to v5.3.10.
+- No logo asset overwrite; Resources/Brand/novalyte.png remains user-managed.

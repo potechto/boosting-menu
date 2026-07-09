@@ -2005,3 +2005,23 @@
     display: none !important;
   }
 }
+
+
+/* v5.3.9 mobile select proxy and confirm modal fix */
+@media (max-width: 820px) {
+  .mobile-select-proxy {
+    display: block !important;
+  }
+
+  .admin-confirm-modal-card {
+    width: min(92vw, 520px) !important;
+  }
+
+  .admin-confirm-actions {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+}
+
+/* v5.3.10 confirm fallback checker fix */

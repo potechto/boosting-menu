@@ -9978,3 +9978,35 @@ body.client-nav-open .mobile-nav-toggle span:nth-child(3),
 body.admin-nav-open .admin-mobile-nav-toggle span:nth-child(3) {
   transform: translateY(-6px) rotate(-45deg) !important;
 }
+
+
+/* v5.3.9 SELECT PROXY AND CONFIRM MODAL FIX */
+.mobile-select-proxy {
+  display: none;
+}
+
+.admin-confirm-modal-card {
+  width: min(520px, calc(100vw - 32px)) !important;
+}
+
+.admin-confirm-modal-card .modal-head {
+  align-items: flex-start !important;
+}
+
+.admin-confirm-modal-card #adminConfirmMessage {
+  margin-top: 8px !important;
+  line-height: 1.55 !important;
+}
+
+.admin-confirm-actions {
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  margin-top: 18px !important;
+}
+
+.admin-confirm-actions .btn {
+  min-width: 104px !important;
+}
+
+/* v5.3.10 CONFIRM FALLBACK CHECKER FIX */
