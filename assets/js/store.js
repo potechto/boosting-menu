@@ -10,7 +10,7 @@
     teamMembers: 'novalyte.teamMembers.v1',
     reviews: 'novalyte.reviews.v1',
     clientReviewToken: 'novalyte.clientReviewToken.v1',
-    legacyReviewRelease: 'novalyte.legacyReviewRelease.v5316',
+    legacyReviewRelease: 'novalyte.legacyReviewRelease.v5317',
     session: 'novalyte.adminSession.v1'
   };
 
@@ -497,11 +497,13 @@
       return {
         ...normalized,
         id: PUBLIC_REVIEW_ID,
+        token: '',
         displayName: '',
         message: PUBLIC_REVIEW_MESSAGE,
         rating: 5,
         createdAt: normalized.createdAt || PUBLIC_REVIEW_DATE,
-        isSeed: true
+        isSeed: true,
+        releasedLegacy: true
       };
     }
 
@@ -586,24 +588,45 @@
     return `phnova-00A${max + 1}`;
   }
 
+  function isFinalClientReview(review) {
+    return String(review && review.clientFeedbackLock ? review.clientFeedbackLock : '') === 'final_v5317';
+  }
+
   function releaseCurrentReviewForOneNewSubmission() {
-    // v5.3.16: one-time migration only. Existing browser feedback becomes normal client feedback,
-    // then the browser can submit one new feedback and becomes locked again.
+    // v5.3.17: release only legacy/current feedback so it becomes normal Client feedback.
+    // New feedback submitted after this patch is tagged final_v5317 and stays one-time locked after refresh.
     try {
-      if (localStorage.getItem(KEYS.legacyReviewRelease) === 'done') return false;
       const token = getClientReviewToken();
-      let changed = false;
-      if (token) {
-        const reviews = getReviews().map(review => {
-          if (review.token !== token) return review;
-          changed = true;
-          const next = { ...review, token: '', displayName: '', source: 'client_feedback' };
-          return normalizeReview(next);
-        });
-        if (changed) saveReviews(reviews);
+      if (!token) return false;
+
+      const current = getReviews().find(review => review.token === token) || null;
+      if (!current) {
+        localStorage.removeItem(KEYS.clientReviewToken);
+        return false;
       }
-      localStorage.removeItem(KEYS.clientReviewToken);
-      localStorage.setItem(KEYS.legacyReviewRelease, 'done');
+
+      if (isFinalClientReview(current)) return false;
+
+      let changed = false;
+      const reviews = getReviews().map(review => {
+        if (review.token !== token) return review;
+        changed = true;
+        const next = {
+          ...review,
+          token: '',
+          displayName: '',
+          source: 'client_feedback',
+          releasedLegacy: true,
+          releasedAt: new Date().toISOString()
+        };
+        return normalizeReview(next);
+      });
+
+      if (changed) {
+        saveReviews(reviews);
+        localStorage.removeItem(KEYS.clientReviewToken);
+        localStorage.setItem(KEYS.legacyReviewRelease, 'done');
+      }
       return changed;
     } catch (error) {
       return false;
@@ -611,7 +634,7 @@
   }
 
   function addReview(displayName, message, rating = 5) {
-    // v5.3.16: feedback remains one submission per browser after the one-time legacy release.
+    // v5.3.17: feedback remains one submission per browser after the one-time legacy release.
     const text = String(message || '').trim().slice(0, 1000);
     if (!text) return { ok: false, reason: 'empty' };
     const existing = getCurrentClientReview();
@@ -625,7 +648,8 @@
       rating: normalizeRating(rating, 5),
       createdAt: new Date().toISOString(),
       updatedAt: '',
-      source: 'client_feedback'
+      source: 'client_feedback',
+      clientFeedbackLock: 'final_v5317'
     });
     reviews.unshift(review);
     saveReviews(reviews);
@@ -754,4 +778,4 @@
   };
 })();
 
-// v5.3.16: restored one-submit lock after one-time legacy feedback release.
+// v5.3.17: restored one-submit lock after one-time legacy feedback release.

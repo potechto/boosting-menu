@@ -718,3 +718,12 @@ Root cause addressed: v5.3.4 used newly generated logo/icon files that may not b
 - Kept review star rating input and submitted star ratings.
 - Kept client feedback label for all review cards.
 - Did not include or overwrite Resources/Brand/novalyte.png.
+
+
+=== V5.3.17 FEEDBACK REFRESH LOCK ROOT FIX (2026-07-09) ===
+- Fixed the refresh regression where old/current feedback could become locked again after a reload.
+- Root cause: the public review migration preserved the old browser token on the public Pnovalyte001 review, so refresh could treat it as the current browser feedback again.
+- Public/legacy Pnovalyte001 normalization now always clears token and displayName, keeping it as normal Client feedback.
+- Added final_v5317 lock tagging only for new feedback submitted after the release, so the user gets one new submission and then the one-time lock is restored after refresh.
+- Kept review star rating input behavior from v5.3.14/v5.3.15.
+- Kept Resources/Brand/novalyte.png user-managed; this patch does not include or overwrite the logo.

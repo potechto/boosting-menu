@@ -2,7 +2,7 @@
   const Store = window.NovalyteStore;
   const MESSENGER_URL = 'https://www.facebook.com/messages/t/1240324299157071';
   const CLIENT_STATE_KEY = 'novalyte-client-view-state-v2';
-  // v5.3.16: star rating stays, one-time feedback lock is restored after releasing the legacy current feedback.
+  // v5.3.17: star rating stays, one-time feedback lock is restored after releasing the legacy current feedback.
   const state = { servicePage: 1, perPage: 10, view: 'home', activeDigitalProductId: null };
 
   const els = {
@@ -799,9 +799,12 @@
       return {
         ...review,
         id: UNIVERSAL_CLIENT_REVIEW_ID,
+        token: '',
+        displayName: '',
         message: UNIVERSAL_CLIENT_REVIEW_MESSAGE,
         rating: Number(review && review.rating) || 5,
-        createdAt: review && review.createdAt ? review.createdAt : '2026-07-07T09:00:00.000Z'
+        createdAt: review && review.createdAt ? review.createdAt : '2026-07-07T09:00:00.000Z',
+        releasedLegacy: true
       };
     }
     return review;
@@ -825,11 +828,13 @@
         const next = isTarget ? {
           ...review,
           id: UNIVERSAL_CLIENT_REVIEW_ID,
+          token: '',
           displayName: '',
           message: UNIVERSAL_CLIENT_REVIEW_MESSAGE,
           rating: 5,
           createdAt: review && review.createdAt ? review.createdAt : '2026-07-07T09:00:00.000Z',
-          isSeed: true
+          isSeed: true,
+          releasedLegacy: true
         } : review;
         const keyId = String(next && next.id ? next.id : '').toLowerCase();
         if (keyId && seen.has(keyId)) {
