@@ -10032,3 +10032,81 @@ body.admin-nav-open .admin-mobile-nav-toggle span:nth-child(3) {
     transform: none !important;
   }
 }
+
+
+/* v5.3.14 REVIEW STAR RATING INPUT */
+.review-star {
+  position: relative !important;
+  display: inline-block !important;
+  color: rgba(251, 146, 60, 0.28) !important;
+  line-height: 1 !important;
+}
+
+.review-star::before {
+  content: '★' !important;
+  position: absolute !important;
+  inset: 0 auto 0 0 !important;
+  width: var(--star-fill, 0%) !important;
+  overflow: hidden !important;
+  color: #fb923c !important;
+}
+
+.review-rating-field {
+  display: grid !important;
+  gap: 0.45rem !important;
+}
+
+.review-rating-input {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.28rem !important;
+  width: max-content !important;
+  max-width: 100% !important;
+  padding: 0.42rem 0.55rem !important;
+  border: 1px solid rgba(125, 211, 252, 0.24) !important;
+  border-radius: 999px !important;
+  background: rgba(15, 23, 42, 0.72) !important;
+}
+
+.review-rating-input:focus-visible {
+  outline: 2px solid rgba(112, 225, 255, 0.72) !important;
+  outline-offset: 3px !important;
+}
+
+.review-rating-star {
+  position: relative !important;
+  width: 1.42rem !important;
+  height: 1.42rem !important;
+  border: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  color: rgba(251, 146, 60, 0.25) !important;
+  font: inherit !important;
+  font-size: 1.36rem !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+}
+
+.review-rating-star span {
+  display: block !important;
+  color: rgba(251, 146, 60, 0.28) !important;
+}
+
+.review-rating-star::before {
+  content: '★' !important;
+  position: absolute !important;
+  inset: 0 auto 0 0 !important;
+  width: var(--star-fill, 100%) !important;
+  overflow: hidden !important;
+  color: #fb923c !important;
+  pointer-events: none !important;
+}
+
+.review-rating-star:hover,
+.review-rating-star:focus-visible {
+  transform: translateY(-1px) !important;
+}
+
+#reviewRatingText {
+  display: inline-block !important;
+}

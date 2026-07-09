@@ -2,7 +2,7 @@
   const Store = window.NovalyteStore;
   const MESSENGER_URL = 'https://www.facebook.com/messages/t/1240324299157071';
   const CLIENT_STATE_KEY = 'novalyte-client-view-state-v2';
-  // v5.3.12: persistent public review migration + viewport-safe floating mobile navigation.
+  // v5.3.14: review star rating input with half-star support.
   const state = { servicePage: 1, perPage: 10, view: 'home', activeDigitalProductId: null };
 
   const els = {
@@ -18,6 +18,9 @@
     reviewForm: document.getElementById('reviewForm'),
     reviewText: document.getElementById('reviewText'),
     reviewCharCount: document.getElementById('reviewCharCount'),
+    reviewRatingControl: document.getElementById('reviewRatingControl'),
+    reviewRatingValue: document.getElementById('reviewRatingValue'),
+    reviewRatingText: document.getElementById('reviewRatingText'),
     submitReviewBtn: document.getElementById('submitReviewBtn'),
     reviewFormNotice: document.getElementById('reviewFormNotice'),
     homeVisibleServices: document.getElementById('homeVisibleServices'),
@@ -692,9 +695,94 @@
     }
   ];
 
+  function clampReviewRating(value, fallback = 5) {
+    const numeric = Number(value);
+    const base = Number.isFinite(numeric) ? numeric : fallback;
+    return Math.max(0.5, Math.min(5, Math.round(base * 2) / 2));
+  }
+
+  let selectedReviewRating = 5;
+
+  function formatReviewRating(value) {
+    return clampReviewRating(value).toFixed(1).replace(/\.0$/, '.0');
+  }
+
   function renderReviewStars(rating = 5) {
-    const value = Math.max(1, Math.min(5, Number(rating) || 5));
-    return Array.from({ length: 5 }, (_, index) => `<span class="review-star${index < value ? ' active' : ''}">★</span>`).join('');
+    const value = clampReviewRating(rating, 5);
+    return Array.from({ length: 5 }, (_, index) => {
+      const fill = Math.max(0, Math.min(1, value - index));
+      const percent = fill >= 1 ? 100 : fill >= 0.5 ? 50 : 0;
+      return `<span class="review-star" aria-hidden="true" style="--star-fill:${percent}%">★</span>`;
+    }).join('');
+  }
+
+  function updateReviewRatingInput(previewValue = selectedReviewRating) {
+    const rating = clampReviewRating(previewValue, selectedReviewRating || 5);
+    if (els.reviewRatingControl) {
+      els.reviewRatingControl.dataset.rating = String(rating);
+      els.reviewRatingControl.setAttribute('aria-valuenow', String(rating));
+      els.reviewRatingControl.setAttribute('aria-valuetext', `${formatReviewRating(rating)} out of 5 stars`);
+      els.reviewRatingControl.querySelectorAll('.review-rating-star').forEach(star => {
+        const starValue = Number(star.dataset.star) || 0;
+        const fill = Math.max(0, Math.min(1, rating - (starValue - 1)));
+        const percent = fill >= 1 ? 100 : fill >= 0.5 ? 50 : 0;
+        star.style.setProperty('--star-fill', `${percent}%`);
+        star.classList.toggle('is-filled', percent > 0);
+      });
+    }
+    if (els.reviewRatingValue) els.reviewRatingValue.value = String(selectedReviewRating);
+    if (els.reviewRatingText) els.reviewRatingText.textContent = `${formatReviewRating(selectedReviewRating)}/5 stars`;
+  }
+
+  function ratingFromPointerEvent(event, star) {
+    const starValue = Number(star && star.dataset ? star.dataset.star : 5) || 5;
+    const rect = star.getBoundingClientRect();
+    const isLeftHalf = event.clientX - rect.left <= rect.width / 2;
+    return clampReviewRating(starValue - (isLeftHalf ? 0.5 : 0), 5);
+  }
+
+  function setReviewRating(value) {
+    selectedReviewRating = clampReviewRating(value, 5);
+    updateReviewRatingInput(selectedReviewRating);
+  }
+
+  function bindReviewRatingInput() {
+    if (!els.reviewRatingControl) return;
+    updateReviewRatingInput(selectedReviewRating);
+
+    els.reviewRatingControl.addEventListener('click', event => {
+      const star = event.target.closest('.review-rating-star');
+      if (!star) return;
+      setReviewRating(ratingFromPointerEvent(event, star));
+    });
+
+    els.reviewRatingControl.addEventListener('mousemove', event => {
+      const star = event.target.closest('.review-rating-star');
+      if (!star) return;
+      updateReviewRatingInput(ratingFromPointerEvent(event, star));
+    });
+
+    els.reviewRatingControl.addEventListener('mouseleave', () => updateReviewRatingInput(selectedReviewRating));
+
+    els.reviewRatingControl.addEventListener('keydown', event => {
+      const key = event.key;
+      if (['ArrowLeft', 'ArrowDown'].includes(key)) {
+        event.preventDefault();
+        setReviewRating(selectedReviewRating - 0.5);
+      } else if (['ArrowRight', 'ArrowUp'].includes(key)) {
+        event.preventDefault();
+        setReviewRating(selectedReviewRating + 0.5);
+      } else if (/^[1-5]$/.test(key)) {
+        event.preventDefault();
+        setReviewRating(Number(key));
+      } else if (key === 'Home') {
+        event.preventDefault();
+        setReviewRating(0.5);
+      } else if (key === 'End') {
+        event.preventDefault();
+        setReviewRating(5);
+      }
+    });
   }
 
   function formatReviewDate(dateValue) {
@@ -871,7 +959,7 @@
       renderReviews();
       return;
     }
-    const result = Store.addReview('', els.reviewText ? els.reviewText.value : '');
+    const result = Store.addReview('', els.reviewText ? els.reviewText.value : '', selectedReviewRating);
     if (!result.ok) {
       const messages = {
         empty: 'Please write feedback before submitting.',
@@ -1191,6 +1279,7 @@
     });
 
     if (els.reviewText) els.reviewText.addEventListener('input', updateReviewCharCount);
+    bindReviewRatingInput();
     if (els.reviewForm) els.reviewForm.addEventListener('submit', submitClientReview);
 
 

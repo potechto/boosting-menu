@@ -693,3 +693,11 @@ Root cause addressed: v5.3.4 used newly generated logo/icon files that may not b
 - Added direct localStorage migration before client render as a second safety layer.
 - Public review remains: They responded quickly and processed my order fast, even for an international client like me.
 - No changes to user-managed Resources/Brand/novalyte.png.
+
+
+=== V5.3.14 REVIEW STAR RATING INPUT (2026-07-09) ===
+- Added a customer-facing star rating control to the feedback form.
+- Stars visually fill when selected; clicking the left half of a star sets a half-star rating, clicking the right half sets a full-star rating.
+- Submitted client reviews now save the selected rating with the review and render the matching star fill.
+- Existing/public generated reviews keep their saved rating values, defaulting safely to 5 stars.
+- Patch does not include or overwrite Resources/Brand/novalyte.png.

@@ -42,6 +42,12 @@
     return JSON.parse(JSON.stringify(value));
   }
 
+  function normalizeRating(value, fallback = 5) {
+    const numeric = Number(value);
+    const base = Number.isFinite(numeric) ? numeric : fallback;
+    return Math.max(0.5, Math.min(5, Math.round(base * 2) / 2));
+  }
+
   function normalizeService(service) {
     return {
       archived: false,
@@ -479,10 +485,12 @@
       token: '',
       displayName: '',
       message: '',
+      rating: 5,
       createdAt: new Date().toISOString(),
       updatedAt: '',
       ...review
     };
+    normalized.rating = normalizeRating(normalized.rating, 5);
 
     if (isPublicReviewAlias(normalized)) {
       return {
@@ -577,7 +585,7 @@
     return `phnova-00A${max + 1}`;
   }
 
-  function addReview(displayName, message) {
+  function addReview(displayName, message, rating = 5) {
     const text = String(message || '').trim().slice(0, 1000);
     if (!text) return { ok: false, reason: 'empty' };
     const existing = getCurrentClientReview();
@@ -588,6 +596,7 @@
       token: ensureClientReviewToken(),
       displayName: '',
       message: text,
+      rating: normalizeRating(rating, 5),
       createdAt: new Date().toISOString(),
       updatedAt: ''
     });
@@ -596,10 +605,10 @@
     return { ok: true, review };
   }
 
-  function updateReview(displayName, message) {
+  function updateReview(displayName, message, rating = 5) {
     const existing = getCurrentClientReview();
     if (existing) return { ok: false, reason: 'locked', review: existing };
-    return addReview('', message);
+    return addReview('', message, rating);
   }
 
   function formatMoney(value) {

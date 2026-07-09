@@ -2041,3 +2041,19 @@
     overflow-y: auto !important;
   }
 }
+
+
+/* v5.3.14 mobile review star rating input */
+@media (max-width: 820px) {
+  .review-rating-input {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 0.5rem 0.6rem !important;
+  }
+
+  .review-rating-star {
+    width: 1.62rem !important;
+    height: 1.62rem !important;
+    font-size: 1.52rem !important;
+  }
+}
