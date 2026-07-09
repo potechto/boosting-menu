@@ -9327,34 +9327,7 @@ button,
 }
 
 
-/* v5.3.1 mobile review cleanup: hide build labels, simplify admin landing, and remove false nav highlight. */
-.build-marker,
-.admin-build-marker {
-  display: none !important;
-}
-
-.admin-welcome-only {
-  min-height: 180px;
-  display: grid;
-  place-items: center;
-  text-align: center;
-}
-
-.admin-welcome-only h1 {
-  margin: 0;
-  font-size: clamp(2rem, 5vw, 3.4rem);
-}
-
-.sidebar-nav a[href="index.html"] {
-  border-color: var(--line);
-  background: transparent;
-}
-
-.sidebar-nav a[href="index.html"]:hover {
-  border-color: rgba(112, 225, 255, 0.28);
-  background: rgba(148, 163, 184, 0.08);
-}
-
+/* v5.3.2 desktop safety helpers: no mobile layout rules here. */
 .eye-btn::before,
 .eye-btn::after {
   display: none !important;

@@ -327,10 +327,9 @@
   function compactQuantity(value) {
     const number = Number(value) || 0;
     const abs = Math.abs(number);
-    const trim = value => String(value).replace(/\.0$/, '').replace(/(\.\d*[1-9])0$/, '$1');
+    const trim = output => String(output).replace(/\.0$/, '').replace(/(\.\d*[1-9])0$/, '$1');
     if (abs >= 1000000000) return `${trim((number / 1000000000).toFixed(abs >= 10000000000 ? 0 : 1))}B`;
     if (abs >= 1000000) return `${trim((number / 1000000).toFixed(abs >= 10000000 ? 0 : 1))}M`;
-    if (abs >= 1000) return Store.formatNumber(number);
     return Store.formatNumber(number);
   }
 
@@ -902,7 +901,7 @@
   }
 
   function toggleMobileNav() {
-    if (els.mobileNavToggle) {
+    if (els.mobileNavToggle && window.matchMedia('(max-width: 820px)').matches) {
       const rect = els.mobileNavToggle.getBoundingClientRect();
       document.documentElement.style.setProperty('--client-nav-top', `${Math.max(62, rect.bottom + 8)}px`);
     }

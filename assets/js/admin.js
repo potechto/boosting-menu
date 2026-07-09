@@ -221,7 +221,7 @@
       [dashboard, stats, services, digitalProductsAdmin, investments, orders].forEach(el => el && el.classList.add('hidden'));
       if (activePanel === 'dashboard') {
         dashboard && dashboard.classList.remove('hidden');
-        stats && stats.classList.add('hidden');
+        stats && stats.classList.remove('hidden');
       }
       if (activePanel === 'services') services && services.classList.remove('hidden');
       if (activePanel === 'digital-products') digitalProductsAdmin && digitalProductsAdmin.classList.remove('hidden');
@@ -1104,8 +1104,10 @@
   function bindEvents() {
     if (els.adminMobileNavToggle) {
       els.adminMobileNavToggle.addEventListener('click', () => {
-        const rect = els.adminMobileNavToggle.getBoundingClientRect();
-        document.documentElement.style.setProperty('--admin-nav-top', `${Math.max(62, rect.bottom + 8)}px`);
+        if (window.matchMedia('(max-width: 820px)').matches) {
+          const rect = els.adminMobileNavToggle.getBoundingClientRect();
+          document.documentElement.style.setProperty('--admin-nav-top', `${Math.max(62, rect.bottom + 8)}px`);
+        }
         const isOpen = document.body.classList.toggle('admin-nav-open');
         els.adminMobileNavToggle.setAttribute('aria-expanded', String(isOpen));
       });
