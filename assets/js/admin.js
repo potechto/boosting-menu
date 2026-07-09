@@ -140,14 +140,9 @@
     unpaid: 'Unpaid'
   };
 
-  // v5.3.19: keep admin logged in across refresh/new tabs in the same browser.
+  // v5.3.20: keep admin logged in across refresh/new tabs in the same browser.
   function isLoggedIn() {
-    if (localStorage.getItem(Store.KEYS.session) === 'true') return true;
-    if (sessionStorage.getItem(Store.KEYS.session) === 'true') {
-      localStorage.setItem(Store.KEYS.session, 'true');
-      return true;
-    }
-    return false;
+    return localStorage.getItem(Store.KEYS.session) === 'true' || sessionStorage.getItem(Store.KEYS.session) === 'true';
   }
 
   function setLoggedIn(value) {
@@ -158,6 +153,13 @@
     }
     localStorage.removeItem(Store.KEYS.session);
     sessionStorage.removeItem(Store.KEYS.session);
+  }
+
+  function restorePersistentAdminSession() {
+    if (!isLoggedIn()) return false;
+    localStorage.setItem(Store.KEYS.session, 'true');
+    sessionStorage.setItem(Store.KEYS.session, 'true');
+    return true;
   }
 
   function setAdminBodyMode(mode) {
@@ -1451,8 +1453,13 @@
     Store.getInvestments();
     setupAdminPanels();
     bindEvents();
-    setLoggedIn(false);
-    showLogin();
+    // v5.3.20 root fix: do not clear the admin session on page load.
+    // Refresh should restore dashboard when the browser has a saved admin session.
+    if (restorePersistentAdminSession()) {
+      showDashboard();
+    } else {
+      showLogin();
+    }
   }
 
   document.addEventListener('DOMContentLoaded', init);
