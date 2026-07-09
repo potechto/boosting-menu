@@ -625,3 +625,7 @@ MANDATORY PATCH DEPLOYMENT SOP - ALWAYS INCLUDE IN FUTURE HANDOVERS:
 - Removed login prototype footnote.
 - Changed digital product image preview from inline block to centered modal preview with X close button.
 - Retained responsive behavior while aligning desktop/mobile visuals.
+
+
+=== V5.3.5 REFRESH-PROOF VISUAL FIX (2026-07-09) ===
+Root cause addressed: v5.3.4 used newly generated logo/icon files that may not be tracked/pushed. v5.3.5 uses existing Resources/Icons/logo.png and inline SVG for Messenger/eye icons so refresh/live load cannot lose those visuals because of missing new assets.
