@@ -10154,3 +10154,74 @@ body.admin-nav-open .admin-mobile-nav-toggle span:nth-child(3) {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* v5.3.25 SERVICE DIRECTORY COLUMN REBALANCE
+   Keep the new ID-first order, but make ID compact and keep platform names on one line. */
+@media (min-width: 821px) {
+  .service-directory-section .public-services-table table {
+    table-layout: fixed !important;
+    width: 100% !important;
+    min-width: 1080px !important;
+  }
+
+  .service-directory-section .public-services-table col.service-col-id { width: 5% !important; }
+  .service-directory-section .public-services-table col.service-col-platform { width: 14% !important; }
+  .service-directory-section .public-services-table col.service-col-service { width: 31% !important; }
+  .service-directory-section .public-services-table col.service-col-rate { width: 12% !important; }
+  .service-directory-section .public-services-table col.service-col-range { width: 12% !important; }
+  .service-directory-section .public-services-table col.service-col-eta { width: 10% !important; }
+  .service-directory-section .public-services-table col.service-col-action { width: 16% !important; }
+
+  .service-directory-section .public-services-table th:nth-child(1),
+  .service-directory-section .public-services-table td:nth-child(1) {
+    width: 5% !important;
+    min-width: 54px !important;
+    max-width: 90px !important;
+  }
+
+  .service-directory-section .public-services-table th:nth-child(2),
+  .service-directory-section .public-services-table td:nth-child(2) {
+    width: 14% !important;
+    min-width: 138px !important;
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+    word-break: keep-all !important;
+  }
+
+  .service-directory-section .public-services-table th:nth-child(3),
+  .service-directory-section .public-services-table td:nth-child(3) { width: 31% !important; }
+  .service-directory-section .public-services-table th:nth-child(4),
+  .service-directory-section .public-services-table td:nth-child(4) { width: 12% !important; }
+  .service-directory-section .public-services-table th:nth-child(5),
+  .service-directory-section .public-services-table td:nth-child(5) { width: 12% !important; }
+  .service-directory-section .public-services-table th:nth-child(6),
+  .service-directory-section .public-services-table td:nth-child(6) { width: 10% !important; }
+  .service-directory-section .public-services-table th:nth-child(7),
+  .service-directory-section .public-services-table td:nth-child(7) { width: 16% !important; }
+
+  .service-directory-section .public-services-table td[data-label="Platform"] .platform-pill {
+    display: inline-flex !important;
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
+    width: max-content !important;
+    min-width: max-content !important;
+    max-width: none !important;
+    overflow-wrap: normal !important;
+    word-break: keep-all !important;
+  }
+
+  .service-directory-section .public-services-table td[data-label="Platform"] .platform-pill > span:last-child {
+    white-space: nowrap !important;
+  }
+
+  .service-directory-section .public-services-table td[data-label="ID"] {
+    text-align: left !important;
+    white-space: nowrap !important;
+  }
+
+  .service-directory-section .public-services-table td[data-label="ID"] .id-chip {
+    padding-inline: 0.58rem !important;
+    min-width: 48px !important;
+  }
+}
+

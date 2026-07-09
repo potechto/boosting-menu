@@ -156,7 +156,7 @@
   }
 
 
-  // v5.3.24: keep public service table/mobile cards exclusive; ID column now appears before Platform.
+  // v5.3.25: keep public service table/mobile cards exclusive; ID column is compact before one-line Platform.
   // Desktop/laptop shows only the table. Phones show only the mobile cards.
   function isServiceMobileCardsMode() {
     try {
