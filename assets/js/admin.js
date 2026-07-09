@@ -140,13 +140,24 @@
     unpaid: 'Unpaid'
   };
 
+  // v5.3.19: keep admin logged in across refresh/new tabs in the same browser.
   function isLoggedIn() {
-    return sessionStorage.getItem(Store.KEYS.session) === 'true';
+    if (localStorage.getItem(Store.KEYS.session) === 'true') return true;
+    if (sessionStorage.getItem(Store.KEYS.session) === 'true') {
+      localStorage.setItem(Store.KEYS.session, 'true');
+      return true;
+    }
+    return false;
   }
 
   function setLoggedIn(value) {
-    if (value) sessionStorage.setItem(Store.KEYS.session, 'true');
-    else sessionStorage.removeItem(Store.KEYS.session);
+    if (value) {
+      localStorage.setItem(Store.KEYS.session, 'true');
+      sessionStorage.setItem(Store.KEYS.session, 'true');
+      return;
+    }
+    localStorage.removeItem(Store.KEYS.session);
+    sessionStorage.removeItem(Store.KEYS.session);
   }
 
   function setAdminBodyMode(mode) {
