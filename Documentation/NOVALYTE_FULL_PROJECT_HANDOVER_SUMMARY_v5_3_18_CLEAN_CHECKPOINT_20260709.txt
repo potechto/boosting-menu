@@ -1,0 +1,252 @@
+﻿NOVALYTE FULL PROJECT HANDOVER SUMMARY
+Clean Checkpoint: v5.3.18
+Date: 2026-07-09
+Project: Novalyte / boosting-menu
+Purpose: Clean transfer checkpoint for continuing this exact project in a new ChatGPT chat without losing context.
+
+============================================================
+1. PROJECT IDENTITY / CURRENT LOCATION / REPO
+============================================================
+
+Local base path:
+C:\Users\Ralph John\OneDrive\Desktop\ME FILES
+
+Main project folder:
+C:\Users\Ralph John\OneDrive\Desktop\ME FILES\Novalyte
+
+Documentation folder:
+C:\Users\Ralph John\OneDrive\Desktop\ME FILES\Novalyte\Documentation
+
+GitHub repo:
+https://github.com/potechto/boosting-menu.git
+
+Git branch:
+main
+
+Live GitHub Pages base:
+https://potechto.github.io/boosting-menu/
+
+Current stable checkpoint:
+v5.3.18 BLANK REVIEW STAR DEFAULT FIX
+
+Current stable live test links:
+https://potechto.github.io/boosting-menu/index.html?v=53181
+https://potechto.github.io/boosting-menu/admin.html?v=53181
+
+Important logo asset:
+Resources/Brand/novalyte.png
+
+The logo file is user-managed. Never overwrite it unless the user explicitly asks.
+
+============================================================
+2. LOCKED RULES FOR ALL FUTURE WORK
+============================================================
+
+A. Nothing more, nothing less
+Only do exactly what the user asks. Do not remove anything unrelated. Do not add anything unrelated. Do not redesign unrelated sections. Do not touch unrelated files.
+
+B. No extra LOCAL_APPLY_COMMANDS files
+LOCKED RULE:
+Do not create LOCAL_APPLY_COMMANDS_*.md files anymore.
+
+Reason:
+They are extra clutter inside Documentation and the user does not want them. The user only wants meaningful handover/checkpoint documentation, not repeated patch command notes.
+
+Future patches should provide the PowerShell command in the chat response only, not save it as a Documentation file.
+
+C. Documentation cleanup rule
+Documentation folder should contain only useful project documents such as:
+- full handover checkpoint summaries
+- setup guides that are truly needed
+- approved project documentation
+
+Do not add patch guide notes or local apply command files unless the user explicitly asks.
+
+D. Handover workflow rule
+For checkpoint/handover tasks:
+1. Create or update the handover file first inside Documentation.
+2. Make sure it includes current status, completed work, pending work, rules, and future tasks.
+3. Only after the handover exists, create the full project ZIP.
+4. This ensures the ZIP includes the new handover.
+5. Do not change code during a handover-only checkpoint.
+
+E. Patch workflow rule
+For code patches:
+1. Patch only requested files.
+2. Do not include Resources/Brand/novalyte.png unless explicitly requested.
+3. Update asset version query strings.
+4. Run node --check on JS files.
+5. Run marker checks.
+6. Push only if changes exist.
+7. Prefer opening live GitHub Pages links only during live debugging.
+
+F. Logo lock
+Never overwrite:
+Resources/Brand/novalyte.png
+
+HTML should continue using:
+./Resources/Brand/novalyte.png?v=<version>
+
+G. Browser confirm rule
+Do not use native browser alert/confirm warnings for admin actions. Use in-site modal confirmation.
+
+H. Feedback rule
+Feedback should remain one-time per browser/device after allowed migration. Current/old feedback was converted into normal Client feedback so the user could submit one new feedback. After the new feedback, lock should return.
+
+I. Star rating rule
+Star rating starts blank. It should not auto-fill. Stars fill only when the user taps/clicks/interacts. Left half = half star. Right half = full star. Rating is required before feedback submit.
+
+J. Local tab confusion rule
+Avoid opening local file tabs during live verification unless needed. Use GitHub Pages links with cache-busters to avoid confusion between old local tabs and live pages.
+
+K. Cross-device review limitation rule
+Static/localStorage review submissions do not truly sync across devices. Public seeded reviews show across devices because they are in source. True client-submitted cross-device reviews require Supabase/shared backend.
+
+============================================================
+3. CLEANUP DONE IN THIS CHECKPOINT
+============================================================
+
+Removed from Documentation:
+LOCAL_APPLY_COMMANDS_*.md
+
+Reason:
+They were created during older patch exports and cluttered the Documentation folder. The user explicitly requested that these should be removed and that future patches should not create them anymore.
+
+No code files should be changed by this cleanup checkpoint.
+No assets should be changed.
+Logo should remain untouched.
+
+============================================================
+4. VERSION TIMELINE SUMMARY
+============================================================
+
+v5.3.1:
+Initial mobile review patch from mobile preview feedback.
+
+v5.3.2:
+Desktop-safe hotfix after mobile changes affected desktop.
+
+v5.3.3:
+Visual cleanup hotfix.
+
+v5.3.4:
+Final visual cleanup pass.
+
+v5.3.5:
+Refresh-proof visual fix attempt.
+
+v5.3.6:
+True refresh-proof icon fix.
+
+v5.3.7:
+User-managed transparent logo fix. Site locked to Resources/Brand/novalyte.png.
+
+v5.3.8:
+Action button compression, eye-in-PIN cleanup, Finance Insight removal, mobile hamburger X fix.
+
+v5.3.9:
+Select duplicate/proxy label fix and custom modal warning system.
+
+v5.3.10:
+Removed leftover window.confirm fallback and fixed checker logic.
+
+v5.3.11:
+Public review seed update and viewport-safe mobile hamburger dropdown.
+
+v5.3.12:
+Attempted review storage migration in app layer.
+
+v5.3.13:
+Moved review migration into store/source layer. Fixed Test 001 reverting after refresh.
+
+v5.3.14:
+Added review star rating input with half/full rating.
+
+v5.3.15:
+Incorrectly made feedback repeatable; user corrected that feedback must remain one-time.
+
+v5.3.16:
+Restored one-time feedback lock after converting old feedback.
+
+v5.3.17:
+Fixed refresh-lock root cause by clearing token from old/public feedback.
+
+v5.3.18:
+Fixed star rating default so stars start blank and fill only after interaction.
+
+============================================================
+5. CURRENT STABLE STATUS
+============================================================
+
+Stable version:
+v5.3.18
+
+Expected:
+- Public review Pnovalyte001 shows polished message.
+- Old Test 001 should not return.
+- Review migration should survive refresh.
+- Star rating starts blank.
+- Rating required before submit.
+- One-time feedback lock should work.
+- Mobile hamburger opens in current viewport.
+- Browser confirm warnings are custom modals.
+- Duplicate gray select labels are fixed.
+- Finance Insight card is removed.
+- Logo remains user-managed.
+
+Current live links:
+https://potechto.github.io/boosting-menu/index.html?v=53181
+https://potechto.github.io/boosting-menu/admin.html?v=53181
+
+============================================================
+6. PENDING / FUTURE TASKS
+============================================================
+
+1. Verify v5.3.18 on phone and desktop:
+- stars blank first
+- stars fill only after click/tap
+- rating required before submit
+- one-time feedback lock works after submit
+- hamburger viewport dropdown works on mobile
+
+2. True cross-device review syncing:
+Need Supabase/shared backend so reviews submitted on one device appear on all devices.
+
+3. Optional admin review management:
+- approve/hide/delete reviews
+- view submitted rating
+- moderate spam
+
+4. Continue cleanup discipline:
+Do not create LOCAL_APPLY_COMMANDS files anymore.
+Do not add redundant patch notes.
+Keep Documentation clean.
+
+============================================================
+7. NEXT CHAT STARTING INSTRUCTIONS
+============================================================
+
+Tell the next assistant:
+
+We are continuing the Novalyte / boosting-menu project.
+Current stable version is v5.3.18.
+Read the latest clean handover:
+Documentation/NOVALYTE_FULL_PROJECT_HANDOVER_SUMMARY_v5_3_18_CLEAN_CHECKPOINT_20260709.txt
+
+Do not overwrite Resources/Brand/novalyte.png.
+Do not create LOCAL_APPLY_COMMANDS_*.md files.
+Do not add/remove unrelated files.
+Use terminal-first handover workflow.
+For patches, provide commands in chat only.
+For live checks, use GitHub Pages cache-busted links.
+
+Main future upgrade:
+True Supabase/shared backend review sync.
+
+============================================================
+8. FINAL CLEAN CHECKPOINT NOTE
+============================================================
+
+This clean checkpoint exists because the Documentation folder had too many LOCAL_APPLY_COMMANDS_*.md files from previous patches. Those files are now considered unwanted clutter and should not be recreated in future patches.
+
+This file should be included in the full project ZIP created after this handover is written.
