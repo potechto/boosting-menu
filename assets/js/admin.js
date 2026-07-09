@@ -140,49 +140,170 @@
     unpaid: 'Unpaid'
   };
 
-  // v5.3.21: persist admin login across refresh using localStorage + sessionStorage + cookie. Only Logout clears it.
-  const ADMIN_SESSION_KEY = (Store.KEYS && Store.KEYS.session) || 'novalyte.adminSession.v1';
-  const ADMIN_PERSIST_KEY = 'novalyte.adminSession.persist.v5321';
+  // v5.3.22: hard-persist admin login across refresh/tabs. Only Logout clears it.
+  const ADMIN_SESSION_KEY = (Store && Store.KEYS && Store.KEYS.session) || 'novalyte.adminSession.v1';
+  const ADMIN_PERSIST_KEY = 'novalyte.adminSession.persist.v5322';
+  const ADMIN_LEGACY_PERSIST_KEY = 'novalyte.adminSession.persist.v5321';
+  const ADMIN_AUTH_KEY = 'novalyte.admin.auth.v5322';
   const ADMIN_COOKIE_KEY = 'novalyte_admin_session';
+  const ADMIN_WINDOW_NAME_KEY = 'novalyte_admin_window_session_v5322';
+  const ADMIN_CHANNEL_KEY = 'novalyte-admin-session-channel';
+  const ADMIN_SESSION_VALUE = 'true';
+  let adminSessionChannel = null;
+
+  function safeLocalSet(key, value) {
+    try { localStorage.setItem(key, value); } catch (error) { /* storage can be disabled */ }
+  }
+
+  function safeLocalGet(key) {
+    try { return localStorage.getItem(key); } catch (error) { return null; }
+  }
+
+  function safeLocalRemove(key) {
+    try { localStorage.removeItem(key); } catch (error) { /* storage can be disabled */ }
+  }
+
+  function safeSessionSet(key, value) {
+    try { sessionStorage.setItem(key, value); } catch (error) { /* storage can be disabled */ }
+  }
+
+  function safeSessionGet(key) {
+    try { return sessionStorage.getItem(key); } catch (error) { return null; }
+  }
+
+  function safeSessionRemove(key) {
+    try { sessionStorage.removeItem(key); } catch (error) { /* storage can be disabled */ }
+  }
 
   function setAdminCookie(value) {
-    const maxAge = value ? 60 * 60 * 24 * 30 : 0;
-    document.cookie = `${ADMIN_COOKIE_KEY}=${value ? 'true' : ''}; max-age=${maxAge}; path=/; SameSite=Lax`;
+    try {
+      if (value) {
+        const maxAge = 60 * 60 * 24 * 30;
+        document.cookie = `${ADMIN_COOKIE_KEY}=true; max-age=${maxAge}; path=/; SameSite=Lax`;
+      } else {
+        document.cookie = `${ADMIN_COOKIE_KEY}=; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax`;
+      }
+    } catch (error) { /* cookies can be disabled */ }
   }
 
   function hasAdminCookie() {
-    return document.cookie.split(';').some(part => part.trim() === `${ADMIN_COOKIE_KEY}=true`);
+    try {
+      return document.cookie.split(';').some(part => part.trim() === `${ADMIN_COOKIE_KEY}=true`);
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function setAdminWindowSession(value) {
+    try {
+      if (value) {
+        const current = String(window.name || '');
+        window.name = current.includes(ADMIN_WINDOW_NAME_KEY) ? current : `${current}|${ADMIN_WINDOW_NAME_KEY}`;
+      } else {
+        window.name = String(window.name || '').replace(`|${ADMIN_WINDOW_NAME_KEY}`, '').replace(ADMIN_WINDOW_NAME_KEY, '');
+      }
+    } catch (error) { /* window name can be restricted */ }
+  }
+
+  function hasAdminWindowSession() {
+    try { return String(window.name || '').includes(ADMIN_WINDOW_NAME_KEY); } catch (error) { return false; }
+  }
+
+  function setAdminHistorySession(value) {
+    try {
+      const nextState = { ...(history.state || {}) };
+      if (value) nextState.novalyteAdminLoggedIn = true;
+      else delete nextState.novalyteAdminLoggedIn;
+      history.replaceState(nextState, document.title, window.location.href);
+    } catch (error) { /* history state can be restricted */ }
+  }
+
+  function hasAdminHistorySession() {
+    try { return Boolean(history.state && history.state.novalyteAdminLoggedIn); } catch (error) { return false; }
   }
 
   function isLoggedIn() {
-    return localStorage.getItem(ADMIN_SESSION_KEY) === 'true' ||
-      localStorage.getItem(ADMIN_PERSIST_KEY) === 'true' ||
-      sessionStorage.getItem(ADMIN_SESSION_KEY) === 'true' ||
-      hasAdminCookie();
+    return safeLocalGet(ADMIN_SESSION_KEY) === ADMIN_SESSION_VALUE ||
+      safeLocalGet(ADMIN_PERSIST_KEY) === ADMIN_SESSION_VALUE ||
+      safeLocalGet(ADMIN_LEGACY_PERSIST_KEY) === ADMIN_SESSION_VALUE ||
+      safeLocalGet(ADMIN_AUTH_KEY) === ADMIN_SESSION_VALUE ||
+      safeSessionGet(ADMIN_SESSION_KEY) === ADMIN_SESSION_VALUE ||
+      safeSessionGet(ADMIN_AUTH_KEY) === ADMIN_SESSION_VALUE ||
+      hasAdminCookie() ||
+      hasAdminWindowSession() ||
+      hasAdminHistorySession();
   }
 
-  function persistLoggedIn() {
-    localStorage.setItem(ADMIN_SESSION_KEY, 'true');
-    localStorage.setItem(ADMIN_PERSIST_KEY, 'true');
-    sessionStorage.setItem(ADMIN_SESSION_KEY, 'true');
+  function broadcastAdminSession(value) {
+    try {
+      if (adminSessionChannel) adminSessionChannel.postMessage({ type: value ? 'admin-login' : 'admin-logout' });
+    } catch (error) { /* BroadcastChannel can be unavailable */ }
+  }
+
+  function persistLoggedIn(options = {}) {
+    safeLocalSet(ADMIN_SESSION_KEY, ADMIN_SESSION_VALUE);
+    safeLocalSet(ADMIN_PERSIST_KEY, ADMIN_SESSION_VALUE);
+    safeLocalSet(ADMIN_LEGACY_PERSIST_KEY, ADMIN_SESSION_VALUE);
+    safeLocalSet(ADMIN_AUTH_KEY, ADMIN_SESSION_VALUE);
+    safeSessionSet(ADMIN_SESSION_KEY, ADMIN_SESSION_VALUE);
+    safeSessionSet(ADMIN_AUTH_KEY, ADMIN_SESSION_VALUE);
     setAdminCookie(true);
+    setAdminWindowSession(true);
+    setAdminHistorySession(true);
+    if (!options.silent) broadcastAdminSession(true);
+  }
+
+  function clearLoggedIn(options = {}) {
+    safeLocalRemove(ADMIN_SESSION_KEY);
+    safeLocalRemove(ADMIN_PERSIST_KEY);
+    safeLocalRemove(ADMIN_LEGACY_PERSIST_KEY);
+    safeLocalRemove(ADMIN_AUTH_KEY);
+    safeSessionRemove(ADMIN_SESSION_KEY);
+    safeSessionRemove(ADMIN_AUTH_KEY);
+    setAdminCookie(false);
+    setAdminWindowSession(false);
+    setAdminHistorySession(false);
+    if (!options.silent) broadcastAdminSession(false);
   }
 
   function setLoggedIn(value) {
-    if (value) {
-      persistLoggedIn();
-      return;
-    }
-    localStorage.removeItem(ADMIN_SESSION_KEY);
-    localStorage.removeItem(ADMIN_PERSIST_KEY);
-    sessionStorage.removeItem(ADMIN_SESSION_KEY);
-    setAdminCookie(false);
+    if (value) persistLoggedIn();
+    else clearLoggedIn();
   }
 
   function restorePersistentAdminSession() {
     if (!isLoggedIn()) return false;
-    persistLoggedIn();
+    persistLoggedIn({ silent: true });
     return true;
+  }
+
+  function setupAdminSessionSync() {
+    try {
+      if ('BroadcastChannel' in window) {
+        adminSessionChannel = new BroadcastChannel(ADMIN_CHANNEL_KEY);
+        adminSessionChannel.onmessage = event => {
+          if (!event.data || !event.data.type) return;
+          if (event.data.type === 'admin-login') {
+            persistLoggedIn({ silent: true });
+            if (els.loginView && !els.loginView.classList.contains('hidden')) showDashboard();
+          }
+          if (event.data.type === 'admin-logout') {
+            clearLoggedIn({ silent: true });
+            showLogin();
+          }
+          if (event.data.type === 'admin-session-request' && isLoggedIn()) {
+            broadcastAdminSession(true);
+          }
+        };
+        adminSessionChannel.postMessage({ type: 'admin-session-request' });
+      }
+    } catch (error) { /* BroadcastChannel can be unavailable */ }
+
+    window.addEventListener('storage', event => {
+      if (![ADMIN_SESSION_KEY, ADMIN_PERSIST_KEY, ADMIN_AUTH_KEY, ADMIN_LEGACY_PERSIST_KEY].includes(event.key)) return;
+      if (isLoggedIn()) showDashboard();
+      else showLogin();
+    });
   }
 
   function setAdminBodyMode(mode) {
@@ -1476,7 +1597,8 @@
     Store.getInvestments();
     setupAdminPanels();
     bindEvents();
-    // v5.3.21 root fix: do not clear admin session on refresh; restore it before showing login.
+    setupAdminSessionSync();
+    // v5.3.22 root fix: do not clear admin session on refresh; restore persistent session before showing login.
     if (restorePersistentAdminSession()) {
       showDashboard();
     } else {
