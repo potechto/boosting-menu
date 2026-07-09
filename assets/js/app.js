@@ -155,6 +155,32 @@
     return '#home';
   }
 
+
+  // v5.3.23: keep public service table and mobile cards mutually exclusive.
+  // Desktop/laptop shows only the table. Phones show only the mobile cards.
+  function isServiceMobileCardsMode() {
+    try {
+      return window.matchMedia && window.matchMedia('(max-width: 820px)').matches;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function handleServiceOrderClick(event) {
+    const btn = event.target.closest('[data-use-service]');
+    if (!btn || btn.disabled) return;
+    const service = visibleServices().find(item => item.id === btn.dataset.useService);
+    if (!service || isServiceDisabled(service)) return;
+    if (els.calcCategory) els.calcCategory.value = service.platform;
+    if (els.calcSearch) els.calcSearch.value = `ID ${service.providerId} - ${service.name}`;
+    hideSearchSuggestions();
+    fillCalculatorServices(false);
+    if (els.calcService) els.calcService.value = service.id;
+    renderCalculator();
+    showClientView('order');
+    saveClientState();
+  }
+
   function updateViewHash(view) {
     const nextHash = hashForView(view);
     if (window.location.hash !== nextHash) history.replaceState(null, '', nextHash);
@@ -604,12 +630,14 @@
 
   function renderServices() {
     const services = filteredServices();
+    const hasServices = services.length > 0;
+    const useMobileCards = isServiceMobileCardsMode();
     els.servicesGrid.innerHTML = '';
     if (els.mobileServiceCards) els.mobileServiceCards.innerHTML = '';
-    els.emptyServices.classList.toggle('hidden', services.length > 0);
+    els.emptyServices.classList.toggle('hidden', hasServices);
     const serviceTableWrap = document.querySelector('.public-services-table');
-    if (serviceTableWrap) serviceTableWrap.classList.toggle('hidden', services.length === 0);
-    if (els.mobileServiceCards) els.mobileServiceCards.classList.toggle('hidden', services.length === 0);
+    if (serviceTableWrap) serviceTableWrap.classList.toggle('hidden', !hasServices || useMobileCards);
+    if (els.mobileServiceCards) els.mobileServiceCards.classList.toggle('hidden', !hasServices || !useMobileCards);
     renderPagination(services.length);
 
     const start = (state.servicePage - 1) * state.perPage;
@@ -630,7 +658,7 @@
       els.servicesGrid.append(row);
     });
 
-    if (els.mobileServiceCards) {
+    if (els.mobileServiceCards && useMobileCards) {
       els.mobileServiceCards.innerHTML = paged.map(service => {
         const disabled = isServiceDisabled(service);
         return `
@@ -1252,20 +1280,15 @@
     });
     [els.calcService, els.calcQuantity, els.calcLink].forEach(el => el.addEventListener('input', () => { renderCalculator(); saveClientState(); }));
 
-    els.servicesGrid.addEventListener('click', event => {
-      const btn = event.target.closest('[data-use-service]');
-      if (!btn) return;
-      const service = visibleServices().find(item => item.id === btn.dataset.useService);
-      if (!service || isServiceDisabled(service)) return;
-      els.calcCategory.value = service.platform;
-      els.calcSearch.value = `ID ${service.providerId} - ${service.name}`;
-      hideSearchSuggestions();
-      fillCalculatorServices(false);
-      els.calcService.value = service.id;
-      renderCalculator();
-      showClientView('order');
-      saveClientState();
-    });
+    els.servicesGrid.addEventListener('click', handleServiceOrderClick);
+    if (els.mobileServiceCards) els.mobileServiceCards.addEventListener('click', handleServiceOrderClick);
+
+    try {
+      const serviceCardsQuery = window.matchMedia('(max-width: 820px)');
+      const refreshServiceLayout = () => renderServices();
+      if (serviceCardsQuery.addEventListener) serviceCardsQuery.addEventListener('change', refreshServiceLayout);
+      else if (serviceCardsQuery.addListener) serviceCardsQuery.addListener(refreshServiceLayout);
+    } catch (error) {}
 
     els.servicePagination.addEventListener('click', event => {
       const btn = event.target.closest('[data-service-page]');

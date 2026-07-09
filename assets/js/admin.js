@@ -140,7 +140,7 @@
     unpaid: 'Unpaid'
   };
 
-  // v5.3.22: hard-persist admin login across refresh/tabs. Only Logout clears it.
+  // v5.3.23: persistent admin login across refresh/tabs. Only Logout clears it.
   const ADMIN_SESSION_KEY = (Store && Store.KEYS && Store.KEYS.session) || 'novalyte.adminSession.v1';
   const ADMIN_PERSIST_KEY = 'novalyte.adminSession.persist.v5322';
   const ADMIN_LEGACY_PERSIST_KEY = 'novalyte.adminSession.persist.v5321';
@@ -149,6 +149,7 @@
   const ADMIN_WINDOW_NAME_KEY = 'novalyte_admin_window_session_v5322';
   const ADMIN_CHANNEL_KEY = 'novalyte-admin-session-channel';
   const ADMIN_SESSION_VALUE = 'true';
+  const ADMIN_COMPAT_SESSION_VALUES = new Set(['true', '1', 'yes', 'logged-in']);
   let adminSessionChannel = null;
 
   function safeLocalSet(key, value) {
@@ -222,13 +223,17 @@
     try { return Boolean(history.state && history.state.novalyteAdminLoggedIn); } catch (error) { return false; }
   }
 
+  function isSessionValue(value) {
+    return ADMIN_COMPAT_SESSION_VALUES.has(String(value || '').trim().toLowerCase());
+  }
+
   function isLoggedIn() {
-    return safeLocalGet(ADMIN_SESSION_KEY) === ADMIN_SESSION_VALUE ||
-      safeLocalGet(ADMIN_PERSIST_KEY) === ADMIN_SESSION_VALUE ||
-      safeLocalGet(ADMIN_LEGACY_PERSIST_KEY) === ADMIN_SESSION_VALUE ||
-      safeLocalGet(ADMIN_AUTH_KEY) === ADMIN_SESSION_VALUE ||
-      safeSessionGet(ADMIN_SESSION_KEY) === ADMIN_SESSION_VALUE ||
-      safeSessionGet(ADMIN_AUTH_KEY) === ADMIN_SESSION_VALUE ||
+    return isSessionValue(safeLocalGet(ADMIN_SESSION_KEY)) ||
+      isSessionValue(safeLocalGet(ADMIN_PERSIST_KEY)) ||
+      isSessionValue(safeLocalGet(ADMIN_LEGACY_PERSIST_KEY)) ||
+      isSessionValue(safeLocalGet(ADMIN_AUTH_KEY)) ||
+      isSessionValue(safeSessionGet(ADMIN_SESSION_KEY)) ||
+      isSessionValue(safeSessionGet(ADMIN_AUTH_KEY)) ||
       hasAdminCookie() ||
       hasAdminWindowSession() ||
       hasAdminHistorySession();
@@ -312,12 +317,18 @@
     if (mode !== 'dashboard') document.body.classList.remove('admin-nav-open');
   }
 
+  function panelFromHash() {
+    const panel = String(window.location.hash || '').replace('#', '');
+    return ['dashboard', 'services', 'digital-products', 'investments', 'orders'].includes(panel) ? panel : '';
+  }
+
   function showDashboard() {
+    activePanel = panelFromHash() || activePanel || 'dashboard';
     setAdminBodyMode('dashboard');
     els.loginView.classList.add('hidden');
     els.dashboardView.classList.remove('hidden');
     renderAll();
-    if (window.NovalyteShowAdminPanel) window.NovalyteShowAdminPanel(activePanel || 'dashboard');
+    if (window.NovalyteShowAdminPanel) window.NovalyteShowAdminPanel(activePanel);
   }
 
   function showLogin() {
@@ -393,6 +404,10 @@
       if (activePanel === 'investments') investments && investments.classList.remove('hidden');
       if (activePanel === 'orders') orders && orders.classList.remove('hidden');
       navLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === `#${activePanel}`));
+      const nextHash = `#${activePanel}`;
+      if (window.location.hash !== nextHash) {
+        try { history.replaceState(null, '', nextHash); } catch (error) { window.location.hash = nextHash; }
+      }
       requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
     }
     navLinks.forEach(link => {
@@ -1598,7 +1613,8 @@
     setupAdminPanels();
     bindEvents();
     setupAdminSessionSync();
-    // v5.3.22 root fix: do not clear admin session on refresh; restore persistent session before showing login.
+    // v5.3.23 root fix: never clear admin session on refresh; restore persistent session before showing login.
+    activePanel = panelFromHash() || activePanel || 'dashboard';
     if (restorePersistentAdminSession()) {
       showDashboard();
     } else {
