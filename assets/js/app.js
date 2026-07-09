@@ -2,7 +2,7 @@
   const Store = window.NovalyteStore;
   const MESSENGER_URL = 'https://www.facebook.com/messages/t/1240324299157071';
   const CLIENT_STATE_KEY = 'novalyte-client-view-state-v2';
-  // v5.3.11: public review seed + viewport-safe floating mobile navigation.
+  // v5.3.12: persistent public review migration + viewport-safe floating mobile navigation.
   const state = { servicePage: 1, perPage: 10, view: 'home', activeDigitalProductId: null };
 
   const els = {
@@ -706,16 +706,57 @@
   function normalizePublicReview(review) {
     const id = String(review && review.id ? review.id : '').toLowerCase();
     const message = String(review && review.message ? review.message : '').trim().toLowerCase();
-    if (id === UNIVERSAL_CLIENT_REVIEW_ID.toLowerCase() || message === 'test 001') {
+    const isOldPublicTest = /^test\s*001$/i.test(String(review && review.message ? review.message : '').trim());
+    if (id === UNIVERSAL_CLIENT_REVIEW_ID.toLowerCase() || isOldPublicTest) {
       return {
         ...review,
         id: UNIVERSAL_CLIENT_REVIEW_ID,
         message: UNIVERSAL_CLIENT_REVIEW_MESSAGE,
-        rating: review.rating || 5,
-        createdAt: review.createdAt || '2026-07-07T09:00:00.000Z'
+        rating: Number(review && review.rating) || 5,
+        createdAt: review && review.createdAt ? review.createdAt : '2026-07-07T09:00:00.000Z'
       };
     }
     return review;
+  }
+
+  function normalizeAndPersistPublicReviews() {
+    if (!Store || !Store.getReviews || !Store.saveReviews) return;
+    try {
+      const existing = Store.getReviews();
+      const normalized = [];
+      const seenIds = new Set();
+      let changed = false;
+
+      existing.forEach(review => {
+        const next = normalizePublicReview(review);
+        const key = String(next.id || '').toLowerCase();
+        if (key === UNIVERSAL_CLIENT_REVIEW_ID.toLowerCase() && seenIds.has(key)) {
+          changed = true;
+          return;
+        }
+        if (key) seenIds.add(key);
+        if (String(review.id || '') !== String(next.id || '') || String(review.message || '') !== String(next.message || '') || Number(review.rating || 5) !== Number(next.rating || 5)) {
+          changed = true;
+        }
+        normalized.push(next);
+      });
+
+      if (!seenIds.has(UNIVERSAL_CLIENT_REVIEW_ID.toLowerCase())) {
+        normalized.unshift({
+          id: UNIVERSAL_CLIENT_REVIEW_ID,
+          message: UNIVERSAL_CLIENT_REVIEW_MESSAGE,
+          rating: 5,
+          createdAt: '2026-07-07T09:00:00.000Z',
+          token: '',
+          displayName: '',
+          updatedAt: '',
+          isSeed: true
+        });
+        changed = true;
+      }
+
+      if (changed) Store.saveReviews(normalized);
+    } catch (error) {}
   }
 
   function combinedPublicReviews() {
@@ -814,6 +855,7 @@
     updateViewHash(state.view);
     saveClientState();
     renderHomeMetrics();
+    normalizeAndPersistPublicReviews();
     renderReviews();
     if (shouldScroll) window.scrollTo({ top: 0, behavior: 'auto' });
   }
@@ -1171,6 +1213,7 @@
     renderServices();
     renderDigitalProducts();
     renderHomeMetrics();
+    normalizeAndPersistPublicReviews();
     renderReviews();
     bindEvents();
     const initialHash = window.location.hash;

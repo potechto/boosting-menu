@@ -677,3 +677,12 @@ Root cause addressed: v5.3.4 used newly generated logo/icon files that may not b
 - Existing browser-local review with id Pnovalyte001 or message Test 001 is normalized at render time so it shows the updated wording.
 - Client mobile hamburger navigation is moved to body while open so its dropdown is fixed to the current viewport, even when opened from the middle/bottom of a scrolled page.
 - No logo file is included or overwritten. The site still references Resources/Brand/novalyte.png.
+
+
+=== V5.3.12 REVIEW STORAGE MIGRATION FIX (2026-07-09) ===
+- Root cause: browser localStorage kept the old user review message Test 001 and rehydrated it after refresh.
+- Added persistent review normalization/migration in client app render flow.
+- Any stored review with id Pnovalyte001 or message Test 001 is rewritten to: They responded quickly and processed my order fast, even for an international client like me.
+- The public review is also saved into local review storage if missing so it remains stable after refresh.
+- Retained v5.3.11 viewport-safe hamburger positioning.
+- No logo asset overwrite; Resources/Brand/novalyte.png remains user-managed.
