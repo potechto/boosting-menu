@@ -60,6 +60,8 @@
     digitalProductPreviewField: document.getElementById('digitalProductPreviewField'),
     digitalProductImagePreview: document.getElementById('digitalProductImagePreview'),
     digitalProductDescription: document.getElementById('digitalProductDescription'),
+    digitalProductImageModal: document.getElementById('digitalProductImageModal'),
+    digitalProductImageModalPreview: document.getElementById('digitalProductImageModalPreview'),
     exportBackupBtn: document.getElementById('exportBackupBtn'),
     importBackupInput: document.getElementById('importBackupInput'),
     exportOrdersCsvBtn: document.getElementById('exportOrdersCsvBtn'),
@@ -364,15 +366,21 @@
   }
 
   function updateDigitalProductPreview(showPreview = false) {
-    if (!els.digitalProductImagePreview) return;
     const src = getDigitalProductImageSrc();
-    els.digitalProductImagePreview.src = src;
-    els.digitalProductImagePreview.alt = els.digitalProductName.value || 'Digital product preview';
+    if (els.digitalProductImagePreview) {
+      els.digitalProductImagePreview.src = src;
+      els.digitalProductImagePreview.alt = els.digitalProductName.value || 'Digital product preview';
+    }
+    if (els.digitalProductImageModalPreview) {
+      els.digitalProductImageModalPreview.src = src;
+      els.digitalProductImageModalPreview.alt = els.digitalProductName.value || 'Digital product preview';
+    }
     if (els.digitalProductViewImageBtn) {
       els.digitalProductViewImageBtn.classList.toggle('hidden', !src);
-      els.digitalProductViewImageBtn.textContent = showPreview && src ? 'Hide image' : 'View image';
+      els.digitalProductViewImageBtn.textContent = 'View image';
     }
-    setDigitalProductPreviewVisible(Boolean(showPreview && src));
+    setDigitalProductPreviewVisible(false);
+    if (showPreview && src && els.digitalProductImageModal) openModal(els.digitalProductImageModal);
   }
 
   function updateDigitalProductProfitPreview() {
@@ -1285,11 +1293,10 @@
       pendingDigitalImageData = '';
       updateDigitalProductPreview(false);
     });
-    if (els.digitalProductName) els.digitalProductName.addEventListener('input', () => updateDigitalProductPreview(!els.digitalProductPreviewField || !els.digitalProductPreviewField.classList.contains('hidden')));
+    if (els.digitalProductName) els.digitalProductName.addEventListener('input', () => updateDigitalProductPreview(false));
     if (els.digitalProductViewImageBtn) {
       els.digitalProductViewImageBtn.addEventListener('click', () => {
-        const isHidden = !els.digitalProductPreviewField || els.digitalProductPreviewField.classList.contains('hidden');
-        updateDigitalProductPreview(isHidden);
+        updateDigitalProductPreview(true);
       });
     }
     if (els.digitalProductPrice) els.digitalProductPrice.addEventListener('input', updateDigitalProductProfitPreview);
@@ -1301,7 +1308,7 @@
         const reader = new FileReader();
         reader.onload = () => {
           pendingDigitalImageData = String(reader.result || '');
-          updateDigitalProductPreview(true);
+          updateDigitalProductPreview(false);
         };
         reader.readAsDataURL(file);
       });

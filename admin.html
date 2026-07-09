@@ -6,14 +6,14 @@
   <title>Novalyte Admin Dashboard</title>
   <meta name="description" content="Novalyte admin dashboard for pricing control and income tracking.">
   <link rel="icon" href="assets/icons/novalyte.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/css/styles.css?v=5.3.3">
-  <link rel="stylesheet" href="assets/css/mobile.css?v=5.3.3" media="screen and (max-width: 820px)">
+  <link rel="stylesheet" href="assets/css/styles.css?v=5.3.4">
+  <link rel="stylesheet" href="assets/css/mobile.css?v=5.3.4" media="screen and (max-width: 820px)">
 </head>
-<body data-build="v5.3.3" class="admin-login-mode">
+<body data-build="v5.3.4" class="admin-login-mode">
   <main class="login-page" id="loginView">
     <section class="login-card elevated-card">
       <div class="login-brand-row">
-        <div class="lock-visual brand-logo-frame"><img class="brand-logo-img" src="Resources/Icons/logo-clean.png" alt="Novalyte" loading="eager"><span class="logo-fallback-letter">N</span></div>
+        <div class="lock-visual brand-logo-frame"><img class="brand-logo-img" src="./Resources/Icons/logo-badge.png?v=5.3.4" alt="Novalyte" loading="eager" decoding="async"></div>
         <div>
           <span class="eyebrow">Protected workspace</span>
           <h1>Admin Login</h1>
@@ -42,7 +42,6 @@
         <div class="login-alert hidden full" id="loginAlert"></div>
         <button class="btn primary full" type="submit">Enter Dashboard</button>
       </form>
-      <div class="login-footnote">Prototype protection only. Use Supabase/Auth before storing sensitive production data.</div>
     </section>
   </main>
 
@@ -50,8 +49,7 @@
     <aside class="sidebar">
       <a class="brand" href="admin.html">
         <span class="logo-mark brand-logo-frame">
-          <img class="brand-logo-img" src="Resources/Icons/logo-clean.png" alt="" loading="eager">
-          <span class="logo-fallback-letter">N</span>
+          <img class="brand-logo-img" src="./Resources/Icons/logo-badge.png?v=5.3.4" alt="Novalyte" loading="eager" decoding="async">
         </span>
         <span>
           <span class="brand-title">Novalyte Admin</span>
@@ -408,7 +406,7 @@
           <input type="checkbox" id="digitalProductVisible" checked class="hidden">
           <small class="field-hint">Choose a cover image. Existing image stays if no new file is selected.</small>
         </div>
-        <div class="field digital-product-admin-preview-field hidden" id="digitalProductPreviewField">
+        <div class="field digital-product-admin-preview-field hidden" id="digitalProductPreviewField" aria-hidden="true">
           <label>Image Preview</label>
           <div class="digital-product-admin-preview"><img id="digitalProductImagePreview" src="" alt="Digital product image preview"></div>
         </div>
@@ -420,6 +418,21 @@
           <button class="btn primary" type="submit">Save Digital Product</button>
         </div>
       </form>
+    </div>
+  </div>
+
+
+  <div class="modal-backdrop" id="digitalProductImageModal" role="dialog" aria-modal="true">
+    <div class="modal-card image-preview-modal">
+      <div class="modal-head image-preview-head">
+        <div>
+          <h2>Product Image</h2>
+        </div>
+        <button class="btn icon-btn modal-x-btn" type="button" data-close-modal="digitalProductImageModal" aria-label="Close product image preview">×</button>
+      </div>
+      <div class="image-preview-body">
+        <img id="digitalProductImageModalPreview" src="" alt="Digital product image preview">
+      </div>
     </div>
   </div>
 

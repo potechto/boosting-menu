@@ -9598,3 +9598,134 @@ button,
 .eye-btn.active::after {
   display: none !important;
 }
+
+
+/* v5.3.4 FINAL VISUAL CLEANUP */
+.brand-logo-frame,
+.logo-mark,
+.lock-visual {
+  display: grid !important;
+  place-items: center !important;
+  overflow: hidden !important;
+}
+
+.logo-mark,
+.lock-visual {
+  background: linear-gradient(145deg, rgba(12, 18, 32, 0.94), rgba(18, 23, 42, 0.82)) !important;
+  border: 1px solid rgba(112, 225, 255, 0.24) !important;
+}
+
+.brand-logo-frame {
+  padding: 5px !important;
+}
+
+.brand-logo-img {
+  position: static !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  margin: 0 auto !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.logo-fallback-letter {
+  display: none !important;
+}
+
+.lock-visual {
+  padding: 7px !important;
+}
+
+.client-feature-card .info-icon {
+  display: none !important;
+}
+
+.client-feature-card h3 {
+  margin-top: 0 !important;
+}
+
+.info-icon-message {
+  background: linear-gradient(145deg, rgba(112, 225, 255, 0.16), rgba(167, 139, 250, 0.08)) url('../../Resources/Icons/messenger-icon.png') center center / 58% no-repeat !important;
+  border-color: rgba(112, 225, 255, 0.34) !important;
+}
+
+.info-icon-message::before,
+.info-icon-message::after {
+  display: none !important;
+}
+
+.single-credential-toggle {
+  position: relative !important;
+}
+
+.single-credential-toggle .input {
+  padding-right: 58px !important;
+}
+
+.single-credential-toggle .eye-btn {
+  position: absolute !important;
+  top: 50% !important;
+  right: 8px !important;
+  transform: translateY(-50%) !important;
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  border-radius: 12px !important;
+  padding: 0 !important;
+  border: 1px solid rgba(148, 163, 184, 0.22) !important;
+  background: rgba(15, 23, 42, 0.88) url('../../Resources/Icons/eye-hidden.png') center center / 22px 22px no-repeat !important;
+  box-shadow: none !important;
+}
+
+.single-credential-toggle .eye-btn.active {
+  background: rgba(15, 23, 42, 0.88) url('../../Resources/Icons/eye-visible.png') center center / 22px 22px no-repeat !important;
+}
+
+.single-credential-toggle .eye-icon,
+.single-credential-toggle .eye-btn::before,
+.single-credential-toggle .eye-btn::after,
+.single-credential-toggle .eye-icon::before,
+.single-credential-toggle .eye-icon::after {
+  display: none !important;
+  content: none !important;
+}
+
+.login-footnote {
+  display: none !important;
+}
+
+.digital-product-admin-preview-field {
+  display: none !important;
+}
+
+.image-preview-modal {
+  width: min(720px, calc(100vw - 32px)) !important;
+}
+
+.image-preview-head {
+  align-items: center !important;
+}
+
+.image-preview-head h2 {
+  margin: 0 !important;
+}
+
+.image-preview-body {
+  display: grid !important;
+  place-items: center !important;
+  padding: 8px 0 2px !important;
+}
+
+.image-preview-body img {
+  display: block !important;
+  max-width: 100% !important;
+  max-height: min(72vh, 760px) !important;
+  width: auto !important;
+  height: auto !important;
+  border-radius: 18px !important;
+  object-fit: contain !important;
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.34) !important;
+}

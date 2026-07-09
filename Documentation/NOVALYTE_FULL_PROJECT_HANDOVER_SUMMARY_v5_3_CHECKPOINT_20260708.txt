@@ -614,3 +614,14 @@ MANDATORY PATCH DEPLOYMENT SOP - ALWAYS INCLUDE IN FUTURE HANDOVERS:
 - The command must copy from Downloads if needed, expand into the main project, run JS syntax checks, open local PC pages, git add/commit/push to GitHub, open live GitHub Pages cache-busted URLs, and delete ZIP copies afterward.
 - Include desktop checklist, phone checklist, and pushed/live verification checklist.
 - Never treat the patch as complete without the apply/push/test/cleanup command and checklist.
+
+
+=== V5.3.4 FINAL VISUAL CLEANUP (2026-07-09) ===
+- Switched logo references to ./Resources/Icons/logo-badge.png with cache-busting v=5.3.4.
+- Removed N fallback display from client/admin brand blocks and login logo block.
+- Replaced Messenger info icon with a cleaner branded Messenger-style icon asset.
+- Removed feature icons from the What We Do section for a cleaner company-style layout.
+- Reduced login eye toggle size and embedded it neatly inside the PIN field using visible/hidden eye assets.
+- Removed login prototype footnote.
+- Changed digital product image preview from inline block to centered modal preview with X close button.
+- Retained responsive behavior while aligning desktop/mobile visuals.
