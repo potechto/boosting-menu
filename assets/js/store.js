@@ -463,8 +463,18 @@
   }
 
 
+  const PUBLIC_REVIEW_ID = 'Pnovalyte001';
+  const PUBLIC_REVIEW_MESSAGE = 'They responded quickly and processed my order fast, even for an international client like me.';
+  const PUBLIC_REVIEW_DATE = '2026-07-07T09:00:00.000Z';
+
+  function isPublicReviewAlias(review) {
+    const id = String(review && review.id ? review.id : '').trim().toLowerCase();
+    const message = String(review && review.message ? review.message : '').trim().toLowerCase();
+    return id === PUBLIC_REVIEW_ID.toLowerCase() || /^test\s*001$/i.test(message);
+  }
+
   function normalizeReview(review) {
-    return {
+    const normalized = {
       id: '',
       token: '',
       displayName: '',
@@ -473,17 +483,62 @@
       updatedAt: '',
       ...review
     };
+
+    if (isPublicReviewAlias(normalized)) {
+      return {
+        ...normalized,
+        id: PUBLIC_REVIEW_ID,
+        displayName: '',
+        message: PUBLIC_REVIEW_MESSAGE,
+        rating: 5,
+        createdAt: normalized.createdAt || PUBLIC_REVIEW_DATE,
+        isSeed: true
+      };
+    }
+
+    return normalized;
+  }
+
+  function normalizeReviewList(reviews, ensurePublicReview = false) {
+    const source = Array.isArray(reviews) ? reviews : [];
+    const normalized = [];
+    const seenIds = new Set();
+
+    source.map(normalizeReview).forEach(review => {
+      if (!review.id || !review.message) return;
+      const key = String(review.id || '').toLowerCase();
+      if (key && seenIds.has(key)) return;
+      if (key) seenIds.add(key);
+      normalized.push(review);
+    });
+
+    if (ensurePublicReview && !seenIds.has(PUBLIC_REVIEW_ID.toLowerCase())) {
+      normalized.unshift(normalizeReview({
+        id: PUBLIC_REVIEW_ID,
+        token: '',
+        displayName: '',
+        message: PUBLIC_REVIEW_MESSAGE,
+        rating: 5,
+        createdAt: PUBLIC_REVIEW_DATE,
+        updatedAt: '',
+        isSeed: true
+      }));
+    }
+
+    return normalized.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }
 
   function getReviews() {
-    const reviews = readJson(KEYS.reviews, []);
-    return Array.isArray(reviews)
-      ? reviews.map(normalizeReview).filter(review => review.id && review.message).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-      : [];
+    const rawReviews = readJson(KEYS.reviews, []);
+    const reviews = normalizeReviewList(rawReviews, true);
+    try {
+      if (JSON.stringify(rawReviews || []) !== JSON.stringify(reviews)) writeJson(KEYS.reviews, reviews);
+    } catch (error) {}
+    return reviews;
   }
 
   function saveReviews(reviews) {
-    writeJson(KEYS.reviews, Array.isArray(reviews) ? reviews.map(normalizeReview) : []);
+    writeJson(KEYS.reviews, normalizeReviewList(reviews, true));
   }
 
   function ensureClientReviewToken() {

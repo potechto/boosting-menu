@@ -719,7 +719,60 @@
     return review;
   }
 
+
+  function forceLocalReviewMigration() {
+    try {
+      const key = Store && Store.KEYS && Store.KEYS.reviews ? Store.KEYS.reviews : 'novalyte.reviews.v1';
+      const raw = localStorage.getItem(key);
+      const reviews = raw ? JSON.parse(raw) : [];
+      const list = Array.isArray(reviews) ? reviews : [];
+      let changed = false;
+      const seen = new Set();
+      const migrated = [];
+
+      list.forEach(review => {
+        const message = String(review && review.message ? review.message : '').trim();
+        const id = String(review && review.id ? review.id : '').trim();
+        const isTarget = id.toLowerCase() === UNIVERSAL_CLIENT_REVIEW_ID.toLowerCase() || /^test\s*001$/i.test(message);
+        const next = isTarget ? {
+          ...review,
+          id: UNIVERSAL_CLIENT_REVIEW_ID,
+          displayName: '',
+          message: UNIVERSAL_CLIENT_REVIEW_MESSAGE,
+          rating: 5,
+          createdAt: review && review.createdAt ? review.createdAt : '2026-07-07T09:00:00.000Z',
+          isSeed: true
+        } : review;
+        const keyId = String(next && next.id ? next.id : '').toLowerCase();
+        if (keyId && seen.has(keyId)) {
+          changed = true;
+          return;
+        }
+        if (keyId) seen.add(keyId);
+        if (isTarget && (id !== UNIVERSAL_CLIENT_REVIEW_ID || message !== UNIVERSAL_CLIENT_REVIEW_MESSAGE)) changed = true;
+        migrated.push(next);
+      });
+
+      if (!seen.has(UNIVERSAL_CLIENT_REVIEW_ID.toLowerCase())) {
+        migrated.unshift({
+          id: UNIVERSAL_CLIENT_REVIEW_ID,
+          token: '',
+          displayName: '',
+          message: UNIVERSAL_CLIENT_REVIEW_MESSAGE,
+          rating: 5,
+          createdAt: '2026-07-07T09:00:00.000Z',
+          updatedAt: '',
+          isSeed: true
+        });
+        changed = true;
+      }
+
+      if (changed) localStorage.setItem(key, JSON.stringify(migrated));
+    } catch (error) {}
+  }
+
   function normalizeAndPersistPublicReviews() {
+    forceLocalReviewMigration();
     if (!Store || !Store.getReviews || !Store.saveReviews) return;
     try {
       const existing = Store.getReviews();
@@ -1204,6 +1257,7 @@
     setupMobileSelectMenus();
     setupAutoScrollbars();
     Store.getServices();
+    forceLocalReviewMigration();
     const saved = readClientState();
     fillFilters();
     fillDigitalProductFilters();
