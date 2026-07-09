@@ -140,25 +140,48 @@
     unpaid: 'Unpaid'
   };
 
-  // v5.3.20: keep admin logged in across refresh/new tabs in the same browser.
+  // v5.3.21: persist admin login across refresh using localStorage + sessionStorage + cookie. Only Logout clears it.
+  const ADMIN_SESSION_KEY = (Store.KEYS && Store.KEYS.session) || 'novalyte.adminSession.v1';
+  const ADMIN_PERSIST_KEY = 'novalyte.adminSession.persist.v5321';
+  const ADMIN_COOKIE_KEY = 'novalyte_admin_session';
+
+  function setAdminCookie(value) {
+    const maxAge = value ? 60 * 60 * 24 * 30 : 0;
+    document.cookie = `${ADMIN_COOKIE_KEY}=${value ? 'true' : ''}; max-age=${maxAge}; path=/; SameSite=Lax`;
+  }
+
+  function hasAdminCookie() {
+    return document.cookie.split(';').some(part => part.trim() === `${ADMIN_COOKIE_KEY}=true`);
+  }
+
   function isLoggedIn() {
-    return localStorage.getItem(Store.KEYS.session) === 'true' || sessionStorage.getItem(Store.KEYS.session) === 'true';
+    return localStorage.getItem(ADMIN_SESSION_KEY) === 'true' ||
+      localStorage.getItem(ADMIN_PERSIST_KEY) === 'true' ||
+      sessionStorage.getItem(ADMIN_SESSION_KEY) === 'true' ||
+      hasAdminCookie();
+  }
+
+  function persistLoggedIn() {
+    localStorage.setItem(ADMIN_SESSION_KEY, 'true');
+    localStorage.setItem(ADMIN_PERSIST_KEY, 'true');
+    sessionStorage.setItem(ADMIN_SESSION_KEY, 'true');
+    setAdminCookie(true);
   }
 
   function setLoggedIn(value) {
     if (value) {
-      localStorage.setItem(Store.KEYS.session, 'true');
-      sessionStorage.setItem(Store.KEYS.session, 'true');
+      persistLoggedIn();
       return;
     }
-    localStorage.removeItem(Store.KEYS.session);
-    sessionStorage.removeItem(Store.KEYS.session);
+    localStorage.removeItem(ADMIN_SESSION_KEY);
+    localStorage.removeItem(ADMIN_PERSIST_KEY);
+    sessionStorage.removeItem(ADMIN_SESSION_KEY);
+    setAdminCookie(false);
   }
 
   function restorePersistentAdminSession() {
     if (!isLoggedIn()) return false;
-    localStorage.setItem(Store.KEYS.session, 'true');
-    sessionStorage.setItem(Store.KEYS.session, 'true');
+    persistLoggedIn();
     return true;
   }
 
@@ -1453,8 +1476,7 @@
     Store.getInvestments();
     setupAdminPanels();
     bindEvents();
-    // v5.3.20 root fix: do not clear the admin session on page load.
-    // Refresh should restore dashboard when the browser has a saved admin session.
+    // v5.3.21 root fix: do not clear admin session on refresh; restore it before showing login.
     if (restorePersistentAdminSession()) {
       showDashboard();
     } else {
