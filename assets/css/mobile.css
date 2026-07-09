@@ -1759,7 +1759,7 @@
 }
 
 
-/* v5.3.4 mobile cleanup overrides */
+/* v5.3.6 mobile cleanup overrides */
 @media (max-width: 820px) {
   .brand-logo-frame,
   .logo-mark,
@@ -1809,7 +1809,7 @@
   }
 
   .info-icon-message {
-    background: linear-gradient(145deg, rgba(112, 225, 255, 0.16), rgba(167, 139, 250, 0.08)) url('../../Resources/Icons/messenger-icon.png') center center / 58% no-repeat !important;
+    background: linear-gradient(145deg, rgba(112, 225, 255, 0.16), rgba(167, 139, 250, 0.08)) !important;
   }
 
   .info-icon-message::before,
@@ -1828,11 +1828,11 @@
     height: 40px !important;
     min-width: 40px !important;
     border-radius: 12px !important;
-    background: rgba(15, 23, 42, 0.92) url('../../Resources/Icons/eye-hidden.png') center center / 20px 20px no-repeat !important;
+    background: rgba(15, 23, 42, 0.90) !important;
   }
 
   .single-credential-toggle .eye-btn.active {
-    background: rgba(15, 23, 42, 0.92) url('../../Resources/Icons/eye-visible.png') center center / 20px 20px no-repeat !important;
+    background: rgba(15, 23, 42, 0.90) !important;
   }
 
   .single-credential-toggle .eye-icon,
@@ -1855,7 +1855,7 @@
 }
 
 
-/* v5.3.5 refresh-proof mobile overrides */
+/* v5.3.6 refresh-proof mobile overrides */
 @media (max-width: 820px) {
   .brand-logo-frame, .logo-mark, .lock-visual { display: grid !important; place-items: center !important; overflow: hidden !important; }
   .logo-mark { width: 42px !important; height: 42px !important; border-radius: 14px !important; }
@@ -1867,6 +1867,29 @@
   .single-credential-toggle .input { padding-right: 54px !important; }
   .single-credential-toggle .eye-btn { right: 7px !important; width: 40px !important; height: 40px !important; min-width: 40px !important; border-radius: 12px !important; background: rgba(15,23,42,.92) !important; }
   .eye-svg { width: 21px !important; height: 21px !important; }
+  .login-footnote, .digital-product-admin-preview-field { display: none !important; }
+  .image-preview-modal { width: min(92vw, 560px) !important; }
+}
+
+
+/* v5.3.6 TRUE REFRESH-PROOF MOBILE OVERRIDES */
+@media (max-width: 820px) {
+  .brand-logo-frame, .logo-mark, .lock-visual { display: grid !important; place-items: center !important; overflow: hidden !important; }
+  .logo-mark { width: 42px !important; height: 42px !important; border-radius: 14px !important; }
+  .lock-visual { width: 52px !important; height: 52px !important; padding: 6px !important; border-radius: 16px !important; }
+  .brand-logo-img { display: block !important; width: 100% !important; height: 100% !important; object-fit: contain !important; opacity: 1 !important; visibility: visible !important; }
+  .logo-fallback-letter, .client-feature-card .info-icon { display: none !important; }
+  .client-feature-card h3 { margin-top: 0 !important; }
+  .info-icon-message { background: linear-gradient(145deg, rgba(112,225,255,.16), rgba(167,139,250,.08)) !important; color: #70e1ff !important; }
+  .info-icon-message::before, .info-icon-message::after { display: none !important; content: none !important; }
+  .info-icon-message .messenger-svg { display: block !important; width: 72% !important; height: 72% !important; }
+  .single-credential-toggle .input { padding-right: 54px !important; }
+  .single-credential-toggle .eye-btn { right: 7px !important; width: 40px !important; height: 40px !important; min-width: 40px !important; border-radius: 12px !important; background: rgba(15,23,42,.92) !important; display: grid !important; place-items: center !important; }
+  .single-credential-toggle .eye-btn::before, .single-credential-toggle .eye-btn::after, .single-credential-toggle .eye-icon { display: none !important; content: none !important; }
+  .eye-svg { width: 21px !important; height: 21px !important; display: block !important; color: #f8fafc !important; }
+  .eye-svg-visible { display: none !important; }
+  .eye-btn.active .eye-svg-hidden { display: none !important; }
+  .eye-btn.active .eye-svg-visible { display: block !important; }
   .login-footnote, .digital-product-admin-preview-field { display: none !important; }
   .image-preview-modal { width: min(92vw, 560px) !important; }
 }

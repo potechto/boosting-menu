@@ -629,3 +629,11 @@ MANDATORY PATCH DEPLOYMENT SOP - ALWAYS INCLUDE IN FUTURE HANDOVERS:
 
 === V5.3.5 REFRESH-PROOF VISUAL FIX (2026-07-09) ===
 Root cause addressed: v5.3.4 used newly generated logo/icon files that may not be tracked/pushed. v5.3.5 uses existing Resources/Icons/logo.png and inline SVG for Messenger/eye icons so refresh/live load cannot lose those visuals because of missing new assets.
+
+
+=== V5.3.6 TRUE REFRESH-PROOF ICON FIX (2026-07-09) ===
+- Root cause addressed: prior patches still depended on external/new icon PNG background assets and leftover CSS URL rules, so icons/logos could appear on first load then disappear/turn blank after refresh or cache reload.
+- Embedded the Novalyte logo as a data URI directly in client/admin HTML, removing dependency on logo asset loading for header/login/sidebar.
+- Kept Messenger and password/PIN eye icons as inline SVG, then removed/overrode external icon background URL dependencies.
+- Added final CSS overrides in styles.css and mobile.css so refresh/reload cannot fall back to missing PNG background icons.
+- Bumped cache markers to v5.3.6.
