@@ -1759,7 +1759,7 @@
 }
 
 
-/* v5.3.6 mobile cleanup overrides */
+/* v5.3.7 mobile cleanup overrides */
 @media (max-width: 820px) {
   .brand-logo-frame,
   .logo-mark,
@@ -1855,7 +1855,7 @@
 }
 
 
-/* v5.3.6 refresh-proof mobile overrides */
+/* v5.3.7 refresh-proof mobile overrides */
 @media (max-width: 820px) {
   .brand-logo-frame, .logo-mark, .lock-visual { display: grid !important; place-items: center !important; overflow: hidden !important; }
   .logo-mark { width: 42px !important; height: 42px !important; border-radius: 14px !important; }
@@ -1872,7 +1872,7 @@
 }
 
 
-/* v5.3.6 TRUE REFRESH-PROOF MOBILE OVERRIDES */
+/* v5.3.7 TRUE REFRESH-PROOF MOBILE OVERRIDES */
 @media (max-width: 820px) {
   .brand-logo-frame, .logo-mark, .lock-visual { display: grid !important; place-items: center !important; overflow: hidden !important; }
   .logo-mark { width: 42px !important; height: 42px !important; border-radius: 14px !important; }
@@ -1892,4 +1892,31 @@
   .eye-btn.active .eye-svg-visible { display: block !important; }
   .login-footnote, .digital-product-admin-preview-field { display: none !important; }
   .image-preview-modal { width: min(92vw, 560px) !important; }
+}
+
+
+/* v5.3.7 user-managed transparent logo mobile fix */
+@media (max-width: 820px) {
+  .brand-logo-frame,
+  .logo-mark,
+  .lock-visual {
+    display: grid !important;
+    place-items: center !important;
+    overflow: hidden !important;
+  }
+
+  .brand-logo-img {
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .logo-fallback-letter {
+    display: none !important;
+  }
 }

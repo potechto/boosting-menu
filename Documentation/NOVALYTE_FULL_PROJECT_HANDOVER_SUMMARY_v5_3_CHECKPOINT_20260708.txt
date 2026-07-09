@@ -637,3 +637,11 @@ Root cause addressed: v5.3.4 used newly generated logo/icon files that may not b
 - Kept Messenger and password/PIN eye icons as inline SVG, then removed/overrode external icon background URL dependencies.
 - Added final CSS overrides in styles.css and mobile.css so refresh/reload cannot fall back to missing PNG background icons.
 - Bumped cache markers to v5.3.6.
+
+
+=== V5.3.7 USER-MANAGED TRANSPARENT LOGO FIX (2026-07-09) ===
+- Corrected the v5.3.6 mistake of embedding the old logo as base64.
+- Client and admin logo references now use ./Resources/Brand/novalyte.png?v=5.3.7.
+- The patch ZIP intentionally does NOT include/overwrite Resources/Brand/novalyte.png, because the user already updated that file locally with the same filename and transparent background.
+- Apply command force-adds Resources/Brand/novalyte.png so the updated transparent logo is committed and pushed to GitHub Pages.
+- Standing rule: future Novalyte patches must never embed the logo as base64 unless the user explicitly asks; use the user-managed Resources/Brand/novalyte.png asset instead.

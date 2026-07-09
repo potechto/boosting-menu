@@ -9600,7 +9600,7 @@ button,
 }
 
 
-/* v5.3.6 FINAL VISUAL CLEANUP */
+/* v5.3.7 FINAL VISUAL CLEANUP */
 .brand-logo-frame,
 .logo-mark,
 .lock-visual {
@@ -9731,7 +9731,7 @@ button,
 }
 
 
-/* v5.3.6 REFRESH-PROOF VISUAL FIX - avoids missing generated asset files */
+/* v5.3.7 REFRESH-PROOF VISUAL FIX - avoids missing generated asset files */
 .brand-logo-frame, .logo-mark, .lock-visual {
   display: grid !important; place-items: center !important; overflow: hidden !important;
   background: linear-gradient(145deg, rgba(12,18,32,.96), rgba(18,23,42,.84)) !important;
@@ -9761,7 +9761,7 @@ button,
 .image-preview-body img { display: block !important; max-width: 100% !important; max-height: min(72vh,760px) !important; width: auto !important; height: auto !important; border-radius: 18px !important; object-fit: contain !important; box-shadow: 0 18px 38px rgba(0,0,0,.34) !important; }
 
 
-/* v5.3.6 TRUE REFRESH-PROOF ICON FIX - no external icon background dependencies */
+/* v5.3.7 TRUE REFRESH-PROOF ICON FIX - no external icon background dependencies */
 .brand-logo-frame, .logo-mark, .lock-visual {
   display: grid !important;
   place-items: center !important;
@@ -9821,3 +9821,36 @@ button,
 .image-preview-modal { width: min(720px, calc(100vw - 32px)) !important; }
 .image-preview-body { display: grid !important; place-items: center !important; padding: 8px 0 2px !important; }
 .image-preview-body img { display: block !important; max-width: 100% !important; max-height: min(72vh,760px) !important; width: auto !important; height: auto !important; border-radius: 18px !important; object-fit: contain !important; box-shadow: 0 18px 38px rgba(0,0,0,.34) !important; }
+
+
+/* v5.3.7 USER-MANAGED TRANSPARENT LOGO FIX */
+.brand-logo-frame,
+.logo-mark,
+.lock-visual {
+  display: grid !important;
+  place-items: center !important;
+  overflow: hidden !important;
+}
+
+.brand-logo-frame {
+  padding: 4px !important;
+}
+
+.brand-logo-img {
+  position: static !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  margin: 0 auto !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.logo-fallback-letter {
+  display: none !important;
+}
+
+/* v5.3.7: the logo file is intentionally user-managed at Resources/Brand/novalyte.png.
+   Do not embed base64 or overwrite this asset in patch ZIPs. */
