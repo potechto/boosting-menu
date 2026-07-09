@@ -701,7 +701,7 @@
     return Math.max(0.5, Math.min(5, Math.round(base * 2) / 2));
   }
 
-  let selectedReviewRating = 5;
+  let selectedReviewRating = 0; // v5.3.18: no auto-filled rating; stars fill only after user selects.
 
   function formatReviewRating(value) {
     return clampReviewRating(value).toFixed(1).replace(/\.0$/, '.0');
@@ -717,21 +717,24 @@
   }
 
   function updateReviewRatingInput(previewValue = selectedReviewRating) {
-    const rating = clampReviewRating(previewValue, selectedReviewRating || 5);
+    // v5.3.18: feedback rating starts blank. Stars only fill on hover/tap/click selection.
+    const numericPreview = Number(previewValue);
+    const rating = Number.isFinite(numericPreview) && numericPreview > 0 ? clampReviewRating(numericPreview, 0.5) : 0;
+    const committedRating = Number(selectedReviewRating) > 0 ? clampReviewRating(selectedReviewRating, 0.5) : 0;
     if (els.reviewRatingControl) {
       els.reviewRatingControl.dataset.rating = String(rating);
       els.reviewRatingControl.setAttribute('aria-valuenow', String(rating));
-      els.reviewRatingControl.setAttribute('aria-valuetext', `${formatReviewRating(rating)} out of 5 stars`);
+      els.reviewRatingControl.setAttribute('aria-valuetext', rating > 0 ? `${formatReviewRating(rating)} out of 5 stars` : 'No rating selected');
       els.reviewRatingControl.querySelectorAll('.review-rating-star').forEach(star => {
         const starValue = Number(star.dataset.star) || 0;
-        const fill = Math.max(0, Math.min(1, rating - (starValue - 1)));
+        const fill = rating > 0 ? Math.max(0, Math.min(1, rating - (starValue - 1))) : 0;
         const percent = fill >= 1 ? 100 : fill >= 0.5 ? 50 : 0;
         star.style.setProperty('--star-fill', `${percent}%`);
         star.classList.toggle('is-filled', percent > 0);
       });
     }
-    if (els.reviewRatingValue) els.reviewRatingValue.value = String(selectedReviewRating);
-    if (els.reviewRatingText) els.reviewRatingText.textContent = `${formatReviewRating(selectedReviewRating)}/5 stars`;
+    if (els.reviewRatingValue) els.reviewRatingValue.value = committedRating > 0 ? String(committedRating) : '';
+    if (els.reviewRatingText) els.reviewRatingText.textContent = committedRating > 0 ? `${formatReviewRating(committedRating)}/5 stars` : 'Tap a star to rate';
   }
 
   function ratingFromPointerEvent(event, star) {
@@ -768,10 +771,10 @@
       const key = event.key;
       if (['ArrowLeft', 'ArrowDown'].includes(key)) {
         event.preventDefault();
-        setReviewRating(selectedReviewRating - 0.5);
+        setReviewRating(selectedReviewRating > 0 ? selectedReviewRating - 0.5 : 0.5);
       } else if (['ArrowRight', 'ArrowUp'].includes(key)) {
         event.preventDefault();
-        setReviewRating(selectedReviewRating + 0.5);
+        setReviewRating(selectedReviewRating > 0 ? selectedReviewRating + 0.5 : 0.5);
       } else if (/^[1-5]$/.test(key)) {
         event.preventDefault();
         setReviewRating(Number(key));
@@ -961,6 +964,11 @@
       renderReviews();
       return;
     }
+    if (!(Number(selectedReviewRating) > 0)) {
+      Store.toast('Please select a star rating before submitting feedback.', 'warning');
+      updateReviewRatingInput(0);
+      return;
+    }
     const result = Store.addReview('', els.reviewText ? els.reviewText.value : '', selectedReviewRating);
     if (!result.ok) {
       const messages = {
@@ -973,7 +981,8 @@
       return;
     }
     if (els.reviewText) els.reviewText.value = '';
-    setReviewRating(5);
+    selectedReviewRating = 0;
+    updateReviewRatingInput(0);
     Store.toast('Feedback submitted. Thank you.');
     renderReviews();
   }

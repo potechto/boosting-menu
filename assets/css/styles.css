@@ -10110,3 +10110,18 @@ body.admin-nav-open .admin-mobile-nav-toggle span:nth-child(3) {
 #reviewRatingText {
   display: inline-block !important;
 }
+
+
+/* v5.3.18 BLANK REVIEW STAR DEFAULT FIX */
+.review-rating-input[data-rating="0"] .review-rating-star,
+.review-rating-input[data-rating="0"] .review-rating-star span {
+  color: rgba(251, 146, 60, 0.28) !important;
+}
+
+.review-rating-input[data-rating="0"] .review-rating-star::before {
+  width: 0% !important;
+}
+
+.review-rating-star {
+  --star-fill: 0%;
+}

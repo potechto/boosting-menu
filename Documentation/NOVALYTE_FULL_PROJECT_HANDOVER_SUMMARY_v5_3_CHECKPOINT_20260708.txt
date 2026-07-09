@@ -727,3 +727,12 @@ Root cause addressed: v5.3.4 used newly generated logo/icon files that may not b
 - Added final_v5317 lock tagging only for new feedback submitted after the release, so the user gets one new submission and then the one-time lock is restored after refresh.
 - Kept review star rating input behavior from v5.3.14/v5.3.15.
 - Kept Resources/Brand/novalyte.png user-managed; this patch does not include or overwrite the logo.
+
+
+=== V5.3.18 BLANK REVIEW STAR DEFAULT FIX (2026-07-09) ===
+- Adjusted review rating input so stars are not auto-filled by default.
+- Stars now fill only when the user hovers/taps/clicks/selects a rating.
+- Submitting feedback now requires an explicit star rating selection, preserving the one-time feedback lock behavior from v5.3.17.
+- After a successful feedback submission, the rating input resets back to blank.
+- Kept existing public review migration, one-time browser feedback lock, custom modal warnings, and user-managed logo path unchanged.
+- Patch does not include or overwrite Resources/Brand/novalyte.png.

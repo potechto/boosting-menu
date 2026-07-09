@@ -635,6 +635,7 @@
 
   function addReview(displayName, message, rating = 5) {
     // v5.3.17: feedback remains one submission per browser after the one-time legacy release.
+    // v5.3.18: submitted rating is user-selected only; no default auto-filled rating is submitted.
     const text = String(message || '').trim().slice(0, 1000);
     if (!text) return { ok: false, reason: 'empty' };
     const existing = getCurrentClientReview();
