@@ -1920,3 +1920,88 @@
     display: none !important;
   }
 }
+
+
+/* v5.3.8 mobile action/eye/nav cleanup */
+@media (max-width: 820px) {
+  .topbar-inner {
+    min-height: 58px !important;
+    padding-block: 7px !important;
+  }
+
+  .mobile-nav-toggle,
+  .admin-mobile-nav-toggle {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    border-radius: 13px !important;
+    gap: 0 !important;
+    padding: 9px !important;
+  }
+
+  .mobile-nav-toggle span,
+  .admin-mobile-nav-toggle span {
+    width: 18px !important;
+    height: 2px !important;
+    margin: 2px 0 !important;
+    transform-origin: center !important;
+  }
+
+  body.client-nav-open .mobile-nav-toggle span:nth-child(1),
+  body.admin-nav-open .admin-mobile-nav-toggle span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg) !important;
+  }
+
+  body.client-nav-open .mobile-nav-toggle span:nth-child(2),
+  body.admin-nav-open .admin-mobile-nav-toggle span:nth-child(2) {
+    opacity: 0 !important;
+  }
+
+  body.client-nav-open .mobile-nav-toggle span:nth-child(3),
+  body.admin-nav-open .admin-mobile-nav-toggle span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg) !important;
+  }
+
+  .single-credential-toggle .input {
+    padding-right: 3.15rem !important;
+  }
+
+  .single-credential-toggle .eye-btn {
+    right: 0.58rem !important;
+    width: 1.92rem !important;
+    height: 1.92rem !important;
+    min-width: 1.92rem !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  .single-credential-toggle .eye-btn svg {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+  }
+
+  .actions-cell,
+  .admin-digital-actions {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    gap: 0.34rem 0.42rem !important;
+  }
+
+  .actions-cell .btn,
+  .admin-digital-actions .btn {
+    min-height: 2.05rem !important;
+    min-width: 5.35rem !important;
+    padding: 0.46rem 0.7rem !important;
+    font-size: 0.8rem !important;
+  }
+
+  .investment-insights-card,
+  #investmentInsightsCard {
+    display: none !important;
+  }
+}

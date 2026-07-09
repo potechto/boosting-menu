@@ -521,22 +521,9 @@
       </article>
     `).join('');
     if (els.investmentInsightsCard) {
-      const lastEntry = entries[0];
-      const statusText = totals.availableCapital < 0
-        ? 'Capital is negative after provider charges. Add funds before accepting more orders.'
-        : totals.availableCapital < Math.max(totals.capitalIn * 0.25, 1)
-          ? 'Available capital is getting low. Consider reloading before scaling orders.'
-          : 'Capital status looks healthy based on current provider charges.';
-      els.investmentInsightsCard.innerHTML = `
-        <div>
-          <span class="eyebrow">Finance insight</span>
-          <strong>${statusText}</strong>
-        </div>
-        <div>
-          <span>Latest log</span>
-          <strong>${lastEntry ? `${financeTypeLabel(lastEntry.type)} · ${Store.formatMoney(lastEntry.amount)} · ${sanitize(dateText(lastEntry.createdAt))}` : 'No finance log yet'}</strong>
-        </div>
-      `;
+      // v5.3.8: Finance Insight card is intentionally removed from the admin UI.
+      els.investmentInsightsCard.innerHTML = '';
+      els.investmentInsightsCard.classList.add('hidden');
     }
   }
 

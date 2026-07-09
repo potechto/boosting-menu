@@ -9854,3 +9854,127 @@ button,
 
 /* v5.3.7: the logo file is intentionally user-managed at Resources/Brand/novalyte.png.
    Do not embed base64 or overwrite this asset in patch ZIPs. */
+
+
+/* v5.3.8 ACTION/EYE/FINANCE CLEANUP */
+.single-credential-toggle {
+  position: relative !important;
+}
+
+.single-credential-toggle .input {
+  padding-right: 3.25rem !important;
+}
+
+.single-credential-toggle .eye-btn {
+  position: absolute !important;
+  top: 50% !important;
+  right: 0.62rem !important;
+  transform: translateY(-50%) !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  min-width: 2rem !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+
+.single-credential-toggle .eye-btn:hover,
+.single-credential-toggle .eye-btn:focus-visible {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.single-credential-toggle .eye-btn svg {
+  width: 1.35rem !important;
+  height: 1.35rem !important;
+  display: block !important;
+}
+
+.single-credential-toggle .eye-btn .eye-svg-visible {
+  display: none !important;
+}
+
+.single-credential-toggle .eye-btn.active .eye-svg-hidden {
+  display: none !important;
+}
+
+.single-credential-toggle .eye-btn.active .eye-svg-visible {
+  display: block !important;
+}
+
+.single-credential-toggle .eye-icon,
+.single-credential-toggle .eye-btn::before,
+.single-credential-toggle .eye-btn::after,
+.single-credential-toggle .eye-icon::before,
+.single-credential-toggle .eye-icon::after {
+  display: none !important;
+  content: none !important;
+}
+
+.actions-cell,
+.admin-digital-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-wrap: wrap !important;
+  gap: 0.38rem 0.45rem !important;
+  min-width: 0 !important;
+}
+
+.actions-cell .btn,
+.admin-digital-actions .btn {
+  min-height: 2.12rem !important;
+  padding: 0.48rem 0.78rem !important;
+  font-size: 0.82rem !important;
+  line-height: 1 !important;
+  letter-spacing: -0.01em !important;
+  border-radius: 999px !important;
+  min-width: 5.8rem !important;
+}
+
+.actions-cell .btn.primary,
+.admin-digital-actions .btn.primary {
+  min-width: 6.35rem !important;
+}
+
+#services .table-wrap th:last-child,
+#services .table-wrap td:last-child,
+#digital-products .table-wrap th:last-child,
+#digital-products .table-wrap td:last-child {
+  width: 10.5rem !important;
+  min-width: 10.5rem !important;
+}
+
+.investment-insights-card,
+#investmentInsightsCard {
+  display: none !important;
+}
+
+.mobile-nav-toggle,
+.admin-mobile-nav-toggle {
+  gap: 0 !important;
+}
+
+.mobile-nav-toggle span,
+.admin-mobile-nav-toggle span {
+  transform-origin: center !important;
+}
+
+body.client-nav-open .mobile-nav-toggle span:nth-child(1),
+body.admin-nav-open .admin-mobile-nav-toggle span:nth-child(1) {
+  transform: translateY(6px) rotate(45deg) !important;
+}
+
+body.client-nav-open .mobile-nav-toggle span:nth-child(2),
+body.admin-nav-open .admin-mobile-nav-toggle span:nth-child(2) {
+  opacity: 0 !important;
+}
+
+body.client-nav-open .mobile-nav-toggle span:nth-child(3),
+body.admin-nav-open .admin-mobile-nav-toggle span:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg) !important;
+}
