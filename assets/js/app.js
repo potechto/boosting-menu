@@ -2,7 +2,7 @@
   const Store = window.NovalyteStore;
   const MESSENGER_URL = 'https://www.facebook.com/messages/t/1240324299157071';
   const CLIENT_STATE_KEY = 'novalyte-client-view-state-v2';
-  // v5.3.14: review star rating input with half-star support.
+  // v5.3.16: star rating stays, one-time feedback lock is restored after releasing the legacy current feedback.
   const state = { servicePage: 1, perPage: 10, view: 'home', activeDigitalProductId: null };
 
   const els = {
@@ -912,23 +912,19 @@
     const reviews = combinedPublicReviews();
     const current = Store.getCurrentClientReview ? Store.getCurrentClientReview() : null;
 
-    els.reviewCards.innerHTML = reviews.map(review => {
-      const isCurrent = current && review.id === current.id;
-      const label = isCurrent ? 'Your feedback' : 'Client feedback';
-      return `
-        <article class="review-card${isCurrent ? ' is-current-review' : ''}">
-          <div class="review-card-head">
-            <div class="review-stars" aria-label="Five star feedback">${renderReviewStars(review.rating || 5)}</div>
-            <span class="review-id">${sanitize(review.id)}</span>
-          </div>
-          <p>${sanitize(review.message)}</p>
-          <div class="review-card-foot">
-            <strong>${label}</strong>
-            <small>${sanitize(formatReviewDate(review.createdAt))}</small>
-          </div>
-        </article>
-      `;
-    }).join('');
+    els.reviewCards.innerHTML = reviews.map(review => `
+      <article class="review-card">
+        <div class="review-card-head">
+          <div class="review-stars" aria-label="${formatReviewRating(review.rating || 5)} star feedback">${renderReviewStars(review.rating || 5)}</div>
+          <span class="review-id">${sanitize(review.id)}</span>
+        </div>
+        <p>${sanitize(review.message)}</p>
+        <div class="review-card-foot">
+          <strong>Client feedback</strong>
+          <small>${sanitize(formatReviewDate(review.createdAt))}</small>
+        </div>
+      </article>
+    `).join('');
 
     if (els.reviewForm) {
       els.reviewForm.classList.toggle('hidden', Boolean(current));
@@ -940,6 +936,7 @@
       els.submitReviewBtn.textContent = 'Submit Feedback';
       els.submitReviewBtn.disabled = Boolean(current);
     }
+    updateReviewRatingInput(selectedReviewRating);
     updateReviewCharCount();
   }
 
@@ -970,6 +967,8 @@
       renderReviews();
       return;
     }
+    if (els.reviewText) els.reviewText.value = '';
+    setReviewRating(5);
     Store.toast('Feedback submitted. Thank you.');
     renderReviews();
   }
@@ -1347,6 +1346,7 @@
     setupAutoScrollbars();
     Store.getServices();
     forceLocalReviewMigration();
+    if (Store.releaseCurrentReviewForOneNewSubmission) Store.releaseCurrentReviewForOneNewSubmission();
     const saved = readClientState();
     fillFilters();
     fillDigitalProductFilters();

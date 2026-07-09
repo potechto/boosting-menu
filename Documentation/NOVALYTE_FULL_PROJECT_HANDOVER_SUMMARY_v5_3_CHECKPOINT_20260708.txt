@@ -701,3 +701,20 @@ Root cause addressed: v5.3.4 used newly generated logo/icon files that may not b
 - Submitted client reviews now save the selected rating with the review and render the matching star fill.
 - Existing/public generated reviews keep their saved rating values, defaulting safely to 5 stars.
 - Patch does not include or overwrite Resources/Brand/novalyte.png.
+
+
+=== V5.3.15 REPEAT PUBLIC STAR FEEDBACK FIX (2026-07-09) ===
+- Feedback form remains visible even after the same browser already submitted feedback.
+- New feedback submissions are saved as normal anonymous client feedback, not locked personal/browser feedback.
+- Submitted feedback now carries the selected half/full star rating into the review card.
+- Old current-browser review token is cleared on client load so the form will not stay hidden on mobile.
+- Review cards now label submissions as Client feedback so the user can check layout like random client reviews.
+- No changes to user-managed logo file Resources/Brand/novalyte.png.
+
+
+=== V5.3.16 ONE-TIME FEEDBACK LOCK RESTORE (2026-07-09) ===
+- Restored one-feedback-per-browser behavior after the v5.3.15 repeat-submit misunderstanding.
+- Added one-time legacy release migration: the current browser's existing feedback becomes normal Client feedback, then the browser may submit one new feedback and becomes locked again.
+- Kept review star rating input and submitted star ratings.
+- Kept client feedback label for all review cards.
+- Did not include or overwrite Resources/Brand/novalyte.png.
