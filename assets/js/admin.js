@@ -95,6 +95,7 @@
     serviceMin: document.getElementById('serviceMin'),
     serviceMax: document.getElementById('serviceMax'),
     serviceTag: document.getElementById('serviceTag'),
+    serviceRecommended: document.getElementById('serviceRecommended'),
     serviceVisible: document.getElementById('serviceVisible'),
     serviceArchived: document.getElementById('serviceArchived'),
     serviceDescription: document.getElementById('serviceDescription'),
@@ -577,6 +578,7 @@
           <td data-label="Client / Cost"><strong>${Store.formatMoney(product.price)}</strong><br><span class="service-desc">Cost: ${Store.formatMoney(product.providerPrice || 0)}</span></td>
           <td data-label="Duration">${sanitize(product.duration || '1 Month Access')}</td>
           <td data-label="Status"><span class="status-pill ${statusClass}">${statusText}</span></td>
+          <td data-label="Recommend" class="recommend-cell"><label class="recommend-toggle" title="Show in Recommended"><input type="checkbox" data-recommend-service="${service.id}" ${service.recommended === true ? 'checked' : ''}><span aria-hidden="true"></span></label></td>
           <td data-label="Actions">
             <div class="actions-cell admin-digital-actions">
               <button class="btn small primary" type="button" data-create-digital-order="${sanitize(product.id)}" ${product.disabled || product.visible === false ? 'disabled' : ''}>Create Order</button>
@@ -866,7 +868,7 @@
     const services = filteredServices();
     renderAdminServicesPagination(services.length);
     if (!services.length) {
-      els.servicesTable.innerHTML = '<tr class="empty-table-row"><td colspan="8"><div class="empty-state">No service found.</div></td></tr>';
+      els.servicesTable.innerHTML = '<tr class="empty-table-row"><td colspan="9"><div class="empty-state">No service found.</div></td></tr>';
       return;
     }
 
@@ -893,6 +895,7 @@
           <td data-label="Client Rate"><strong>${Store.formatMoney(service.clientRate)}</strong> / ${Store.formatNumber(service.rateUnit)}</td>
           <td data-label="Revenue/unit"><strong>${Store.formatMoney(revenue)}</strong></td>
           <td data-label="Status"><span class="status-pill ${statusClass}">${statusText}</span></td>
+          <td data-label="Recommend" class="recommend-cell"><label class="recommend-toggle" title="Show in Recommended"><input type="checkbox" data-recommend-service="${service.id}" ${service.recommended === true ? 'checked' : ''}><span aria-hidden="true"></span></label></td>
           <td data-label="Actions">
             <div class="actions-cell">
               <button class="btn small primary" type="button" data-create-order="${service.id}" ${service.archived ? 'disabled' : ''}>Create Order</button>
@@ -1084,7 +1087,7 @@
     const isNew = !service;
     const data = service || {
       id: '', providerId: '', platform: '', category: '', name: '', description: '', providerRate: 0,
-      clientRate: 0, rateUnit: 1000, min: 100, max: 10000, avgTime: '', tag: '', visible: true, archived: false
+      clientRate: 0, rateUnit: 1000, min: 100, max: 10000, avgTime: '', tag: '', recommended: false, visible: true, archived: false
     };
 
     els.serviceModalTitle.textContent = isNew ? 'Add Service' : 'Edit Service';
@@ -1100,6 +1103,7 @@
     els.serviceMin.value = data.min || 0;
     els.serviceMax.value = data.max || 0;
     els.serviceTag.value = data.tag || '';
+    if (els.serviceRecommended) els.serviceRecommended.checked = data.recommended === true;
     els.serviceVisible.checked = data.visible !== false;
     els.serviceArchived.checked = data.archived === true;
     els.serviceDescription.value = data.description || '';
@@ -1134,6 +1138,7 @@
       min: Number(els.serviceMin.value) || 0,
       max: Number(els.serviceMax.value) || 0,
       tag: els.serviceTag.value.trim(),
+      recommended: Boolean(els.serviceRecommended && els.serviceRecommended.checked),
       visible: els.serviceArchived.checked ? true : els.serviceVisible.checked,
       archived: els.serviceArchived.checked,
       description: els.serviceDescription.value.trim()
@@ -1730,7 +1735,16 @@
           if (product) fillOrderForm(product, 'digital-product');
           return;
         }
-        if (editBtn) {
+        if (recommendInput) {
+        const services = Store.getServices();
+        const service = services.find(item => item.id === recommendInput.dataset.recommendService);
+        if (service) {
+          service.recommended = recommendInput.checked;
+          Store.saveServices(services);
+          Store.toast(service.recommended ? 'Service added to Recommended.' : 'Service removed from Recommended.');
+        }
+      }
+      if (editBtn) {
           const product = getDigitalProductById(editBtn.dataset.editDigitalProduct);
           if (product) fillDigitalProductForm(product);
         }
@@ -1777,6 +1791,16 @@
       const editBtn = event.target.closest('[data-edit-service]');
       const orderBtn = event.target.closest('[data-create-order]');
       const archiveBtn = event.target.closest('[data-archive-service]');
+      const recommendInput = event.target.closest('[data-recommend-service]');
+      if (recommendInput) {
+        const services = Store.getServices();
+        const service = services.find(item => item.id === recommendInput.dataset.recommendService);
+        if (service) {
+          service.recommended = recommendInput.checked;
+          Store.saveServices(services);
+          Store.toast(service.recommended ? 'Service added to Recommended.' : 'Service removed from Recommended.');
+        }
+      }
       if (editBtn) {
         const service = getServiceById(editBtn.dataset.editService);
         if (service) fillServiceForm(service);

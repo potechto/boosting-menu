@@ -10996,3 +10996,90 @@ body:has(.admin-layout:not(.hidden)) #orders .actions-cell .btn:last-child:nth-c
     font-size: 1.25rem !important;
   }
 }
+
+
+/* v6.0.8 compact fixed-layout refinement */
+@media (min-width: 901px) {
+  body:not(:has(.admin-layout:not(.hidden))) .shell { max-width: 1180px !important; }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-tracker { padding: 1.15rem !important; border-radius: 22px !important; }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-tracker-heading h2 { font-size: 1.65rem !important; margin-bottom: .25rem !important; }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-tracker-heading p { font-size: .86rem !important; }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-count-grid { gap: .65rem !important; margin: .85rem 0 !important; }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-count-card { min-height: 72px !important; padding: .75rem 1rem !important; }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-count-card span { font-size: .72rem !important; }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-count-card strong { font-size: 1.65rem !important; }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-filter-bar { grid-template-columns: minmax(260px,1.7fr) minmax(180px,.72fr) auto auto !important; gap: .65rem !important; padding: .85rem !important; }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-filter-bar label { font-size: .72rem !important; }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-filter-bar .input,
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-filter-bar .select { min-height: 38px !important; height: 38px !important; font-size: .82rem !important; padding: .45rem .65rem !important; }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-clear { min-height: 38px !important; height: 38px !important; padding: .45rem .75rem !important; font-size: .78rem !important; }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-summary strong { font-size: 1.2rem !important; }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-summary span { font-size: .65rem !important; }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-table { table-layout: fixed !important; width: 100% !important; }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-table th,
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-table td { padding: .65rem .75rem !important; font-size: .78rem !important; overflow-wrap: anywhere; }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-table th:nth-child(1) { width: 10% !important; }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-table th:nth-child(2) { width: 21% !important; }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-table th:nth-child(3) { width: 33% !important; }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-table th:nth-child(4) { width: 24% !important; }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-table th:nth-child(5) { width: 12% !important; }
+
+  body:has(.admin-layout:not(.hidden)) .admin-content { max-width: 1500px !important; padding-inline: 1rem !important; }
+  body:has(.admin-layout:not(.hidden)) #orders .responsive-table { overflow-x: visible !important; }
+  body:has(.admin-layout:not(.hidden)) #orders table { width: 100% !important; min-width: 0 !important; table-layout: fixed !important; }
+  body:has(.admin-layout:not(.hidden)) #orders th,
+  body:has(.admin-layout:not(.hidden)) #orders td { padding: .52rem .38rem !important; font-size: .68rem !important; overflow-wrap: anywhere; }
+  body:has(.admin-layout:not(.hidden)) #orders th:nth-child(1) { width: 8.5% !important; }
+  body:has(.admin-layout:not(.hidden)) #orders th:nth-child(2) { width: 11% !important; }
+  body:has(.admin-layout:not(.hidden)) #orders th:nth-child(3) { width: 18% !important; }
+  body:has(.admin-layout:not(.hidden)) #orders th:nth-child(4) { width: 6% !important; }
+  body:has(.admin-layout:not(.hidden)) #orders th:nth-child(5),
+  body:has(.admin-layout:not(.hidden)) #orders th:nth-child(6),
+  body:has(.admin-layout:not(.hidden)) #orders th:nth-child(7) { width: 8% !important; }
+  body:has(.admin-layout:not(.hidden)) #orders th:nth-child(8) { width: 10% !important; }
+  body:has(.admin-layout:not(.hidden)) #orders th:nth-child(9) { width: 7.5% !important; }
+  body:has(.admin-layout:not(.hidden)) #orders th:nth-child(10) { width: 15% !important; }
+  body:has(.admin-layout:not(.hidden)) #orders .order-status-inline { width: 100% !important; min-width: 0 !important; height: 32px !important; min-height: 32px !important; font-size: .67rem !important; padding: .25rem .35rem !important; }
+  body:has(.admin-layout:not(.hidden)) #orders .actions-cell { display: grid !important; grid-template-columns: repeat(3,minmax(0,1fr)) !important; gap: .28rem !important; }
+  body:has(.admin-layout:not(.hidden)) #orders .actions-cell .btn,
+  body:has(.admin-layout:not(.hidden)) #services .actions-cell .btn { height: 30px !important; min-height: 30px !important; padding: .25rem .4rem !important; font-size: .64rem !important; border-radius: 9px !important; }
+  body:has(.admin-layout:not(.hidden)) #orders .actions-cell .btn:nth-child(3) { grid-column: auto !important; }
+  body:has(.admin-layout:not(.hidden)) #orders .status-pill { font-size: .62rem !important; padding: .25rem .4rem !important; }
+  body:has(.admin-layout:not(.hidden)) #ordersSummaryGrid { grid-template-columns: repeat(4,minmax(0,1fr)) !important; gap: .55rem !important; }
+  body:has(.admin-layout:not(.hidden)) #ordersSummaryGrid > * { min-height: 68px !important; padding: .7rem .8rem !important; }
+  body:has(.admin-layout:not(.hidden)) #ordersSummaryGrid span { font-size: .62rem !important; }
+  body:has(.admin-layout:not(.hidden)) #ordersSummaryGrid strong { font-size: 1rem !important; }
+
+  body:has(.admin-layout:not(.hidden)) #services table { table-layout: fixed !important; width: 100% !important; min-width: 0 !important; }
+  body:has(.admin-layout:not(.hidden)) #services th,
+  body:has(.admin-layout:not(.hidden)) #services td { font-size: .69rem !important; padding: .55rem .45rem !important; overflow-wrap: anywhere; }
+  body:has(.admin-layout:not(.hidden)) #services th:nth-child(1) { width: 24% !important; }
+  body:has(.admin-layout:not(.hidden)) #services th:nth-child(2) { width: 8% !important; }
+  body:has(.admin-layout:not(.hidden)) #services th:nth-child(3) { width: 10% !important; }
+  body:has(.admin-layout:not(.hidden)) #services th:nth-child(4),
+  body:has(.admin-layout:not(.hidden)) #services th:nth-child(5) { width: 11% !important; }
+  body:has(.admin-layout:not(.hidden)) #services th:nth-child(6) { width: 9% !important; }
+  body:has(.admin-layout:not(.hidden)) #services th:nth-child(7) { width: 8% !important; }
+  body:has(.admin-layout:not(.hidden)) #services th:nth-child(8) { width: 7% !important; }
+  body:has(.admin-layout:not(.hidden)) #services th:nth-child(9) { width: 12% !important; }
+  .recommend-col, .recommend-cell { text-align: center !important; }
+  .recommend-toggle { display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
+  .recommend-toggle input { position:absolute; opacity:0; pointer-events:none; }
+  .recommend-toggle span { width: 28px; height: 16px; border-radius: 999px; background:#253047; border:1px solid #41506b; position:relative; transition:.18s ease; }
+  .recommend-toggle span::after { content:""; position:absolute; width:10px; height:10px; top:2px; left:2px; border-radius:50%; background:#b7c1d4; transition:.18s ease; }
+  .recommend-toggle input:checked + span { background:#1f8b6b; border-color:#41d7aa; }
+  .recommend-toggle input:checked + span::after { transform:translateX(12px); background:#fff; }
+  .service-recommended-field { grid-column: 1 / -1; width:max-content; justify-self:center; display:flex; align-items:center; gap:.55rem; font-size:.75rem; color:var(--muted); }
+  .service-recommended-field input { width:16px; height:16px; accent-color:#57d6ff; }
+}
+
+@media (min-width: 901px) {
+  body:not(:has(.admin-layout:not(.hidden))) .section { padding-block: 2.1rem !important; }
+  body:not(:has(.admin-layout:not(.hidden))) .section-head h2 { font-size: 1.65rem !important; }
+  body:not(:has(.admin-layout:not(.hidden))) .section-head p,
+  body:not(:has(.admin-layout:not(.hidden))) .service-desc { font-size: .78rem !important; }
+  body:not(:has(.admin-layout:not(.hidden))) .control-panel { padding: .8rem !important; }
+  body:not(:has(.admin-layout:not(.hidden))) .btn { min-height: 36px !important; padding: .45rem .75rem !important; font-size: .76rem !important; }
+  body:not(:has(.admin-layout:not(.hidden))) .public-services-table th,
+  body:not(:has(.admin-layout:not(.hidden))) .public-services-table td { padding: .55rem .5rem !important; font-size: .72rem !important; }
+}

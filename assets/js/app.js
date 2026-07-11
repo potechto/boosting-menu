@@ -257,8 +257,12 @@
     platforms.forEach(platform => els.platformFilter.append(option(platform, platform)));
 
     els.categoryFilter.innerHTML = '';
+    els.categoryFilter.append(option('recommended', 'Recommended'));
     els.categoryFilter.append(option('all', 'All categories'));
     categories.forEach(category => els.categoryFilter.append(option(category, category)));
+    if (![...els.categoryFilter.options].some(opt => opt.value === els.categoryFilter.value) || els.categoryFilter.value === '') {
+      els.categoryFilter.value = 'recommended';
+    }
 
     refreshMobileSelectMenus();
 
@@ -612,7 +616,7 @@
     return visibleServices().filter(service => {
       const matchesSearch = !search || searchableText(service).includes(search);
       const matchesPlatform = platform === 'all' || service.platform === platform;
-      const matchesCategory = category === 'all' || service.category === category;
+      const matchesCategory = category === 'all' || (category === 'recommended' ? service.recommended === true : service.category === category);
       return matchesSearch && matchesPlatform && matchesCategory;
     });
   }
@@ -1051,7 +1055,7 @@
   }
 
   function clientOrderRow(order) {
-    const reference = order.id || '—';
+    const reference = order.providerId || order.itemId || order.serviceId || (order.orderType === 'digital-product' ? (order.serviceName || order.itemName) : '') || '—';
     const clientName = order.clientName || '—';
     const serviceName = order.serviceName || order.itemName || 'Novalyte order';
     const status = order.status === 'active' ? 'pending' : (order.status || 'pending');
@@ -1081,8 +1085,9 @@
       .filter(order => !['cancelled', 'voided'].includes(String(order.status || '').toLowerCase()))
       .filter(order => {
         if (!needle) return true;
-        return String(order.id || '').toLowerCase().includes(needle)
-          || String(order.clientName || '').toLowerCase().includes(needle);
+        return String(order.providerId || order.itemId || order.serviceId || '').toLowerCase().includes(needle)
+          || String(order.clientName || '').toLowerCase().includes(needle)
+          || String(order.serviceName || order.itemName || '').toLowerCase().includes(needle);
       })
       .filter(order => selectedStatus === 'all' || normalizeClientOrderStatus(order.status) === selectedStatus)
       .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
@@ -1375,7 +1380,7 @@
     els.clearFilters.addEventListener('click', () => {
       els.serviceSearch.value = '';
       els.platformFilter.value = 'all';
-      els.categoryFilter.value = 'all';
+      els.categoryFilter.value = 'recommended';
       resetServicePage();
       renderServices();
       saveClientState();

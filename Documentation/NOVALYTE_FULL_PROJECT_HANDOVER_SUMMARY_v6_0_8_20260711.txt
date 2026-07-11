@@ -107,3 +107,23 @@ V6.0.6 UPDATE
 - Service Client Tag is centered and balanced.
 - Admin Order History column sizing and action button wrapping were corrected.
 - Empty pagination/container artifacts are hidden when unused.
+
+V6.0.8 COMPACT DESKTOP PASS
+- Reduced desktop client tracker card heights, typography, filtering controls, and table spacing.
+- Reduced admin Order History summary cards, filters, table typography, status controls, and action buttons.
+- Reworked order actions into a compact two-column arrangement with Void spanning the second row.
+- Reduced Create Service Order, Create Digital Product Order, Edit Service, and related modal form dimensions.
+- Reduced Payment Status and Client Tag widths while keeping both centered.
+- Digital-product selectors now display only the product/platform name; internal dp_* IDs remain stored as record keys but are no longer shown to admins.
+
+
+V6.0.8 UPDATE — 2026-07-11
+- Client order-board ID now displays the selected service/provider ID (for example, 1723), not the generated internal order key.
+- Optional client search now supports service ID, client name, and service name.
+- Added Recommended as the first and default category on the client Services page.
+- Recommended combines correctly with platform filtering, so only recommended services from the selected platform remain visible.
+- Added a compact Recommend toggle column to Admin Services. Changes save immediately and reflect without reloading.
+- Added Recommended service support to the service editor and persistent service data.
+- Rebuilt Admin Order History as a fixed-width desktop table, removing the forced horizontal-scroll layout.
+- Further compressed client order tracking, admin summary cards, status controls, forms, and action buttons while preserving readability.
+- No update-specific README, local-update notes, or duplicate verification documentation added.
