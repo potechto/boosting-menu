@@ -1,0 +1,23 @@
+NOVALYTE FULL PROJECT HANDOVER SUMMARY v6.0.21
+Date: 2026-07-11
+
+BULK SERVICE CATALOG
+- Catalog expanded from 199 to 425 verified provider IDs.
+- Platform totals: Facebook 86, Instagram 47, Telegram 126, TikTok 87, Twitter/X 36, YouTube 43.
+- Red provider-panel View buttons were intentionally ignored.
+- Stale TikTok seed ID 1865 was removed because it was not present in the supplied provider screenshots.
+- Existing local client rates, visibility, archive state, and Recommended state are preserved during seed refresh.
+- New services start as visible, not recommended, and use calculated client rates that remain editable by Admin.
+
+MOBILE ADMIN
+- Added strict one-panel-only rendering for Dashboard, Services, Digital Products, Investments, and Orders.
+- Added resize, orientation, pageshow, and hashchange enforcement.
+- Preserved the Recommended control as the same switch component on mobile.
+
+SHARED DATA LIMITATION
+- Cross-device Admin records require enabled Supabase cloud configuration and a valid cloud Admin session.
+- When cloud-config.js remains disabled or blank, each browser uses separate localStorage and records cannot synchronize between PC and phone.
+- This update does not invent or expose cloud credentials.
+
+NO UNRELATED REMOVALS
+- Orders, investments, digital products, analytics, pricing logic, and client-facing financial privacy were preserved.

@@ -463,7 +463,7 @@
       if (activePanel === 'services') services && services.classList.remove('hidden');
       if (activePanel === 'digital-products') digitalProductsAdmin && digitalProductsAdmin.classList.remove('hidden');
       if (activePanel === 'investments') investments && investments.classList.remove('hidden');
-      if (activePanel === 'orders') orders && orders.classList.remove('hidden');
+      if (activePanel === 'orders') orders && orders.classList.remove('hidden'); enforceAdminPanelIsolation(activePanel);
       navLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === `#${activePanel}`));
       const nextHash = `#${activePanel}`;
       if (window.location.hash !== nextHash) {
@@ -2070,6 +2070,30 @@ function renderStats() {
   }
 
   document.addEventListener('DOMContentLoaded', init);
+/* v6.0.21 mobile admin panel isolation */
+  function enforceAdminPanelIsolation(panel = activePanel || panelFromHash() || 'dashboard') {
+    const ids = ['dashboard', 'services', 'digital-products', 'investments', 'orders'];
+    document.body.dataset.adminPanel = panel;
+    ids.forEach(id => {
+      const section = document.getElementById(id);
+      if (!section) return;
+      section.classList.toggle('hidden', id !== panel);
+      section.hidden = id !== panel;
+      section.setAttribute('aria-hidden', id === panel ? 'false' : 'true');
+    });
+    const stats = document.getElementById('statsGrid');
+    if (stats) {
+      stats.classList.add('hidden');
+      stats.hidden = true;
+      stats.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  window.addEventListener('resize', () => enforceAdminPanelIsolation());
+  window.addEventListener('orientationchange', () => enforceAdminPanelIsolation());
+  window.addEventListener('pageshow', () => enforceAdminPanelIsolation(panelFromHash() || 'dashboard'));
+  window.addEventListener('hashchange', () => enforceAdminPanelIsolation(panelFromHash() || 'dashboard'));
+/* end v6.0.21 mobile admin panel isolation */
 })();
 
 /* v6.0.17 requested-only: prevent the legacy Dashboard cards

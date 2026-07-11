@@ -114,6 +114,27 @@
     return normalized;
   }
 
+/* v6.0.21 seed refresh merge */
+  function mergeVerifiedSeedServices(existingServices, storageKey = KEYS.services) {
+    const current = Array.isArray(existingServices) ? existingServices.map(normalizeService) : [];
+    const seeds = clone(window.NOVALYTE_SEED_SERVICES || []).map(normalizeService);
+    const currentByProvider = new Map(current.map(item => [String(item.providerId || item.id || ''), item]));
+    const merged = seeds.map(seed => {
+      const key = String(seed.providerId || seed.id || '');
+      const old = currentByProvider.get(key);
+      if (!old) return seed;
+      const preserved = {
+        clientRate: old.clientRate,
+        recommended: old.recommended === true,
+        visible: old.visible !== false,
+        archived: old.archived === true
+      };
+      return normalizeService({ ...old, ...seed, ...preserved });
+    });
+    writeJson(storageKey, merged);
+    return merged;
+  }
+/* end v6.0.21 seed refresh merge */
   function getServices() {
     const storageKey = IS_ADMIN_CONTEXT ? KEYS.services : KEYS.publicServices;
     let services = readJson(storageKey, null);
@@ -122,7 +143,7 @@
       if (!IS_ADMIN_CONTEXT) services = publicServicePayload(services);
       writeJson(storageKey, services);
     } else {
-      services = mergeSeedServices(services, storageKey);
+      services = mergeVerifiedSeedServices(services, storageKey);
     }
 
     const normalized = services.map(normalizeService);

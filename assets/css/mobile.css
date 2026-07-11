@@ -2421,3 +2421,16 @@
   }
 }
 /* end v6.0.15 responsive analytics and switch */
+/* v6.0.21 strict mobile admin panel isolation */
+@media (max-width: 820px) {
+  body.admin-dashboard-mode #dashboardView .section { display: none !important; }
+  body.admin-dashboard-mode[data-admin-panel="dashboard"] #dashboard,
+  body.admin-dashboard-mode[data-admin-panel="services"] #services,
+  body.admin-dashboard-mode[data-admin-panel="digital-products"] #digital-products,
+  body.admin-dashboard-mode[data-admin-panel="investments"] #investments,
+  body.admin-dashboard-mode[data-admin-panel="orders"] #orders { display: block !important; }
+  body.admin-dashboard-mode #statsGrid { display: none !important; }
+  #services .recommend-toggle { display: inline-flex !important; }
+  #services .recommend-toggle input { position: absolute !important; opacity: 0 !important; pointer-events: none !important; }
+}
+/* end v6.0.21 strict mobile admin panel isolation */
