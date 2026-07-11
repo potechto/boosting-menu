@@ -1,4 +1,4 @@
--- Novalyte v6.0.0 shared data setup
+-- Novalyte v6.0.5 shared data setup
 -- Run this entire file once in the Supabase SQL Editor.
 -- IMPORTANT: Use only the anon/publishable key in the website. Never expose service_role.
 
@@ -115,6 +115,43 @@ $$;
 
 revoke all on function public.novalyte_lookup_orders(text) from public;
 grant execute on function public.novalyte_lookup_orders(text) to anon, authenticated;
+
+-- Public order board for the client page. Returns only the five fields displayed
+-- in the prepared order list. Internal costs, revenue, contacts, links, and notes
+-- are never returned.
+create or replace function public.novalyte_list_orders()
+returns table (
+  order_id text,
+  client_name text,
+  service_name text,
+  client_charge numeric,
+  status text,
+  created_at text,
+  order_type text
+)
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select
+    coalesce(order_row->>'id', '') as order_id,
+    coalesce(order_row->>'clientName', '') as client_name,
+    coalesce(order_row->>'serviceName', order_row->>'itemName', 'Novalyte order') as service_name,
+    0::numeric as client_charge,
+    coalesce(order_row->>'status', 'pending') as status,
+    coalesce(order_row->>'createdAt', '') as created_at,
+    coalesce(order_row->>'orderType', 'service') as order_type
+  from public.novalyte_shared_state state_row
+  cross join lateral jsonb_array_elements(state_row.payload) as order_row
+  where state_row.key = 'orders'
+    and coalesce(order_row->>'status', 'pending') not in ('cancelled', 'voided')
+  order by coalesce(order_row->>'createdAt', '') desc
+  limit 250;
+$$;
+
+revoke all on function public.novalyte_list_orders() from public;
+grant execute on function public.novalyte_list_orders() to anon, authenticated;
 
 -- AFTER creating the admin user in Authentication > Users, register that user.
 -- Replace the email below, then run this statement separately:

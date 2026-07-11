@@ -4,7 +4,7 @@
   const MESSENGER_URL = 'https://www.facebook.com/messages/t/1240324299157071';
   const CLIENT_STATE_KEY = 'novalyte-client-view-state-v2';
   // v5.3.17: star rating stays, one-time feedback lock is restored after releasing the legacy current feedback.
-  const state = { servicePage: 1, perPage: 10, view: 'home', activeDigitalProductId: null, clientLookupRef: '' };
+  const state = { servicePage: 1, perPage: 10, view: 'home', activeDigitalProductId: null, clientOrders: [] };
 
   const els = {
     homeSection: document.getElementById('home'),
@@ -28,12 +28,10 @@
     homeDigitalProducts: document.getElementById('homeDigitalProducts'),
     clientOrderLookupForm: document.getElementById('clientOrderLookupForm'),
     clientOrderLookup: document.getElementById('clientOrderLookup'),
-    clientOrderLookupBtn: document.getElementById('clientOrderLookupBtn'),
+    clientOrderClearBtn: document.getElementById('clientOrderClearBtn'),
     clientOrderLookupNotice: document.getElementById('clientOrderLookupNotice'),
     clientOrderStatusSelect: document.getElementById('clientOrderStatusSelect'),
     clientOrderResults: document.getElementById('clientOrderResults'),
-    clientOrderResultCard: document.getElementById('clientOrderResultCard'),
-    clientOrderResultTitle: document.getElementById('clientOrderResultTitle'),
     clientOrderResultCount: document.getElementById('clientOrderResultCount'),
     clientOrderResultList: document.getElementById('clientOrderResultList'),
     calcSearch: document.getElementById('calcSearch'),
@@ -1037,99 +1035,102 @@
   }
 
   function clientOrderDate(value) {
-    if (!value) return '';
+    if (!value) return '—';
     const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return '';
-    return date.toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' });
+    if (Number.isNaN(date.getTime())) return '—';
+    return date.toLocaleString('en-PH', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit'
+    });
   }
 
-  function clientOrderCard(order) {
-    const date = clientOrderDate(order.createdAt);
+  function clientOrderRow(order) {
+    const reference = order.id || '—';
+    const clientName = order.clientName || '—';
+    const serviceName = order.serviceName || order.itemName || 'Novalyte order';
+    const status = order.status === 'active' ? 'pending' : (order.status || 'pending');
     return `
-      <article class="client-order-card">
-        <div class="client-order-card-head">
-          <strong>${sanitize(order.clientName || state.clientLookupRef)}</strong>
-          <span class="status-pill ${sanitize(order.status || 'pending')}">${sanitize(clientOrderStatusLabel(order.status))}</span>
-        </div>
-        <p>${sanitize(order.serviceName || 'Novalyte order')}</p>
-        <div class="client-order-card-meta">
-          <span>Client fee</span>
-          <strong>${Store.formatMoney(order.clientCharge || 0)}</strong>
-        </div>
-        ${date ? `<small>${sanitize(date)}</small>` : ''}
-      </article>
+      <tr>
+        <td data-label="ID"><strong>${sanitize(reference)}</strong></td>
+        <td data-label="User / Client Name">${sanitize(clientName)}</td>
+        <td data-label="Service">${sanitize(serviceName)}</td>
+        <td data-label="Date Ordered">${sanitize(clientOrderDate(order.createdAt))}</td>
+        <td data-label="Status"><span class="status-pill ${sanitize(status)}">${sanitize(clientOrderStatusLabel(status))}</span></td>
+      </tr>
     `;
   }
 
-  function clientOrderEmpty(message) {
-    return `<p class="client-order-empty">${sanitize(message)}</p>`;
+  function clientOrderEmptyRow(message) {
+    return `<tr class="client-order-empty-row"><td colspan="5">${sanitize(message)}</td></tr>`;
   }
 
-  function renderClientOrders(orders, message = '', selectedStatus = '') {
-    const safeOrders = Array.isArray(orders) ? orders : [];
-    const normalizedStatus = selectedStatus === 'pending' ? ['active', 'pending'] : [selectedStatus];
-    const filtered = selectedStatus ? safeOrders.filter(order => normalizedStatus.includes(order.status)) : [];
-    const labels = { pending: 'Pending Orders', processing: 'Processing Orders', completed: 'Completed Orders' };
-    const fallback = message || (state.clientLookupRef ? `No ${selectedStatus || ''} orders found for this client name or Reference ID.` : 'Enter your client name or Reference ID and select a status.');
-    if (els.clientOrderResults) els.clientOrderResults.classList.toggle('hidden', !selectedStatus);
-    if (els.clientOrderResultCard) {
-      els.clientOrderResultCard.classList.remove('pending', 'processing', 'completed', 'finished');
-      if (selectedStatus) els.clientOrderResultCard.classList.add(selectedStatus);
-    }
-    if (els.clientOrderResultTitle) els.clientOrderResultTitle.textContent = labels[selectedStatus] || 'Order results';
+  function normalizeClientOrderStatus(status) {
+    return status === 'active' ? 'pending' : String(status || 'pending').toLowerCase();
+  }
+
+  function filterClientOrders(orders) {
+    const needle = els.clientOrderLookup ? els.clientOrderLookup.value.trim().toLowerCase() : '';
+    const selectedStatus = els.clientOrderStatusSelect ? els.clientOrderStatusSelect.value : 'all';
+    return (Array.isArray(orders) ? orders : [])
+      .filter(order => !['cancelled', 'voided'].includes(String(order.status || '').toLowerCase()))
+      .filter(order => {
+        if (!needle) return true;
+        return String(order.id || '').toLowerCase().includes(needle)
+          || String(order.clientName || '').toLowerCase().includes(needle);
+      })
+      .filter(order => selectedStatus === 'all' || normalizeClientOrderStatus(order.status) === selectedStatus)
+      .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+  }
+
+  function renderClientOrders(orders, message = '') {
+    const filtered = filterClientOrders(orders);
     if (els.clientOrderResultCount) els.clientOrderResultCount.textContent = String(filtered.length);
-    if (els.clientOrderResultList) els.clientOrderResultList.innerHTML = filtered.length ? filtered.map(clientOrderCard).join('') : clientOrderEmpty(fallback);
+    if (els.clientOrderResultList) {
+      els.clientOrderResultList.innerHTML = filtered.length
+        ? filtered.map(clientOrderRow).join('')
+        : clientOrderEmptyRow(message || 'No orders match the selected filters.');
+    }
+    if (els.clientOrderLookupNotice) {
+      const searchActive = Boolean(els.clientOrderLookup && els.clientOrderLookup.value.trim());
+      const status = els.clientOrderStatusSelect ? els.clientOrderStatusSelect.value : 'all';
+      els.clientOrderLookupNotice.textContent = searchActive || status !== 'all'
+        ? `${filtered.length} matching order${filtered.length === 1 ? '' : 's'} shown.`
+        : `Showing ${filtered.length} available order${filtered.length === 1 ? '' : 's'}.`;
+    }
   }
 
-  async function lookupClientOrders(event) {
+  async function loadClientOrders(event) {
     if (event) event.preventDefault();
-    if (!els.clientOrderLookup) return;
-    const clientRef = els.clientOrderLookup.value.trim();
-    const selectedStatus = els.clientOrderStatusSelect ? els.clientOrderStatusSelect.value : '';
-    if (!clientRef) {
-      state.clientLookupRef = '';
-      renderClientOrders([], 'Enter your client name or Reference ID first.', selectedStatus);
-      if (els.clientOrderLookupNotice) els.clientOrderLookupNotice.textContent = 'Enter your client name or Reference ID first.';
-      return;
-    }
-    if (!selectedStatus) {
-      renderClientOrders([], 'Select an order status to continue.', '');
-      if (els.clientOrderLookupNotice) els.clientOrderLookupNotice.textContent = 'Select an order status to continue.';
-      return;
-    }
-
-    state.clientLookupRef = clientRef;
-    if (els.clientOrderLookupBtn) {
-      els.clientOrderLookupBtn.disabled = true;
-      els.clientOrderLookupBtn.textContent = 'Checking...';
-    }
-    if (els.clientOrderLookupNotice) els.clientOrderLookupNotice.textContent = 'Checking matching orders...';
-
+    if (els.clientOrderLookupNotice) els.clientOrderLookupNotice.textContent = 'Loading orders...';
     try {
-      const result = Remote && Remote.lookupOrders
-        ? await Remote.lookupOrders(clientRef, Store)
-        : { ok: true, mode: 'local', orders: Store.getOrders().filter(order => { const ref = clientRef.toLowerCase(); return String(order.clientName || '').trim().toLowerCase() === ref || String(order.id || '').trim().toLowerCase() === ref; }) };
+      const result = Remote && Remote.listOrders
+        ? await Remote.listOrders(Store)
+        : { ok: true, mode: 'local', orders: Store.getOrders ? Store.getOrders() : [] };
       if (!result.ok) {
-        renderClientOrders([], 'Order tracking could not connect. Please try again or message Novalyte.');
-        if (els.clientOrderLookupNotice) els.clientOrderLookupNotice.textContent = 'Order tracking could not connect. Please try again or message Novalyte.';
+        state.clientOrders = Store.getOrders ? Store.getOrders() : [];
+        renderClientOrders(state.clientOrders, 'Orders could not be refreshed. Showing available local data.');
         return;
       }
-      const orders = (result.orders || []).filter(order => !['cancelled', 'voided'].includes(order.status));
-      renderClientOrders(orders);
-      if (els.clientOrderLookupNotice) {
-        els.clientOrderLookupNotice.textContent = orders.length
-          ? `${orders.length} matching order${orders.length === 1 ? '' : 's'} found for this exact reference.`
-          : 'No matching order was found. Check the spelling or message Novalyte.';
-      }
+      state.clientOrders = Array.isArray(result.orders) ? result.orders : [];
+      renderClientOrders(state.clientOrders);
     } catch (error) {
-      renderClientOrders([], 'Order tracking could not connect. Please try again or message Novalyte.');
-      if (els.clientOrderLookupNotice) els.clientOrderLookupNotice.textContent = 'Order tracking could not connect. Please try again or message Novalyte.';
-    } finally {
-      if (els.clientOrderLookupBtn) {
-        els.clientOrderLookupBtn.disabled = false;
-        els.clientOrderLookupBtn.textContent = 'Check Orders';
-      }
+      state.clientOrders = Store.getOrders ? Store.getOrders() : [];
+      renderClientOrders(state.clientOrders, 'Orders could not be refreshed. Showing available local data.');
     }
+  }
+
+  function applyClientOrderFilters(event) {
+    if (event) event.preventDefault();
+    renderClientOrders(state.clientOrders || []);
+  }
+
+  function clearClientOrderFilters() {
+    if (els.clientOrderLookup) els.clientOrderLookup.value = '';
+    if (els.clientOrderStatusSelect) els.clientOrderStatusSelect.value = 'all';
+    renderClientOrders(state.clientOrders || []);
   }
 
   function showClientView(view, shouldScroll = true) {
@@ -1434,7 +1435,10 @@
     if (els.reviewText) els.reviewText.addEventListener('input', updateReviewCharCount);
     bindReviewRatingInput();
     if (els.reviewForm) els.reviewForm.addEventListener('submit', submitClientReview);
-    if (els.clientOrderLookupForm) els.clientOrderLookupForm.addEventListener('submit', lookupClientOrders);
+    if (els.clientOrderLookupForm) els.clientOrderLookupForm.addEventListener('submit', applyClientOrderFilters);
+    if (els.clientOrderLookup) els.clientOrderLookup.addEventListener('input', applyClientOrderFilters);
+    if (els.clientOrderStatusSelect) els.clientOrderStatusSelect.addEventListener('change', applyClientOrderFilters);
+    if (els.clientOrderClearBtn) els.clientOrderClearBtn.addEventListener('click', clearClientOrderFilters);
 
 
     if (els.whatWeDoNavBtn) {
@@ -1513,8 +1517,8 @@
     renderHomeMetrics();
     normalizeAndPersistPublicReviews();
     renderReviews();
+    loadClientOrders();
     bindEvents();
-    renderClientOrders([], '', '');
     const initialHash = window.location.hash;
     showClientView(viewFromHash() || saved.view || 'home', false);
     window.addEventListener('hashchange', () => {
@@ -1528,7 +1532,7 @@
       renderServices();
       renderDigitalProducts();
       renderHomeMetrics();
-      if (state.clientLookupRef) lookupClientOrders();
+      loadClientOrders();
     });
     if (Remote && Remote.hydratePublic) {
       Remote.hydratePublic(Store).catch(() => {});

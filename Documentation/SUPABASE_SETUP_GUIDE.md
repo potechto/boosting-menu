@@ -97,3 +97,6 @@ With `enabled: false`, Novalyte keeps its existing localStorage behavior. Local 
 ## Product images
 
 Current image URLs/data continue to work as stored. A dedicated Supabase Storage bucket can be added later for larger product image libraries, but it is not required for the v6.0.0 shared-state patch.
+
+## v6.0.5 public order board update
+Run the latest `NOVALYTE_SUPABASE_SHARED_SYNC.sql` again in the Supabase SQL Editor. This adds the client-safe `novalyte_list_orders()` RPC used by the prepared order table on the client page. It exposes only order ID, client name, service, date/time, and status; it does not return internal rates, revenue, contacts, links, or notes.

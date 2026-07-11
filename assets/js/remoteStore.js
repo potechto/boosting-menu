@@ -297,6 +297,31 @@
       .map(order => normalizeLookupRow(order));
   }
 
+  function localListOrders(Store) {
+    if (!Store || !Store.getOrders) return [];
+    return Store.getOrders()
+      .filter(order => !['voided', 'cancelled'].includes(String(order.status || '').toLowerCase()))
+      .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
+      .map(order => normalizeLookupRow(order));
+  }
+
+  async function listOrders(Store) {
+    if (!isConfigured()) return { ok: true, mode: 'local', orders: localListOrders(Store) };
+    try {
+      const cfg = config();
+      const response = await fetch(`${cleanUrl(cfg.supabaseUrl)}/rest/v1/rpc/novalyte_list_orders`, {
+        method: 'POST',
+        headers: baseHeaders(),
+        body: '{}'
+      });
+      const rows = await parseResponse(response);
+      return { ok: true, mode: 'cloud', orders: Array.isArray(rows) ? rows.map(normalizeLookupRow) : [] };
+    } catch (error) {
+      dispatchStatus({ state: 'error', dataset: 'orders', message: error.message });
+      return { ok: false, reason: 'request-failed', message: error.message, orders: localListOrders(Store) };
+    }
+  }
+
   async function lookupOrders(clientRef, Store) {
     const value = String(clientRef || '').trim();
     if (!value) return { ok: false, reason: 'empty', orders: [] };
@@ -327,6 +352,7 @@
     queueSave,
     hydratePublic,
     hydrateAdmin,
-    lookupOrders
+    lookupOrders,
+    listOrders
   };
 })();

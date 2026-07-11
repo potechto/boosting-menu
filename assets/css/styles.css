@@ -10584,3 +10584,138 @@ body:has(.admin-layout:not(.hidden)) #orders .actions-cell { display:grid !impor
 body:has(.admin-layout:not(.hidden)) #orders .actions-cell .btn { width:100% !important; min-width:82px !important; height:2.7rem !important; min-height:2.7rem !important; padding:.55rem .8rem !important; font-size:.8rem !important; }
 body:has(.admin-layout:not(.hidden)) #orders .actions-cell .btn:last-child:nth-child(3) { grid-column:1 / -1 !important; width:min(100%,120px) !important; justify-self:center !important; }
 @media (max-width:820px) { .client-order-lookup-form { grid-template-columns:1fr !important; } .client-order-submit { width:100% !important; } #orderForm .order-payment-status-field { width:100% !important; } }
+
+/* Novalyte v6.0.5 client order board */
+.client-order-tracker-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.25rem;
+}
+
+.client-order-tracker-heading h2 {
+  margin: 0.3rem 0 0.45rem;
+  font-size: clamp(1.35rem, 2.4vw, 2rem);
+}
+
+.client-order-tracker-heading p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.client-order-summary {
+  display: grid;
+  justify-items: end;
+  min-width: 8rem;
+}
+
+.client-order-summary strong {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.client-order-summary span {
+  margin-top: 0.25rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.client-order-filter-bar {
+  display: grid;
+  grid-template-columns: minmax(280px, 1.45fr) minmax(210px, 0.65fr) auto;
+  gap: 1rem;
+  align-items: end;
+  margin-top: 1.35rem;
+  padding: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 18px;
+  background: rgba(2, 6, 23, 0.38);
+}
+
+.client-order-filter-bar .field {
+  margin: 0;
+}
+
+.client-order-clear {
+  min-height: 3.75rem;
+  white-space: nowrap;
+}
+
+.client-order-filter-bar .client-order-lookup-notice {
+  grid-column: 1 / -1;
+  margin-top: -0.25rem;
+}
+
+.client-order-results {
+  margin-top: 1rem;
+}
+
+.client-order-table-wrap {
+  overflow-x: auto;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 18px;
+  background: rgba(2, 6, 23, 0.5);
+}
+
+.client-order-table {
+  width: 100%;
+  min-width: 880px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.client-order-table th,
+.client-order-table td {
+  padding: 1rem 1.05rem;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.13);
+  overflow-wrap: anywhere;
+}
+
+.client-order-table th {
+  color: #dbeafe;
+  background: rgba(3, 7, 18, 0.72);
+  font-size: 0.76rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.client-order-table th:nth-child(1) { width: 16%; }
+.client-order-table th:nth-child(2) { width: 22%; }
+.client-order-table th:nth-child(3) { width: 30%; }
+.client-order-table th:nth-child(4) { width: 20%; }
+.client-order-table th:nth-child(5) { width: 12%; }
+
+.client-order-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.client-order-table tbody tr:hover {
+  background: rgba(30, 41, 59, 0.34);
+}
+
+.client-order-empty-row td {
+  padding: 2.2rem 1rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+@media (max-width: 820px) {
+  .client-order-tracker-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .client-order-summary {
+    justify-items: start;
+  }
+  .client-order-filter-bar {
+    grid-template-columns: 1fr;
+  }
+  .client-order-clear {
+    width: 100%;
+  }
+}

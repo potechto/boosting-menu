@@ -97,36 +97,51 @@
         </div>
 
         <section class="client-order-tracker" aria-labelledby="clientOrderTrackerTitle">
-          <div class="client-order-tracker-head">
+          <div class="client-order-tracker-heading">
             <div>
               <span class="eyebrow">Track your order</span>
-              <h2 id="clientOrderTrackerTitle">Check your Novalyte order status</h2>
-              <p>Enter the exact client name or reference provided to the admin. Only your client-safe order details will appear.</p>
+              <h2 id="clientOrderTrackerTitle">Novalyte order updates</h2>
+              <p>Browse the current client-safe order list. Use search or status only when you want to narrow the results.</p>
             </div>
-            <form class="client-order-lookup client-order-lookup-form" id="clientOrderLookupForm">
-              <div class="field client-order-search-field">
-                <label for="clientOrderLookup">Client name or Reference ID</label>
-                <input class="input" id="clientOrderLookup" type="text" autocomplete="off" placeholder="Enter exact client name or Reference ID">
-              </div>
-              <div class="field client-order-status-field">
-                <label for="clientOrderStatusSelect">Order status</label>
-                <select class="select" id="clientOrderStatusSelect" required>
-                  <option value="">Select status</option>
-                  <option value="pending">Pending</option>
-                  <option value="processing">Processing</option>
-                  <option value="completed">Completed</option>
-                </select>
-              </div>
-              <button class="btn primary client-order-submit" id="clientOrderLookupBtn" type="submit">Check Orders</button>
-              <small class="client-order-lookup-notice" id="clientOrderLookupNotice" aria-live="polite">Use the same spelling or Reference ID saved by the admin.</small>
-            </form>
+            <div class="client-order-summary" aria-live="polite">
+              <strong id="clientOrderResultCount">0</strong>
+              <span>orders shown</span>
+            </div>
           </div>
 
-          <div class="client-order-results hidden" id="clientOrderResults" aria-live="polite">
-            <article class="client-order-status-column" id="clientOrderResultCard">
-              <header><h3 id="clientOrderResultTitle">Order results</h3><span id="clientOrderResultCount">0</span></header>
-              <div class="client-order-list" id="clientOrderResultList"></div>
-            </article>
+          <form class="client-order-filter-bar" id="clientOrderLookupForm">
+            <div class="field client-order-search-field">
+              <label for="clientOrderLookup">Search client name or Reference ID</label>
+              <input class="input" id="clientOrderLookup" type="search" autocomplete="off" placeholder="Optional search">
+            </div>
+            <div class="field client-order-status-field">
+              <label for="clientOrderStatusSelect">Filter by status</label>
+              <select class="select" id="clientOrderStatusSelect">
+                <option value="all">All orders</option>
+                <option value="pending">Pending</option>
+                <option value="processing">Processing</option>
+                <option value="completed">Completed</option>
+              </select>
+            </div>
+            <button class="btn client-order-clear" id="clientOrderClearBtn" type="button">Clear filters</button>
+            <small class="client-order-lookup-notice" id="clientOrderLookupNotice" aria-live="polite">Showing all available orders.</small>
+          </form>
+
+          <div class="client-order-results" id="clientOrderResults" aria-live="polite">
+            <div class="client-order-table-wrap">
+              <table class="client-order-table">
+                <thead>
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">User / Client Name</th>
+                    <th scope="col">Service</th>
+                    <th scope="col">Date Ordered</th>
+                    <th scope="col">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="clientOrderResultList"></tbody>
+              </table>
+            </div>
           </div>
         </section>
 
