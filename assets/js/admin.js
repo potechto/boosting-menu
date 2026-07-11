@@ -463,7 +463,7 @@
       if (activePanel === 'services') services && services.classList.remove('hidden');
       if (activePanel === 'digital-products') digitalProductsAdmin && digitalProductsAdmin.classList.remove('hidden');
       if (activePanel === 'investments') investments && investments.classList.remove('hidden');
-      if (activePanel === 'orders') orders && orders.classList.remove('hidden'); enforceAdminPanelIsolation(activePanel);
+      if (activePanel === 'orders') orders && orders.classList.remove('hidden'); novalyteApplyStrictAdminPanel(activePanel);
       navLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === `#${activePanel}`));
       const nextHash = `#${activePanel}`;
       if (window.location.hash !== nextHash) {
@@ -1109,54 +1109,69 @@ function renderStats() {
   function renderOrdersTable() {
     const orders = filteredOrders();
     renderAdminOrdersPagination(orders.length);
+
     if (!orders.length) {
-      els.ordersTable.innerHTML = '<tr class="empty-table-row"><td colspan="10"><div class="empty-state">No orders yet.</div></td></tr>';
-      return;
+        els.ordersTable.innerHTML = '<tr class="empty-table-row"><td colspan="10"><div class="empty-state">No orders yet.</div></td></tr>';
+        return;
     }
 
     const start = (orderPage - 1) * orderPageSize;
     const paged = orders.slice(start, start + orderPageSize);
     const ordersWrap = document.querySelector('#orders .orders-table-wrap');
     if (ordersWrap) ordersWrap.scrollLeft = 0;
-    els.ordersTable.innerHTML = paged.map(order => {
-      const status = order.status || 'active';
-      const payment = order.paymentStatus || 'paid';
-      const isClosed = ['voided', 'cancelled'].includes(status);
-      const statusControl = isClosed
-        ? `<span class="status-pill ${status}">${statusLabels[status] || status}</span>`
-        : `<select class="select order-status-inline" data-order-status-select="${sanitize(order.id)}" aria-label="Update order status">${orderStatusOptions(status)}</select>`;
-      const actionButton = status === 'voided'
-        ? `<button class="btn small success" type="button" data-undo-void="${sanitize(order.id)}">Undo Void</button>`
-        : `<button class="btn small warning" type="button" data-void-order="${sanitize(order.id)}">Void</button>`;
-      const orderType = order.orderType === 'digital-product' ? 'Digital product' : 'Boosting service';
-      return `
-        <tr>
-          <td data-label="Date">${sanitize(dateText(order.createdAt))}</td>
-          <td data-label="Client">
-            <strong>${sanitize(order.clientName || 'No client ref')}</strong><br>
-            <span class="service-desc">${sanitize(order.clientContact || 'No contact')}</span>
-          </td>
-          <td data-label="Service / Product">
-            <strong>${sanitize(order.serviceName)}</strong><br>
-            <span class="service-desc">${sanitize(order.providerId || order.itemId || '')} · ${sanitize(order.platform || orderType)}</span>
-          </td>
-          <td data-label="Qty">${Store.formatNumber(order.quantity)}</td>
-          <td data-label="Provider">${Store.formatMoney(order.providerCharge)}</td>
-          <td data-label="Client Fee"><strong>${Store.formatMoney(order.clientCharge)}</strong></td>
-          <td data-label="Revenue"><strong>${Store.formatMoney(order.revenue)}</strong></td>
-          <td data-label="Status">${statusControl}</td>
-          <td data-label="Payment"><span class="status-pill payment-${payment}">${paymentLabels[payment] || payment}</span></td>
-          <td data-label="Actions"><div class="actions-cell">
-            <button class="btn small" type="button" data-view-order="${sanitize(order.id)}">View</button>
-            <button class="btn small" type="button" data-edit-order="${sanitize(order.id)}" ${isClosed ? 'disabled' : ''}>Edit</button>
-            ${actionButton}
-          </div></td>
-        </tr>
-      `;
-    }).join('');
-  }
 
-  function renderAll() {
+    els.ordersTable.innerHTML = paged.map(order => {
+        const status = order.status || 'active';
+        const payment = order.paymentStatus || 'paid';
+        const isClosed = ['voided', 'cancelled'].includes(status);
+        const createdAt = order.createdAt ? new Date(order.createdAt) : null;
+        const validDate = createdAt && !Number.isNaN(createdAt.getTime());
+        const dateLine = validDate
+            ? createdAt.toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' })
+            : '-';
+        const timeLine = validDate
+            ? createdAt.toLocaleTimeString('en-PH', { hour: 'numeric', minute: '2-digit' })
+            : '';
+        const safeId = sanitize(order.id || '');
+        const orderType = order.orderType === 'digital-product' ? 'Digital product' : 'Boosting service';
+        const statusControl = isClosed
+            ? `<span class="order-status-pill ${sanitize(status)}">${sanitize(statusLabels[status] || status)}</span>`
+            : `<select class="order-status-select" data-order-status-select="${safeId}" aria-label="Order status">${orderStatusOptions(status)}</select>`;
+        const voidAction = status === 'voided'
+            ? `<button type="button" class="order-action-btn undo" data-undo-void="${safeId}">Undo Void</button>`
+            : `<button type="button" class="order-action-btn void" data-void-order="${safeId}">Void</button>`;
+
+        return `
+            <tr class="order-row ${isClosed ? 'is-closed' : ''}">
+                <td data-label="Date" class="order-date-cell">
+                    <span class="order-date-line">${sanitize(dateLine)}</span>
+                    <span class="order-time-line">${sanitize(timeLine)}</span>
+                </td>
+                <td data-label="Client">
+                    <strong>${sanitize(order.clientName || 'No client ref')}</strong>
+                    <span class="order-cell-subtext">${sanitize(order.clientContact || 'No contact')}</span>
+                </td>
+                <td data-label="Service">
+                    <strong>${sanitize(order.serviceName || 'Novalyte order')}</strong>
+                    <span class="order-cell-subtext">${sanitize(order.providerId || order.itemId || '')} Â· ${sanitize(order.platform || orderType)}</span>
+                </td>
+                <td data-label="Qty">${Store.formatNumber(order.quantity)}</td>
+                <td data-label="Provider">${Store.formatMoney(order.providerCharge)}</td>
+                <td data-label="Client"><strong>${Store.formatMoney(order.clientCharge)}</strong></td>
+                <td data-label="Revenue"><strong>${Store.formatMoney(order.revenue)}</strong></td>
+                <td data-label="Status">${statusControl}</td>
+                <td data-label="Payment"><span class="payment-pill ${sanitize(payment)}">${sanitize(paymentLabels[payment] || payment)}</span></td>
+                <td data-label="Actions" class="orders-actions-cell">
+                    <div class="orders-actions-wrap">
+                        <button type="button" class="order-action-btn" data-view-order="${safeId}">View</button>
+                        <button type="button" class="order-action-btn" data-edit-order="${safeId}" ${isClosed ? 'disabled' : ''}>Edit</button>
+                        ${voidAction}
+                    </div>
+                </td>
+            </tr>`;
+    }).join('');
+}
+function renderAll() {
     Store.getServices();
     fillAdminFilters();
     fillAdminDigitalProductFilters();
@@ -2157,199 +2172,35 @@ window.addEventListener('hashchange', () => {
     queueMicrotask(novalyteHideLegacyDashboardStats);
 });
 /* end v6.0.17 requested-only */
+/* v6.0.24 strict admin panel isolation */
+function novalyteApplyStrictAdminPanel(panel = activePanel || panelFromHash() || 'dashboard') {
+    const allowed = ['dashboard', 'services', 'digital-products', 'investments', 'orders'];
+    const selected = allowed.includes(panel) ? panel : 'dashboard';
+    activePanel = selected;
+    document.body.dataset.adminPanel = selected;
 
-/* v6.0.22 requested-only: normalize Order History dates and actions */
-function novalyteNormalizeOrderHistoryLayout() {
-    const ordersPanel = document.getElementById('orders');
-
-    if (!ordersPanel) {
-        return;
-    }
-
-    const rows = ordersPanel.querySelectorAll('table tbody tr');
-
-    rows.forEach((row) => {
-        const cells = row.querySelectorAll('td');
-
-        if (!cells.length) {
-            return;
-        }
-
-        const dateCell = cells[0];
-        const actionCell = cells[cells.length - 1];
-
-        if (dateCell && dateCell.dataset.dateLayoutReady !== 'true') {
-            const rawDate = String(dateCell.textContent || '')
-                .replace(/\s+/g, ' ')
-                .trim();
-
-            const match = rawDate.match(
-                /^([A-Za-z]{3,9}\s+\d{1,2},\s+\d{4}),?\s+(\d{1,2}:\d{2}\s*[AP]M)$/i
-            );
-
-            if (match) {
-                dateCell.classList.add('order-date-cell');
-                dateCell.innerHTML =
-                    '<span class="order-date-line"></span>' +
-                    '<span class="order-time-line"></span>';
-
-                const dateLine = dateCell.querySelector('.order-date-line');
-                const timeLine = dateCell.querySelector('.order-time-line');
-
-                dateLine.textContent = match[1];
-                timeLine.textContent = match[2];
-            }
-
-            dateCell.dataset.dateLayoutReady = 'true';
-        }
-
-        if (actionCell) {
-            actionCell.classList.add('orders-actions-cell');
-
-            let actionWrap = actionCell.querySelector(
-                ':scope > .orders-actions-wrap'
-            );
-
-            if (!actionWrap) {
-                const actionElements = Array.from(
-                    actionCell.children
-                ).filter((element) => {
-                    return (
-                        element.tagName === 'BUTTON' ||
-                        element.tagName === 'A' ||
-                        element.classList.contains('button')
-                    );
-                });
-
-                if (actionElements.length) {
-                    actionWrap = document.createElement('div');
-                    actionWrap.className = 'orders-actions-wrap';
-
-                    actionElements.forEach((element) => {
-                        actionWrap.appendChild(element);
-                    });
-
-                    actionCell.appendChild(actionWrap);
-                }
-            }
-        }
-    });
-}
-
-function novalyteWatchOrderHistoryLayout() {
-    const ordersPanel = document.getElementById('orders');
-
-    if (!ordersPanel) {
-        return;
-    }
-
-    novalyteNormalizeOrderHistoryLayout();
-
-    if (ordersPanel.dataset.layoutObserverReady === 'true') {
-        return;
-    }
-
-    ordersPanel.dataset.layoutObserverReady = 'true';
-
-    let scheduled = false;
-
-    const observer = new MutationObserver(() => {
-        if (scheduled) {
-            return;
-        }
-
-        scheduled = true;
-
-        requestAnimationFrame(() => {
-            scheduled = false;
-            novalyteNormalizeOrderHistoryLayout();
-        });
+    allowed.forEach(id => {
+        const section = document.getElementById(id);
+        if (!section) return;
+        const active = id === selected;
+        section.hidden = !active;
+        section.classList.toggle('hidden', !active);
+        section.setAttribute('aria-hidden', active ? 'false' : 'true');
+        section.style.setProperty('display', active ? '' : 'none', active ? '' : 'important');
+        if (active) section.style.removeProperty('display');
     });
 
-    observer.observe(ordersPanel, {
-        childList: true,
-        subtree: true
-    });
-}
-
-if (document.readyState === 'loading') {
-    document.addEventListener(
-        'DOMContentLoaded',
-        novalyteWatchOrderHistoryLayout,
-        { once: true }
-    );
-}
-else {
-    novalyteWatchOrderHistoryLayout();
-}
-
-window.addEventListener('hashchange', () => {
-    requestAnimationFrame(novalyteNormalizeOrderHistoryLayout);
-});
-
-window.addEventListener('pageshow', () => {
-    requestAnimationFrame(novalyteNormalizeOrderHistoryLayout);
-});
-/* end v6.0.22 requested-only */
-
-/* v6.0.23 requested-only: identify Undo Void action safely */
-function novalyteMarkUndoVoidActions() {
-    document
-        .querySelectorAll('#orders .orders-actions-wrap button, #orders .orders-actions-wrap a')
-        .forEach((element) => {
-            const label = String(element.textContent || '')
-                .replace(/\s+/g, ' ')
-                .trim()
-                .toLowerCase();
-
-            element.classList.toggle(
-                'undo-void-action',
-                label === 'undo void'
-            );
-        });
-}
-
-function novalyteWatchUndoVoidActions() {
-    const ordersPanel = document.getElementById('orders');
-
-    if (!ordersPanel) {
-        return;
+    const stats = document.getElementById('statsGrid');
+    if (stats) {
+        stats.hidden = true;
+        stats.classList.add('hidden');
+        stats.setAttribute('aria-hidden', 'true');
+        stats.style.setProperty('display', 'none', 'important');
     }
-
-    novalyteMarkUndoVoidActions();
-
-    if (ordersPanel.dataset.undoVoidObserverReady === 'true') {
-        return;
-    }
-
-    ordersPanel.dataset.undoVoidObserverReady = 'true';
-
-    const observer = new MutationObserver(() => {
-        requestAnimationFrame(novalyteMarkUndoVoidActions);
-    });
-
-    observer.observe(ordersPanel, {
-        childList: true,
-        subtree: true
-    });
 }
 
-if (document.readyState === 'loading') {
-    document.addEventListener(
-        'DOMContentLoaded',
-        novalyteWatchUndoVoidActions,
-        { once: true }
-    );
-}
-else {
-    novalyteWatchUndoVoidActions();
-}
-
-window.addEventListener('hashchange', () => {
-    requestAnimationFrame(novalyteMarkUndoVoidActions);
-});
-
-window.addEventListener('pageshow', () => {
-    requestAnimationFrame(novalyteMarkUndoVoidActions);
-});
-/* end v6.0.23 requested-only */
+window.addEventListener('resize', () => novalyteApplyStrictAdminPanel());
+window.addEventListener('orientationchange', () => novalyteApplyStrictAdminPanel());
+window.addEventListener('pageshow', () => novalyteApplyStrictAdminPanel(panelFromHash() || 'dashboard'));
+window.addEventListener('hashchange', () => novalyteApplyStrictAdminPanel(panelFromHash() || 'dashboard'));
+/* end v6.0.24 strict admin panel isolation */

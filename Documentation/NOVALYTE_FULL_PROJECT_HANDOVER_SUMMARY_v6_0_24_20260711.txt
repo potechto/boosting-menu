@@ -60,3 +60,17 @@ V6.0.23 UNDO VOID BUTTON FIX
 3. Kept View, Edit, Void, and Undo Void behavior unchanged.
 4. Preserved Order History data, dates, status, and payments.
 5. Updated Admin CSS and JavaScript cache versions to v6.0.23.
+
+============================================================
+V6.0.24 MOBILE ADMIN REBUILD
+============================================================
+
+1. Replaced the Order History post-render observer workaround with direct row markup.
+2. Date and time now render as separate lines at source.
+3. View/Edit remain side by side; Void and Undo Void occupy a full-width row when needed.
+4. Removed obsolete v6.0.22 and v6.0.23 Order layout observers.
+5. Added strict one-panel-only Admin isolation for Dashboard, Services, Digital Products, Investments, and Orders.
+6. Rebuilt mobile Admin tables into compact readable cards without changing desktop data or actions.
+7. Tightened mobile Dashboard, Services, Digital Products, Investments, and Orders spacing.
+8. Shared desktop/mobile records still require configured Supabase; localStorage remains device-specific.
+9. Updated admin CSS/JS cache versions to v6.0.24.
