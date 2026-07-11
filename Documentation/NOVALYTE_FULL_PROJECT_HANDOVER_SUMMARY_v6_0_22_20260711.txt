@@ -21,3 +21,32 @@ SHARED DATA LIMITATION
 
 NO UNRELATED REMOVALS
 - Orders, investments, digital products, analytics, pricing logic, and client-facing financial privacy were preserved.
+============================================================
+V6.0.22 ORDER HISTORY DATE AND ACTION LAYOUT
+============================================================
+
+Requested-only Admin Orders correction:
+
+1. Formatted the order date into two readable lines:
+   - first line: complete date
+   - second line: complete time
+
+2. Removed date ellipsis and prevented the Date column from
+   hiding the order time.
+
+3. Added a compact responsive action-button grid for View,
+   Edit, Void, and Undo Void.
+
+4. Prevented long button labels such as Undo Void from
+   overflowing their containers.
+
+5. Reduced button padding and font size while preserving all
+   existing actions and confirmation behavior.
+
+6. Preserved order status, payment status, client data,
+   service data, pricing, and totals.
+
+7. Updated Admin CSS and JavaScript cache versions to v6.0.22.
+
+8. No Client page, Services catalog, Investments, Digital
+   Products, or unrelated Admin layout was changed.

@@ -2157,3 +2157,137 @@ window.addEventListener('hashchange', () => {
     queueMicrotask(novalyteHideLegacyDashboardStats);
 });
 /* end v6.0.17 requested-only */
+
+/* v6.0.22 requested-only: normalize Order History dates and actions */
+function novalyteNormalizeOrderHistoryLayout() {
+    const ordersPanel = document.getElementById('orders');
+
+    if (!ordersPanel) {
+        return;
+    }
+
+    const rows = ordersPanel.querySelectorAll('table tbody tr');
+
+    rows.forEach((row) => {
+        const cells = row.querySelectorAll('td');
+
+        if (!cells.length) {
+            return;
+        }
+
+        const dateCell = cells[0];
+        const actionCell = cells[cells.length - 1];
+
+        if (dateCell && dateCell.dataset.dateLayoutReady !== 'true') {
+            const rawDate = String(dateCell.textContent || '')
+                .replace(/\s+/g, ' ')
+                .trim();
+
+            const match = rawDate.match(
+                /^([A-Za-z]{3,9}\s+\d{1,2},\s+\d{4}),?\s+(\d{1,2}:\d{2}\s*[AP]M)$/i
+            );
+
+            if (match) {
+                dateCell.classList.add('order-date-cell');
+                dateCell.innerHTML =
+                    '<span class="order-date-line"></span>' +
+                    '<span class="order-time-line"></span>';
+
+                const dateLine = dateCell.querySelector('.order-date-line');
+                const timeLine = dateCell.querySelector('.order-time-line');
+
+                dateLine.textContent = match[1];
+                timeLine.textContent = match[2];
+            }
+
+            dateCell.dataset.dateLayoutReady = 'true';
+        }
+
+        if (actionCell) {
+            actionCell.classList.add('orders-actions-cell');
+
+            let actionWrap = actionCell.querySelector(
+                ':scope > .orders-actions-wrap'
+            );
+
+            if (!actionWrap) {
+                const actionElements = Array.from(
+                    actionCell.children
+                ).filter((element) => {
+                    return (
+                        element.tagName === 'BUTTON' ||
+                        element.tagName === 'A' ||
+                        element.classList.contains('button')
+                    );
+                });
+
+                if (actionElements.length) {
+                    actionWrap = document.createElement('div');
+                    actionWrap.className = 'orders-actions-wrap';
+
+                    actionElements.forEach((element) => {
+                        actionWrap.appendChild(element);
+                    });
+
+                    actionCell.appendChild(actionWrap);
+                }
+            }
+        }
+    });
+}
+
+function novalyteWatchOrderHistoryLayout() {
+    const ordersPanel = document.getElementById('orders');
+
+    if (!ordersPanel) {
+        return;
+    }
+
+    novalyteNormalizeOrderHistoryLayout();
+
+    if (ordersPanel.dataset.layoutObserverReady === 'true') {
+        return;
+    }
+
+    ordersPanel.dataset.layoutObserverReady = 'true';
+
+    let scheduled = false;
+
+    const observer = new MutationObserver(() => {
+        if (scheduled) {
+            return;
+        }
+
+        scheduled = true;
+
+        requestAnimationFrame(() => {
+            scheduled = false;
+            novalyteNormalizeOrderHistoryLayout();
+        });
+    });
+
+    observer.observe(ordersPanel, {
+        childList: true,
+        subtree: true
+    });
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener(
+        'DOMContentLoaded',
+        novalyteWatchOrderHistoryLayout,
+        { once: true }
+    );
+}
+else {
+    novalyteWatchOrderHistoryLayout();
+}
+
+window.addEventListener('hashchange', () => {
+    requestAnimationFrame(novalyteNormalizeOrderHistoryLayout);
+});
+
+window.addEventListener('pageshow', () => {
+    requestAnimationFrame(novalyteNormalizeOrderHistoryLayout);
+});
+/* end v6.0.22 requested-only */
