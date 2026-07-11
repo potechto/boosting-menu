@@ -12258,9 +12258,165 @@ body #statsGrid {
 }
 /* end v6.0.20 requested-only */
 
+/* v6.0.22 requested-only: Order date and action layout */
+#orders table {
+    table-layout: fixed;
+}
 
+#orders table th:first-child,
+#orders table td:first-child {
+    width: 122px;
+    min-width: 122px;
+    max-width: 122px;
+}
 
+#orders .order-date-cell,
+#orders table tbody td:first-child {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    line-height: 1.25 !important;
+}
 
+#orders .order-date-line,
+#orders .order-time-line {
+    display: block;
+    white-space: nowrap;
+}
+
+#orders .order-date-line {
+    font-weight: 600;
+}
+
+#orders .order-time-line {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 0.82em;
+}
+
+#orders table th:last-child,
+#orders table td:last-child {
+    width: 206px;
+    min-width: 206px;
+}
+
+#orders .orders-actions-cell {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    overflow: visible !important;
+}
+
+#orders .orders-actions-wrap {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(58px, 1fr)) !important;
+    gap: 7px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+}
+
+#orders .orders-actions-wrap button,
+#orders .orders-actions-wrap .button,
+#orders .orders-actions-wrap a {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 38px !important;
+    padding: 7px 8px !important;
+    border-radius: 14px !important;
+    font-size: 0.78rem !important;
+    line-height: 1.1 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: normal !important;
+    text-align: center !important;
+}
+
+#orders .orders-actions-wrap > :only-child {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 1100px) and (min-width: 821px) {
+    #orders table th:first-child,
+    #orders table td:first-child {
+        width: 112px;
+        min-width: 112px;
+        max-width: 112px;
+    }
+
+    #orders table th:last-child,
+    #orders table td:last-child {
+        width: 176px;
+        min-width: 176px;
+    }
+
+    #orders .orders-actions-wrap {
+        grid-template-columns: repeat(2, minmax(52px, 1fr)) !important;
+        gap: 6px !important;
+    }
+
+    #orders .orders-actions-wrap button,
+    #orders .orders-actions-wrap .button,
+    #orders .orders-actions-wrap a {
+        padding: 6px !important;
+        font-size: 0.72rem !important;
+    }
+}
+
+@media (max-width: 820px) {
+    #orders table tbody td:first-child {
+        width: auto !important;
+        min-width: 0 !important;
+        max-width: none !important;
+    }
+
+    #orders .orders-actions-cell {
+        width: 100% !important;
+    }
+
+    #orders .orders-actions-wrap {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+}
+/* end v6.0.22 requested-only */
+
+/* v6.0.23 requested-only: keep Undo Void inside its container */
+#orders .orders-actions-wrap {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+}
+
+#orders .orders-actions-wrap .undo-void-action {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    padding: 7px 8px !important;
+    font-size: 0.72rem !important;
+    line-height: 1.1 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    box-sizing: border-box !important;
+}
+
+#orders table th:last-child,
+#orders table td:last-child {
+    width: 184px !important;
+    min-width: 184px !important;
+}
+
+@media (max-width: 820px) {
+    #orders .orders-actions-wrap {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    #orders .orders-actions-wrap .undo-void-action {
+        grid-column: 1 / -1 !important;
+    }
+}
+/* end v6.0.23 requested-only */
 /* v6.0.24 direct Orders action layout */
 #orders .order-date-cell { white-space: normal !important; }
 #orders .order-date-line,
@@ -12299,136 +12455,30 @@ body #statsGrid {
 }
 #orders .order-action-btn:disabled { opacity: .42 !important; cursor: not-allowed !important; }
 /* end v6.0.24 direct Orders action layout */
-/* v6.0.27 final canonical Orders table layout */
-#orders .orders-table,
-#orders table {
-    width: 100% !important;
-    table-layout: fixed !important;
-    border-collapse: separate !important;
-    border-spacing: 0 !important;
-}
-
-#orders table th,
-#orders table td {
-    vertical-align: middle !important;
-    overflow: visible !important;
-}
-
-#orders table th:nth-child(1),
-#orders table td:nth-child(1) {
-    width: 9% !important;
-}
-
-#orders table th:nth-child(2),
-#orders table td:nth-child(2) {
-    width: 11% !important;
-}
-
-#orders table th:nth-child(3),
-#orders table td:nth-child(3) {
-    width: 22% !important;
-}
-
-#orders table th:nth-child(4),
-#orders table td:nth-child(4) {
-    width: 6% !important;
-    text-align: center !important;
-}
-
-#orders table th:nth-child(5),
-#orders table td:nth-child(5) {
-    width: 8% !important;
-    text-align: center !important;
-}
-
-#orders table th:nth-child(6),
-#orders table td:nth-child(6) {
-    width: 8% !important;
-    text-align: center !important;
-}
-
-#orders table th:nth-child(7),
-#orders table td:nth-child(7) {
-    width: 8% !important;
-    text-align: center !important;
-}
-
-#orders table th:nth-child(8),
-#orders table td:nth-child(8) {
-    width: 10% !important;
-    text-align: center !important;
-    padding-left: 6px !important;
-    padding-right: 6px !important;
-}
-
-#orders table th:nth-child(9),
-#orders table td:nth-child(9) {
-    width: 7% !important;
-    text-align: center !important;
-}
-
-#orders table th:nth-child(10),
-#orders table td:nth-child(10) {
-    width: 11% !important;
-    min-width: 150px !important;
-    text-align: center !important;
-    padding-left: 8px !important;
-    padding-right: 8px !important;
-}
-
-#orders .order-date-cell {
-    white-space: normal !important;
-    overflow: visible !important;
-    text-overflow: clip !important;
-    line-height: 1.2 !important;
-}
-
-#orders .order-date-line,
-#orders .order-time-line {
-    display: block !important;
-    white-space: nowrap !important;
-}
-
-#orders .order-date-line {
-    font-weight: 700 !important;
-}
-
-#orders .order-time-line {
-    margin-top: 4px !important;
-    color: var(--muted) !important;
-    font-size: 0.82rem !important;
-}
-
+/* v6.0.25 requested-only: restore Orders controls and containers */
 #orders .order-status-select {
-    display: block !important;
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
+    display: inline-block !important;
+    width: 118px !important;
+    min-width: 118px !important;
+    max-width: 118px !important;
     min-height: 38px !important;
-    margin: 0 auto !important;
-    padding: 7px 28px 7px 10px !important;
-    border: 1px solid rgba(148, 163, 184, 0.34) !important;
-    border-radius: 12px !important;
-    background: rgba(7, 14, 30, 0.92) !important;
+    padding: 7px 32px 7px 12px !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 14px !important;
+    background-color: rgba(7, 14, 30, 0.92) !important;
     color: var(--text) !important;
     font: inherit !important;
-    font-size: 0.76rem !important;
-    line-height: 1.1 !important;
+    font-size: 0.82rem !important;
+    line-height: 1.2 !important;
     box-sizing: border-box !important;
     cursor: pointer !important;
-    text-overflow: ellipsis !important;
 }
 
 #orders .order-status-select:focus,
 #orders .order-status-select:focus-visible {
-    border-color: rgba(112, 225, 255, 0.84) !important;
-    outline: 2px solid rgba(112, 225, 255, 0.14) !important;
-    outline-offset: 1px !important;
-}
-
-#orders .order-status-select option {
-    color: #ffffff !important;
-    background: #0b1324 !important;
+    border-color: rgba(112, 225, 255, 0.85) !important;
+    outline: 2px solid rgba(112, 225, 255, 0.18) !important;
+    outline-offset: 2px !important;
 }
 
 #orders .order-status-pill,
@@ -12436,15 +12486,11 @@ body #statsGrid {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    width: auto !important;
-    min-width: 64px !important;
-    max-width: 100% !important;
     min-height: 34px !important;
-    margin: 0 auto !important;
-    padding: 6px 10px !important;
-    border: 1px solid rgba(148, 163, 184, 0.34) !important;
+    padding: 6px 11px !important;
+    border: 1px solid var(--border) !important;
     border-radius: 999px !important;
-    background: rgba(7, 14, 30, 0.82) !important;
+    background: rgba(7, 14, 30, 0.78) !important;
     line-height: 1 !important;
     white-space: nowrap !important;
     box-sizing: border-box !important;
@@ -12452,37 +12498,33 @@ body #statsGrid {
 
 #orders .order-status-pill.voided,
 #orders .order-status-pill.cancelled {
-    border-color: rgba(239, 68, 68, 0.52) !important;
+    border-color: rgba(239, 68, 68, 0.55) !important;
     color: #fecaca !important;
 }
 
 #orders .payment-pill.paid {
-    border-color: rgba(16, 185, 129, 0.52) !important;
+    border-color: rgba(16, 185, 129, 0.55) !important;
     color: #a7f3d0 !important;
 }
 
 #orders .payment-pill.partial {
-    border-color: rgba(245, 158, 11, 0.52) !important;
+    border-color: rgba(245, 158, 11, 0.55) !important;
     color: #fde68a !important;
 }
 
 #orders .payment-pill.unpaid {
-    border-color: rgba(239, 68, 68, 0.52) !important;
+    border-color: rgba(239, 68, 68, 0.55) !important;
     color: #fecaca !important;
-}
-
-#orders .orders-actions-cell {
-    overflow: visible !important;
 }
 
 #orders .orders-actions-wrap {
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 7px !important;
-    align-items: center !important;
-    justify-items: stretch !important;
+    gap: 8px !important;
     width: 100% !important;
     min-width: 0 !important;
+    align-items: center !important;
+    justify-items: stretch !important;
 }
 
 #orders .order-action-btn {
@@ -12492,14 +12534,14 @@ body #statsGrid {
     width: 100% !important;
     min-width: 0 !important;
     max-width: none !important;
-    min-height: 36px !important;
-    padding: 7px 8px !important;
-    border: 1px solid rgba(148, 163, 184, 0.34) !important;
-    border-radius: 12px !important;
-    background: rgba(7, 14, 30, 0.82) !important;
+    min-height: 38px !important;
+    padding: 7px 10px !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 14px !important;
+    background: rgba(7, 14, 30, 0.78) !important;
     color: var(--text) !important;
     font: inherit !important;
-    font-size: 0.76rem !important;
+    font-size: 0.78rem !important;
     line-height: 1 !important;
     white-space: nowrap !important;
     box-sizing: border-box !important;
@@ -12509,109 +12551,120 @@ body #statsGrid {
 #orders .order-action-btn.undo {
     grid-column: 1 / -1 !important;
     justify-self: center !important;
-    width: 86px !important;
-    max-width: 86px !important;
+    width: 92px !important;
+    max-width: 92px !important;
 }
 
 #orders .order-action-btn.void {
-    border-color: rgba(245, 158, 11, 0.52) !important;
+    border-color: rgba(245, 158, 11, 0.55) !important;
     color: #fde68a !important;
 }
 
 #orders .order-action-btn.undo {
-    border-color: rgba(16, 185, 129, 0.55) !important;
+    border-color: rgba(16, 185, 129, 0.60) !important;
     color: #a7f3d0 !important;
 }
 
 #orders .order-action-btn:disabled {
-    opacity: 0.40 !important;
+    opacity: 0.42 !important;
     cursor: not-allowed !important;
 }
 
-@media (max-width: 1100px) and (min-width: 821px) {
-    #orders table th:nth-child(3),
-    #orders table td:nth-child(3) {
-        width: 20% !important;
-    }
-
-    #orders table th:nth-child(8),
-    #orders table td:nth-child(8) {
-        width: 11% !important;
-    }
-
-    #orders table th:nth-child(10),
-    #orders table td:nth-child(10) {
-        width: 13% !important;
-        min-width: 140px !important;
-    }
-
-    #orders .order-status-select {
-        font-size: 0.70rem !important;
-        padding-left: 8px !important;
-        padding-right: 24px !important;
-    }
-
-    #orders .order-action-btn {
-        font-size: 0.70rem !important;
-        padding-left: 6px !important;
-        padding-right: 6px !important;
-    }
-}
-
 @media (max-width: 820px) {
-    #orders table,
-    #orders tbody,
-    #orders tr,
-    #orders td {
-        display: block !important;
-        width: 100% !important;
-    }
-
-    #orders thead {
-        display: none !important;
-    }
-
-    #orders tbody tr {
-        margin-bottom: 14px !important;
-        padding: 14px !important;
-        border: 1px solid var(--border) !important;
-        border-radius: 16px !important;
-        background: rgba(9, 17, 35, 0.72) !important;
-    }
-
-    #orders tbody td {
-        display: grid !important;
-        grid-template-columns: 112px minmax(0, 1fr) !important;
-        gap: 10px !important;
-        align-items: center !important;
-        padding: 8px 0 !important;
-        border: 0 !important;
-        text-align: left !important;
-    }
-
-    #orders tbody td::before {
-        content: attr(data-label);
-        color: var(--muted) !important;
-        font-size: 0.72rem !important;
-        font-weight: 700 !important;
-        text-transform: uppercase !important;
-        letter-spacing: 0.04em !important;
-    }
-
     #orders .order-status-select {
         width: 100% !important;
+        min-width: 0 !important;
         max-width: 100% !important;
-        font-size: 0.82rem !important;
-    }
-
-    #orders .orders-actions-wrap {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     }
 
     #orders .order-action-btn.void,
     #orders .order-action-btn.undo {
-        width: 100% !important;
-        max-width: none !important;
+        width: 104px !important;
+        max-width: 104px !important;
     }
 }
-/* end v6.0.27 final canonical Orders table layout */
+/* end v6.0.25 requested-only */
+/* v6.0.26 requested-only: keep Orders status control fully visible */
+#orders table th:nth-child(8),
+#orders table td:nth-child(8) {
+    width: 126px !important;
+    min-width: 126px !important;
+    max-width: 126px !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    overflow: visible !important;
+}
+
+#orders .order-status-select {
+    display: block !important;
+    width: 110px !important;
+    min-width: 110px !important;
+    max-width: 110px !important;
+    min-height: 36px !important;
+    margin: 0 auto !important;
+    padding: 6px 28px 6px 10px !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 12px !important;
+    background-color: rgba(7, 14, 30, 0.96) !important;
+    color: var(--text) !important;
+    font-size: 0.76rem !important;
+    line-height: 1.15 !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+}
+
+#orders .order-status-select option {
+    color: #ffffff !important;
+    background: #0b1324 !important;
+}
+
+#orders .order-status-pill {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: auto !important;
+    min-width: 72px !important;
+    max-width: 108px !important;
+    min-height: 34px !important;
+    margin: 0 auto !important;
+    padding: 6px 10px !important;
+    border-radius: 999px !important;
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+}
+
+@media (max-width: 1100px) and (min-width: 821px) {
+    #orders table th:nth-child(8),
+    #orders table td:nth-child(8) {
+        width: 116px !important;
+        min-width: 116px !important;
+        max-width: 116px !important;
+    }
+
+    #orders .order-status-select {
+        width: 102px !important;
+        min-width: 102px !important;
+        max-width: 102px !important;
+        padding-left: 8px !important;
+        padding-right: 24px !important;
+        font-size: 0.72rem !important;
+    }
+}
+
+@media (max-width: 820px) {
+    #orders table th:nth-child(8),
+    #orders table td:nth-child(8) {
+        width: auto !important;
+        min-width: 0 !important;
+        max-width: none !important;
+    }
+
+    #orders .order-status-select {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        font-size: 0.82rem !important;
+    }
+}
+/* end v6.0.26 requested-only */
