@@ -11415,3 +11415,189 @@ body:has(.admin-layout:not(.hidden)) #digital-products .table-wrap table {
     min-width: 980px !important;
   }
 }
+
+/* v6.0.11 requested-only presentation corrections */
+
+/* Client category filter: use the existing custom select proxy so the menu always opens below the field. */
+#services.service-directory-section .control-panel {
+  overflow: visible !important;
+  position: relative !important;
+  z-index: 120 !important;
+}
+
+#categoryFilter.mobile-enhanced-select {
+  position: absolute !important;
+  left: -9999px !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+#categoryFilter + .mobile-select-proxy {
+  display: block !important;
+  position: relative !important;
+  width: 100% !important;
+  z-index: 160 !important;
+}
+
+#categoryFilter + .mobile-select-proxy .mobile-select-btn {
+  width: 100% !important;
+  min-height: 42px !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 18px !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 10px 12px !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(148, 163, 184, 0.22) !important;
+  color: var(--text) !important;
+  background: rgba(2, 6, 23, 0.82) !important;
+  font: inherit !important;
+  text-align: left !important;
+  cursor: pointer !important;
+}
+
+#categoryFilter + .mobile-select-proxy .mobile-select-btn span {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#categoryFilter + .mobile-select-proxy .mobile-select-btn i {
+  width: 9px !important;
+  height: 9px !important;
+  border-right: 2px solid currentColor !important;
+  border-bottom: 2px solid currentColor !important;
+  transform: rotate(45deg) translateY(-2px) !important;
+  opacity: 0.72 !important;
+}
+
+#categoryFilter + .mobile-select-proxy .mobile-select-list {
+  position: absolute !important;
+  z-index: 5000 !important;
+  top: calc(100% + 6px) !important;
+  bottom: auto !important;
+  left: 0 !important;
+  right: 0 !important;
+  max-height: min(300px, 46vh) !important;
+  overflow-y: auto !important;
+  padding: 6px !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(112, 225, 255, 0.24) !important;
+  background: rgba(2, 6, 23, 0.99) !important;
+  box-shadow: 0 18px 42px rgba(2, 6, 23, 0.62) !important;
+}
+
+#categoryFilter + .mobile-select-proxy .mobile-select-option {
+  display: block !important;
+  width: 100% !important;
+  padding: 9px 10px !important;
+  border: 0 !important;
+  border-radius: 9px !important;
+  color: var(--text) !important;
+  background: transparent !important;
+  font: inherit !important;
+  text-align: left !important;
+  cursor: pointer !important;
+}
+
+#categoryFilter + .mobile-select-proxy .mobile-select-option:hover,
+#categoryFilter + .mobile-select-proxy .mobile-select-option.active {
+  background: rgba(112, 225, 255, 0.12) !important;
+}
+
+/* Admin confirmation: compact dialog instead of a full-width banner. */
+.admin-confirm-modal-card {
+  width: min(360px, calc(100vw - 28px)) !important;
+  max-width: 360px !important;
+  min-height: 0 !important;
+  padding: 18px !important;
+  border-radius: 18px !important;
+}
+
+.admin-confirm-modal-card .modal-head {
+  gap: 12px !important;
+}
+
+.admin-confirm-modal-card .eyebrow {
+  font-size: 0.68rem !important;
+}
+
+.admin-confirm-modal-card h2 {
+  margin: 5px 0 0 !important;
+  font-size: 1.28rem !important;
+  line-height: 1.1 !important;
+}
+
+.admin-confirm-modal-card #adminConfirmMessage {
+  margin-top: 8px !important;
+  font-size: 0.78rem !important;
+  line-height: 1.42 !important;
+}
+
+.admin-confirm-modal-card .modal-x-btn {
+  width: 34px !important;
+  min-width: 34px !important;
+  height: 34px !important;
+  min-height: 34px !important;
+}
+
+.admin-confirm-actions {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  margin-top: 14px !important;
+}
+
+.admin-confirm-actions .btn {
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 38px !important;
+  height: 38px !important;
+  padding: 0.4rem 0.65rem !important;
+  font-size: 0.78rem !important;
+}
+
+/* Admin Services: Recommend is the first column; keep every heading on one line. */
+#services .services-ledger-cols .services-col-recommend { width: 5.5% !important; }
+#services .services-ledger-cols .services-col-name { width: 23% !important; }
+#services .services-ledger-cols .services-col-id { width: 7% !important; }
+#services .services-ledger-cols .services-col-platform { width: 9% !important; }
+#services .services-ledger-cols .services-col-provider-rate { width: 10% !important; }
+#services .services-ledger-cols .services-col-client-rate { width: 10% !important; }
+#services .services-ledger-cols .services-col-revenue { width: 9% !important; }
+#services .services-ledger-cols .services-col-status { width: 8% !important; }
+#services .services-ledger-cols .services-col-actions { width: 18.5% !important; }
+
+body:has(.admin-layout:not(.hidden)) #services .services-ledger-table th {
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+  text-overflow: clip !important;
+  font-size: 0.57rem !important;
+  letter-spacing: 0.01em !important;
+  padding-inline: 5px !important;
+}
+
+body:has(.admin-layout:not(.hidden)) #services .recommend-col,
+body:has(.admin-layout:not(.hidden)) #services .recommend-cell {
+  min-width: 0 !important;
+  width: auto !important;
+}
+
+/* Client home: reduce only the oversized hero copy shown in the screenshot. */
+@media (min-width: 821px) {
+  .client-home-copy h1 {
+    font-size: clamp(2rem, 3.35vw, 3.2rem) !important;
+    line-height: 1.02 !important;
+    letter-spacing: -0.045em !important;
+  }
+
+  .client-home-copy p {
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+  }
+}
+

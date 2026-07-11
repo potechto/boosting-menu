@@ -885,6 +885,7 @@
       const rowClass = [service.archived ? 'is-admin-service-disabled' : '', service.visible === false ? 'is-admin-service-hidden' : ''].filter(Boolean).join(' ');
       return `
         <tr class="${rowClass}">
+          <td data-label="Recommend" class="recommend-cell"><label class="recommend-toggle" title="Show in Recommended"><input type="checkbox" data-recommend-service="${service.id}" ${service.recommended === true ? 'checked' : ''}><span aria-hidden="true"></span></label></td>
           <td data-label="Service">
             <strong>${sanitize(service.name)}</strong><br>
             <span class="service-desc">${sanitize(service.category)} · ${sanitize(service.avgTime || 'Varies')}</span>
@@ -895,7 +896,6 @@
           <td data-label="Client Rate"><strong>${Store.formatMoney(service.clientRate)}</strong> / ${Store.formatNumber(service.rateUnit)}</td>
           <td data-label="Revenue/unit"><strong>${Store.formatMoney(revenue)}</strong></td>
           <td data-label="Status"><span class="status-pill ${statusClass}">${statusText}</span></td>
-          <td data-label="Recommend" class="recommend-cell"><label class="recommend-toggle" title="Show in Recommended"><input type="checkbox" data-recommend-service="${service.id}" ${service.recommended === true ? 'checked' : ''}><span aria-hidden="true"></span></label></td>
           <td data-label="Actions">
             <div class="actions-cell">
               <button class="btn small primary" type="button" data-create-order="${service.id}" ${service.archived ? 'disabled' : ''}>Create Order</button>
