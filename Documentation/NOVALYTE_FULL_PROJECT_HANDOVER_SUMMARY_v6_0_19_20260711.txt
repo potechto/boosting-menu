@@ -155,3 +155,26 @@ Requested-only Admin Services correction:
 
 8. No unrelated Client, Dashboard, Digital Product,
    Investment, Order, pricing, or data logic was changed.
+============================================================
+V6.0.19 PLAIN CLIENT LABELS
+============================================================
+
+Requested-only visual cleanup:
+
+1. Removed the pill/container styling surrounding the
+   "Digital growth solutions" text on the client homepage.
+
+2. Preserved the text and its original location while changing
+   it to a simple plain-text label.
+
+3. Removed the rounded container, border, background, and
+   focus box from the Admin sidebar "Client View" link.
+
+4. Preserved Client View navigation and added a subtle text
+   underline for hover and keyboard focus.
+
+5. Updated both client and Admin stylesheet cache versions to
+   v6.0.19.
+
+6. No other homepage, Admin navigation, service table, data,
+   order, investment, or responsive behavior was changed.

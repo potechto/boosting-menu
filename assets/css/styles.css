@@ -12100,3 +12100,41 @@ body #statsGrid {
     }
 }
 /* end v6.0.18 requested-only */
+
+/* v6.0.19 requested-only: remove client label containers */
+.client-home-copy > .client-home-eyebrow-plain {
+    display: inline-block !important;
+    align-self: flex-start !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 0 14px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+}
+
+.sidebar-nav .client-view-link-plain,
+.sidebar-nav .client-view-link-plain:hover,
+.sidebar-nav .client-view-link-plain:active,
+.sidebar-nav .client-view-link-plain:focus,
+.sidebar-nav .client-view-link-plain:focus-visible {
+    border-color: transparent !important;
+    border-radius: 0 !important;
+    outline: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.sidebar-nav .client-view-link-plain:hover,
+.sidebar-nav .client-view-link-plain:focus-visible {
+    color: var(--text) !important;
+    text-decoration: underline !important;
+    text-decoration-color: rgba(112, 225, 255, 0.7) !important;
+    text-underline-offset: 4px !important;
+}
+/* end v6.0.19 requested-only */
