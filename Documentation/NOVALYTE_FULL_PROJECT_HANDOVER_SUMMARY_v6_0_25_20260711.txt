@@ -74,3 +74,17 @@ V6.0.24 MOBILE ADMIN REBUILD
 7. Tightened mobile Dashboard, Services, Digital Products, Investments, and Orders spacing.
 8. Shared desktop/mobile records still require configured Supabase; localStorage remains device-specific.
 9. Updated admin CSS/JS cache versions to v6.0.24.
+============================================================
+V6.0.25 ORDERS CONTROL STYLE RESTORE
+============================================================
+
+Requested-only Orders visual correction:
+
+1. Restored the bordered rounded container for the status dropdown.
+2. Restored bordered rounded containers for status and payment pills.
+3. Restored bordered rounded containers for View, Edit, Void, and Undo Void.
+4. Kept View and Edit side by side.
+5. Centered Void and Undo Void beneath View/Edit without changing their actions.
+6. Preserved the date/time layout, order data, status logic, payment logic, and mobile panel isolation.
+7. Updated the Admin stylesheet cache version to v6.0.25.
+8. No unrelated Admin or client layout was changed.
