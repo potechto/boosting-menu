@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Novalyte Digital Growth Portal</title>
+  <meta name="description" content="Novalyte digital growth portal for social growth services, digital subscriptions, and Messenger-ready checkout.">
+  <link rel="icon" href="assets/icons/novalyte.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/styles.css?v=6.0.0">
+  <link rel="stylesheet" href="assets/css/mobile.css?v=6.0.0" media="screen and (max-width: 820px)">
+</head>
+<body data-build="v6.0.0">
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="#top" id="homeBrand" aria-label="Novalyte home">
+        <span class="logo-mark brand-logo-frame">
+          <img class="brand-logo-img" src="./Resources/Brand/novalyte.png?v=6.0.0" alt="Novalyte" loading="eager" decoding="async">
+        </span>
+        <span>
+          <span class="brand-title">Novalyte</span>
+          <span class="brand-subtitle">Digital Growth Solutions</span>
+        </span>
+      </a>
+      <button class="mobile-nav-toggle" id="mobileNavToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="primaryNav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav class="nav-actions" id="primaryNav" aria-label="Primary navigation">
+        <a class="btn ghost" href="#home" id="homeNavBtn">Home</a>
+        <a class="btn ghost" href="#what-we-do" id="whatWeDoNavBtn">What We Do</a>
+        <a class="btn ghost" href="#about-novalyte" id="aboutNavBtn">About</a>
+        <a class="btn ghost" href="#digital-products" id="digitalProductsNavBtn">Digital Products</a>
+        <a class="btn ghost" href="#services" id="servicesNavBtn">Services</a>
+        <a class="btn ghost" href="https://www.facebook.com/messages/t/1240324299157071" id="messengerNavLink" target="_blank" rel="noopener">Messenger</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="client-home-section" id="home">
+      <div class="shell client-home-shell">
+        <div class="client-home-hero elevated-card">
+          <div class="client-home-copy">
+            <span class="eyebrow">Digital growth solutions</span>
+            <h1>A cleaner way to browse, prepare, and message your Novalyte order.</h1>
+            <p>Check services, digital subscriptions, and order details in one simple portal before confirming through Messenger.</p>
+            <div class="client-home-actions">
+              <button class="btn primary" type="button" data-client-view="order">Start an Order</button>
+              <button class="btn" type="button" data-client-view="digital-products">View Digital Products</button>
+              <button class="btn" type="button" data-client-view="services">Browse Services</button>
+            </div>
+          </div>
+          <div class="client-home-panel">
+            <div class="home-metric-card">
+              <span>Service catalog</span>
+              <strong id="homeVisibleServices">0</strong>
+              <small>Available services</small>
+            </div>
+            <div class="home-metric-card">
+              <span>Digital products</span>
+              <strong id="homeDigitalProducts">0</strong>
+              <small>Accounts and tools</small>
+            </div>
+            <div class="home-metric-card highlight">
+              <span>Checkout flow</span>
+              <strong>Messenger</strong>
+              <small>Prepared order message</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="client-info-grid">
+          <article class="client-info-card">
+            <span class="info-icon info-icon-boost" aria-hidden="true"></span>
+            <h2>Boosting services</h2>
+            <p>Browse available services by platform and check the client rate before sending an order message.</p>
+            <button class="btn small" type="button" data-client-view="services">Open services</button>
+          </article>
+          <article class="client-info-card">
+            <span class="info-icon info-icon-digital" aria-hidden="true"></span>
+            <h2>Digital products</h2>
+            <p>Selected subscriptions and digital tools for streaming, editing, AI, productivity, and student use.</p>
+            <button class="btn small" type="button" data-client-view="digital-products">Open products</button>
+          </article>
+          <article class="client-info-card">
+            <span class="info-icon info-icon-message" aria-hidden="true">
+              <svg class="messenger-svg" viewBox="0 0 64 64" focusable="false" aria-hidden="true">
+                <path class="messenger-bubble" d="M32 8C18.2 8 7.4 18.1 7.4 31.5c0 7 2.9 13.1 7.7 17.3v7.2c0 1.1 1.3 1.8 2.2 1.1l7.6-4.2c2.3.7 4.7 1.1 7.2 1.1 13.8 0 24.6-10.1 24.6-23.5S45.8 8 32 8Z"/>
+                <path class="messenger-bolt" d="M18.4 36.3 29.5 24l8.2 7.3 10-7.3-11.1 12.3-8.2-7.1-10 7.1Z"/>
+              </svg>
+            </span>
+            <h2>Messenger</h2>
+            <p>For questions, availability, and custom requests, message Novalyte directly on Messenger.</p>
+            <a class="btn small primary" href="https://www.facebook.com/messages/t/1240324299157071" target="_blank" rel="noopener">Open Messenger</a>
+          </article>
+        </div>
+
+        <section class="client-order-tracker" aria-labelledby="clientOrderTrackerTitle">
+          <div class="client-order-tracker-heading">
+            <div>
+              <span class="eyebrow">Track your order</span>
+              <h2 id="clientOrderTrackerTitle">Novalyte order updates</h2>
+              <p>View the live order list from admin. Use search or status only when you want to narrow the results.</p>
+            </div>
+          </div>
+
+          <div class="client-order-count-grid" aria-label="Live order counts">
+            <article class="client-order-count-card pending">
+              <span>Pending</span>
+              <strong id="clientPendingCount">0</strong>
+            </article>
+            <article class="client-order-count-card processing">
+              <span>Processing</span>
+              <strong id="clientProcessingCount">0</strong>
+            </article>
+            <article class="client-order-count-card completed">
+              <span>Completed</span>
+              <strong id="clientCompletedCount">0</strong>
+            </article>
+          </div>
+
+          <form class="client-order-filter-bar" id="clientOrderLookupForm">
+            <div class="field client-order-search-field">
+              <label for="clientOrderLookup">Search service ID or client name</label>
+              <input class="input" id="clientOrderLookup" type="search" autocomplete="off" placeholder="Search 1723 or client name">
+            </div>
+            <div class="field client-order-status-field">
+              <label for="clientOrderStatusSelect">Filter by status</label>
+              <select class="select" id="clientOrderStatusSelect">
+                <option value="all">All orders</option>
+                <option value="pending">Pending</option>
+                <option value="processing">Processing</option>
+                <option value="completed">Completed</option>
+              </select>
+            </div>
+            <button class="btn client-order-clear" id="clientOrderClearBtn" type="button">Clear filters</button>
+            <div class="client-order-summary" aria-live="polite"><span>Orders shown</span><strong id="clientOrderResultCount">0</strong></div>
+            <small class="client-order-lookup-notice" id="clientOrderLookupNotice" aria-live="polite">Showing all available orders.</small>
+          </form>
+
+          <div class="client-order-results" id="clientOrderResults" aria-live="polite">
+            <div class="client-order-table-wrap">
+              <table class="client-order-table">
+                <colgroup>
+                  <col class="client-order-col-id">
+                  <col class="client-order-col-client">
+                  <col class="client-order-col-service">
+                  <col class="client-order-col-date">
+                  <col class="client-order-col-status">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">User / Client Name</th>
+                    <th scope="col">Service</th>
+                    <th scope="col">Date Ordered</th>
+                    <th scope="col">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="clientOrderResultList"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="client-announcement-card" aria-labelledby="clientAnnouncementTitle">
+          <div class="client-announcement-heading">
+            <span class="eyebrow">Important before ordering</span>
+            <h2 id="clientAnnouncementTitle">Please double-check your order details.</h2>
+            <p>Wrong quantities, links, services, or privacy settings can affect delivery and may not qualify for cancellation or refund.</p>
+          </div>
+          <ol class="client-announcement-list">
+            <li>Incorrect quantity, link format, or service selection may delay processing.</li>
+            <li>Invalid or unsupported order details may be cancelled automatically by the system.</li>
+            <li>Once an order has started processing, it can no longer be cancelled or refunded.</li>
+            <li>Correct and complete details help the order run more smoothly.</li>
+            <li>An order may be marked completed even when delivery is incomplete; partial refunds are not guaranteed.</li>
+            <li>In rare cases, an order may be marked completed even when no result is visible. Contact Novalyte immediately so it can be checked.</li>
+            <li>Your profile, page, post, or channel must remain public while the order is processing. Private or restricted targets may freeze, fail, or be cancelled.</li>
+          </ol>
+        </section>
+
+      </div>
+    </section>
+
+    <section class="client-standalone-section hidden" id="what-we-do" aria-labelledby="clientWhatWeDoTitle">
+      <div class="shell client-standalone-shell">
+        <div class="client-direction-section elevated-card">
+          <div class="client-section-heading">
+            <span class="eyebrow">What we do</span>
+            <h1 id="clientWhatWeDoTitle">A cleaner way to order social growth services and digital products.</h1>
+            <p>Novalyte keeps the process simple: browse the menu, prepare details, send a message, and confirm before anything is processed.</p>
+          </div>
+          <div class="client-feature-grid">
+            <article class="client-feature-card">
+              <h3>Social growth services</h3>
+              <p>Organized service options for views, reactions, followers, members, shares, and other platform-based needs.</p>
+            </article>
+            <article class="client-feature-card">
+              <h3>Digital subscriptions</h3>
+              <p>Selected streaming, AI, editing, and student tools with clear client pricing.</p>
+            </article>
+            <article class="client-feature-card">
+              <h3>Order coordination</h3>
+              <p>Order details are prepared in a clear format so the conversation is easier to confirm.</p>
+            </article>
+            <article class="client-feature-card">
+              <h3>Clear service flow</h3>
+              <p>A guided flow from browsing to Messenger confirmation, without unnecessary steps.</p>
+            </article>
+          </div>
+        </div>
+
+        <div class="client-process-section elevated-card" aria-labelledby="clientProcessTitle">
+          <div class="client-section-heading compact-heading">
+            <span class="eyebrow">Simple process</span>
+            <h2 id="clientProcessTitle">Browse, prepare, message, then confirm.</h2>
+            <p>A simple client flow that keeps details clear before processing.</p>
+          </div>
+          <div class="client-process-steps">
+            <article><strong>01</strong><h3>Browse</h3><p>Choose a service or digital product from the available menu.</p></article>
+            <article><strong>02</strong><h3>Prepare</h3><p>Add links, usernames, quantity, or product request details.</p></article>
+            <article><strong>03</strong><h3>Message</h3><p>Send the prepared details through Messenger for review.</p></article>
+            <article><strong>04</strong><h3>Confirm</h3><p>Confirm the final details before the order moves forward.</p></article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="client-standalone-section hidden" id="about-novalyte" aria-labelledby="aboutNovalyteTitle">
+      <div class="shell client-standalone-shell">
+        <div class="client-about-card elevated-card">
+          <span class="eyebrow">About Novalyte</span>
+          <h1 id="aboutNovalyteTitle">Simple, organized, and client-friendly ordering.</h1>
+        </div>
+
+        <div class="client-reviews-section elevated-card" aria-labelledby="clientReviewsTitle">
+          <div class="client-section-heading review-heading">
+            <span class="eyebrow">Customer Feedback</span>
+            <h2 id="clientReviewsTitle">Feedback from our customers</h2>
+          </div>
+          <div class="review-cards-scroll" id="reviewCards" aria-live="polite"></div>
+          <form class="review-form" id="reviewForm">
+            <div class="field review-rating-field">
+              <label id="reviewRatingLabel">Rate Your Experience</label>
+              <div class="review-rating-input" id="reviewRatingControl" role="slider" aria-labelledby="reviewRatingLabel" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0" tabindex="0" data-rating="0">
+                <button class="review-rating-star" type="button" data-star="1" aria-label="Rate 1 star"><span aria-hidden="true">★</span></button>
+                <button class="review-rating-star" type="button" data-star="2" aria-label="Rate 2 stars"><span aria-hidden="true">★</span></button>
+                <button class="review-rating-star" type="button" data-star="3" aria-label="Rate 3 stars"><span aria-hidden="true">★</span></button>
+                <button class="review-rating-star" type="button" data-star="4" aria-label="Rate 4 stars"><span aria-hidden="true">★</span></button>
+                <button class="review-rating-star" type="button" data-star="5" aria-label="Rate 5 stars"><span aria-hidden="true">★</span></button>
+              </div>
+              <input type="hidden" id="reviewRatingValue" value="">
+              <small class="field-hint" id="reviewRatingText">Tap a star to rate</small>
+            </div>
+            <div class="field review-text-field">
+              <label for="reviewText">Share Your Feedback</label>
+              <textarea class="textarea" id="reviewText" maxlength="1000" rows="5" placeholder="Write your feedback for Novalyte. Maximum 1000 characters."></textarea>
+              <small class="field-hint"><span id="reviewCharCount">0</span>/1000 characters</small>
+            </div>
+            <div class="review-form-actions">
+              <button class="btn primary" id="submitReviewBtn" type="submit">Submit Feedback</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="provider-hero hidden" id="order-panel">
+      <div class="shell provider-shell">
+        <div class="provider-title-row provider-title-row-clean">
+          <div>
+            <span class="eyebrow">SMM-style order preview</span>
+            <h1>Choose a service, enter your link, and see your total.</h1>
+            <p>Final client prices are shown clearly before you proceed to Messenger.</p>
+          </div>
+        </div>
+
+        <form class="provider-calculator-card" id="orderForm">
+          <div class="provider-search-group">
+            <div class="provider-searchbar">
+              <span class="search-glyph" aria-hidden="true">⌕</span>
+              <input id="calcSearch" type="search" placeholder="Type service ID, platform, or keyword" autocomplete="off" aria-controls="calcSearchSuggestions" aria-expanded="false">
+            </div>
+            <div class="service-suggestions hidden" id="calcSearchSuggestions" role="listbox" aria-label="Matching services"></div>
+          </div>
+
+          <div class="provider-field">
+            <label for="calcCategory">Category</label>
+            <div class="select-with-platform-icon">
+              <span class="select-platform-icon" id="categoryIcon" aria-hidden="true"></span>
+              <select id="calcCategory" class="mobile-enhanced-select provider-select"></select>
+            </div>
+          </div>
+
+          <div class="provider-field">
+            <label for="calcService">Services</label>
+            <select id="calcService" class="mobile-enhanced-select provider-select service-select"></select>
+          </div>
+
+          <div class="selected-service-strip" id="selectedServiceSummary" aria-live="polite">
+            <span class="summary-placeholder">Select a service to preview ID, rate, min/max, and ETA.</span>
+          </div>
+
+          <div class="provider-field">
+            <label for="calcLink">Link / Username</label>
+            <input class="provider-input" id="calcLink" type="text" placeholder="Paste the post link, profile link, or username">
+          </div>
+
+          <div class="provider-field">
+            <label for="calcQuantity">Quantity</label>
+            <input class="provider-input" id="calcQuantity" type="number" min="0" step="1" placeholder="Enter quantity">
+            <small class="field-hint" id="quantityHint">Min and max will appear after selecting a service.</small>
+          </div>
+
+          <div class="provider-field">
+            <label>Charge</label>
+            <div class="charge-field" id="clientTotal">₱0.00</div>
+            <small class="field-hint" id="chargeHint">Your total will update automatically.</small>
+          </div>
+
+          <div class="provider-order-actions">
+            <button class="new-order-btn" id="proceedOrderBtn" type="button">Proceed Order</button>
+            <button class="copy-link-btn" id="copyOrderBtn" type="button">Copy Details Only</button>
+          </div>
+
+          <details class="message-preview-panel">
+            <summary>View generated order message</summary>
+            <div class="client-message" id="orderMessage">Select a service first.</div>
+          </details>
+
+          <p class="panel-note" id="calcNotice">Choose a service, paste your link, enter quantity, and proceed through Messenger.</p>
+        </form>
+      </div>
+    </section>
+
+    <section class="section digital-products-section hidden" id="digital-products">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Digital Products</span>
+            <h2>Premium accounts and subscriptions</h2>
+            <p>Browse available accounts, tools, and subscriptions with clear client pricing.</p>
+          </div>
+        </div>
+
+        <div class="control-panel directory-controls digital-product-controls">
+          <div class="controls-grid">
+            <div class="field">
+              <label for="digitalProductSearch">Search</label>
+              <input class="input" id="digitalProductSearch" type="search" placeholder="Search Netflix, ChatGPT, Canva, Spotify...">
+            </div>
+            <div class="field">
+              <label for="digitalProductFilter">Category</label>
+              <select class="select mobile-enhanced-select" id="digitalProductFilter"></select>
+            </div>
+            <button class="btn" id="clearDigitalProductFilters" type="button">Clear</button>
+          </div>
+        </div>
+
+        <div class="digital-products-grid" id="digitalProductsGrid"></div>
+        <div class="empty-state hidden" id="emptyDigitalProducts">No digital product found. Try another search/filter.</div>
+      </div>
+    </section>
+
+    <section class="section service-directory-section hidden" id="services">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Service directory</span>
+            <h2>Available Services</h2>
+            <p>Browse available services, check the rate, then prepare your order message.</p>
+          </div>
+        </div>
+
+        <div class="control-panel directory-controls">
+          <div class="controls-grid">
+            <div class="field">
+              <label for="serviceSearch">Search</label>
+              <input class="input" id="serviceSearch" type="search" placeholder="Search Facebook, TikTok, Reactions, service ID...">
+            </div>
+            <div class="field">
+              <label for="platformFilter">Platform</label>
+              <select class="select mobile-enhanced-select" id="platformFilter"></select>
+            </div>
+            <div class="field">
+              <label for="categoryFilter">Category</label>
+              <select class="select mobile-enhanced-select" id="categoryFilter"></select>
+            </div>
+            <button class="btn" id="clearFilters" type="button">Clear</button>
+          </div>
+        </div>
+
+        <div class="table-wrap public-services-table">
+          <table>
+            <colgroup class="service-table-colgroup">
+              <col class="service-col-id">
+              <col class="service-col-platform">
+              <col class="service-col-service">
+              <col class="service-col-rate">
+              <col class="service-col-range">
+              <col class="service-col-eta">
+              <col class="service-col-action">
+            </colgroup>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Platform</th>
+                <th>Service</th>
+                <th>Rate</th>
+                <th>Min / Max</th>
+                <th>ETA</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="servicesGrid"></tbody>
+          </table>
+        </div>
+        <div class="mobile-service-card-list hidden" id="mobileServiceCards" aria-label="Services mobile list"></div>
+        <div class="pagination-bar" id="servicePagination" aria-label="Services pagination"></div>
+        <div class="empty-state hidden" id="emptyServices">No visible service found. Try another search/filter.</div>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" id="digitalProductModal" aria-hidden="true">
+    <div class="modal-card small-modal digital-product-modal-card" role="dialog" aria-modal="true" aria-labelledby="digitalProductModalTitle">
+      <div class="modal-head">
+        <div>
+          <span class="eyebrow" id="digitalProductModalCategory">Digital Product</span>
+          <h2 id="digitalProductModalTitle">Product details</h2>
+        </div>
+        <button class="btn icon-btn" type="button" id="digitalProductModalClose" aria-label="Close digital product details">×</button>
+      </div>
+      <div class="digital-product-modal-body">
+        <img id="digitalProductModalImage" src="" alt="" class="digital-product-modal-image">
+        <strong id="digitalProductModalPrice" class="digital-product-modal-price">₱0.00</strong>
+        <p id="digitalProductModalDescription"></p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn primary" type="button" id="digitalProductModalCheckout">Checkout</button>
+      </div>
+    </div>
+  </div>
+
+
+  <footer class="footer">
+    <div class="shell">
+      Novalyte service menu. Message us on Messenger to confirm availability and final details.
+    </div>
+  </footer>
+
+  <script src="assets/js/cloud-config.js?v=6.0.0"></script>
+  <script src="assets/js/remoteStore.js?v=6.0.0"></script>
+  <script src="assets/js/data.js?v=6.0.0"></script>
+  <script src="assets/js/store.js?v=6.0.0"></script>
+  <script src="assets/js/app.js?v=6.0.0"></script>
+</body>
+</html>
