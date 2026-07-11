@@ -102,3 +102,33 @@ Requested-only Orders correction:
 5. Preserved all status-changing logic, payment data, dates, and actions.
 6. Updated the Admin stylesheet cache version to v6.0.26.
 7. No unrelated layout or data logic was changed.
+
+============================================================
+V6.0.27 FINAL ORDERS TABLE CLEANUP
+============================================================
+
+Requested final Orders layout cleanup:
+
+1. Removed conflicting Orders CSS overrides from v6.0.22,
+   v6.0.23, v6.0.25, and v6.0.26.
+
+2. Installed one canonical desktop Orders table layout.
+
+3. Preserved the date on line one and time on line two.
+
+4. Restored a complete, compact status dropdown with visible
+   border and arrow.
+
+5. Kept status and payment pills centered and contained.
+
+6. Kept View/Edit side by side and centered Void/Undo Void
+   beneath them.
+
+7. Reduced unnecessary Actions spacing and row height.
+
+8. Added a single mobile card layout for Orders.
+
+9. Preserved all order data, status logic, payment logic,
+   totals, and unrelated Admin sections.
+
+10. Updated the Admin stylesheet cache to v6.0.27.
