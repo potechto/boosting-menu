@@ -11617,3 +11617,30 @@ body:has(.admin-layout:not(.hidden)) #services .recommend-toggle input:disabled 
   cursor: not-allowed !important;
   filter: grayscale(0.35);
 }
+
+/* v6.0.13 requested-only: align the three client-home action buttons with the bottom Messenger card. */
+@media (min-width: 821px) {
+  .client-home-copy {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 100% !important;
+  }
+
+  .client-home-actions {
+    margin-top: auto !important;
+    padding-top: 24px !important;
+    align-self: flex-start !important;
+  }
+}
+
+/* v6.0.14 requested-only: hero wording alignment */
+@media (min-width: 821px) {
+    .client-home-copy > h1 {
+        margin-top: 30px !important;
+    }
+
+    .client-home-copy > p {
+        max-width: 780px !important;
+    }
+}
+/* end v6.0.14 requested-only */

@@ -1,0 +1,38 @@
+NOVALYTE FULL PROJECT HANDOVER SUMMARY
+Version: v6.0.13
+Date: 2026-07-11
+
+REQUESTED-ONLY LOCAL LAYOUT UPDATE
+
+Completed change:
+- On the client home hero, the three action buttons (Start an Order, View Digital Products, and Browse Services) are moved to the bottom of the left content column on desktop.
+- Their vertical position now aligns with the bottom Messenger checkout card in the right column.
+- Mobile behavior is unchanged.
+- No client text, cards, navigation, filters, order data, admin page, JavaScript, pricing, or service logic was changed.
+
+DEPLOYMENT STATUS
+- This package applies the change locally only.
+- It does not commit or push to GitHub.
+- Run the read-only terminal audit and complete the visual check before publishing.
+============================================================
+V6.0.14 HERO WORDING AND ALIGNMENT
+============================================================
+
+Requested-only client homepage change:
+
+1. Updated the hero headline to:
+   The easiest way to browse, prepare, and process your
+   Novalyte order.
+
+2. Updated the supporting text to:
+   Check services, digital subscriptions, and order details
+   anytime. Message us for more information.
+
+3. Moved the headline and supporting text slightly lower on
+   desktop.
+
+4. Preserved the three action buttons and the three right-side
+   information cards.
+
+5. No admin layout, data, filters, order tracker, navigation,
+   pricing, or mobile behavior was intentionally changed.
