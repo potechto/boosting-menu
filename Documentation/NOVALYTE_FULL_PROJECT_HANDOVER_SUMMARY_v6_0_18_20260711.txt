@@ -125,3 +125,33 @@ Corrective Admin Dashboard update:
    Investments tab.
 
 6. No Git commit or push was performed by this local fix.
+============================================================
+V6.0.18 SERVICES TABLE ALIGNMENT
+============================================================
+
+Requested-only Admin Services correction:
+
+1. Changed the desktop Services ledger to a fixed table layout
+   so the configured column percentages are followed.
+
+2. Reduced the actual horizontal space occupied by Recommend
+   to only the space needed for its label and 42px switch.
+
+3. Rebalanced the remaining columns without removing or
+   changing any service data or action.
+
+4. Increased the Platform column space and centered the social
+   icon and platform name inside the column.
+
+5. Added separation between Platform and Provider Rate so
+   their contents no longer appear attached.
+
+6. Preserved the existing Recommend switch behavior:
+   - checked means recommended
+   - unchecked means not recommended
+   - disabled services keep the switch locked
+
+7. Updated the Admin stylesheet cache query to v6.0.18.
+
+8. No unrelated Client, Dashboard, Digital Product,
+   Investment, Order, pricing, or data logic was changed.

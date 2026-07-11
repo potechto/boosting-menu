@@ -11984,3 +11984,119 @@ body #statsGrid {
     pointer-events: none !important;
 }
 /* end v6.0.17 requested-only */
+
+/* v6.0.18 requested-only: compact Recommend and center Platform */
+@media (min-width: 821px) {
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-table {
+        width: 100% !important;
+        table-layout: fixed !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-cols .services-col-recommend {
+        width: 5.25% !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-cols .services-col-name {
+        width: 23.75% !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-cols .services-col-id {
+        width: 7% !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-cols .services-col-platform {
+        width: 11% !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-cols .services-col-provider-rate {
+        width: 10% !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-cols .services-col-client-rate {
+        width: 10% !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-cols .services-col-revenue {
+        width: 8.5% !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-cols .services-col-status {
+        width: 7.5% !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-cols .services-col-actions {
+        width: 17% !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-table th,
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-table td {
+        vertical-align: middle !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-table th:first-child,
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-table td.recommend-cell {
+        padding-left: 2px !important;
+        padding-right: 2px !important;
+        text-align: center !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .recommend-cell .recommend-toggle {
+        display: inline-flex !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-table th:nth-child(4),
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-table td[data-label="Platform"] {
+        padding-left: 10px !important;
+        padding-right: 14px !important;
+        text-align: center !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-table
+    td[data-label="Platform"] .platform-pill {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: max-content !important;
+        max-width: 100% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        padding: 0.22rem 0.15rem !important;
+        border: 0 !important;
+        background: transparent !important;
+        gap: 6px !important;
+        white-space: nowrap !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-table
+    td[data-label="Platform"] .platform-icon-wrap {
+        flex: 0 0 auto !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-table
+    td[data-label="Provider Rate"] {
+        padding-left: 12px !important;
+    }
+}
+/* end v6.0.18 requested-only */
