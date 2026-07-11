@@ -102,3 +102,15 @@ Requested-only Orders correction:
 5. Preserved all status-changing logic, payment data, dates, and actions.
 6. Updated the Admin stylesheet cache version to v6.0.26.
 7. No unrelated layout or data logic was changed.
+
+============================================================
+V6.0.28 FIX 1 STATUS DROPDOWN SIZE-ONLY UPDATE
+============================================================
+
+Requested-only Admin Orders adjustment:
+
+1. Reduced only the desktop order status dropdown dimensions.
+2. Preserved the current Orders table layout and column sizes.
+3. Preserved status choices, status logic, payment pills, dates,
+   actions, mobile styling, and all other Admin sections.
+4. Updated the stylesheet cache to v6.0.28-fix1.

@@ -12668,3 +12668,18 @@ body #statsGrid {
     }
 }
 /* end v6.0.26 requested-only */
+/* v6.0.28 status dropdown size only */
+@media (min-width: 821px) {
+    #orders .order-status-inline {
+        width: 8.15rem !important;
+        min-width: 8.15rem !important;
+        max-width: 8.15rem !important;
+        min-height: 2.15rem !important;
+        height: 2.15rem !important;
+        padding: 0.36rem 1.9rem 0.36rem 0.82rem !important;
+        font-size: 0.75rem !important;
+        line-height: 1.05 !important;
+        box-sizing: border-box !important;
+    }
+}
+/* end v6.0.28 status dropdown size only */
