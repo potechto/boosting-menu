@@ -74,3 +74,44 @@ NOTES
 - The backup folder is intentionally retained inside the main project for rollback safety.
 - If GitHub authentication, internet, Node.js, or Python is unavailable, the updater reports the skipped or failed step in the verification report.
 - Supabase cross-device data syncing still requires valid cloud configuration and execution of the included SQL.
+
+
+V6.0.5 UPDATE - 2026-07-11
+- Reworked client order tracker into a proper lookup form.
+- Client must enter exact client name or Reference ID and select Pending, Processing, or Completed before results appear.
+- Replaced all client-facing Finished wording with Completed.
+- Added local lookup support for either client name or exact order/reference ID.
+- Centered Payment Status across the full order form for service and digital-product orders.
+- Corrected Client Tag field alignment in the service editor.
+- Repaired Order History action button sizing and two-column layout.
+- Removed the long empty container/extra space below the Order History table.
+- No update-specific README, local update note, or verification document was added.
+
+
+NOVALYTE v6.0.5 UPDATE
+- Replaced the required client lookup flow with a prepared public order board.
+- Default view lists all non-cancelled and non-voided client-safe orders.
+- Added optional filtering by client name, reference ID, and status.
+- Standardized visible statuses to Pending, Processing, and Completed.
+- Client table columns: ID, User / Client Name, Service, Date Ordered with time, and Status.
+- No client fee, provider cost, revenue, contact details, target links, or internal notes are displayed.
+- Added Supabase novalyte_list_orders RPC for shared PC/mobile public order-board data.
+- Preserved the v6.0.4 admin layout refinements for centered payment status, client tag alignment, action buttons, and empty-container removal.
+- Unified updater now uses a single ZIP, no pause, hidden local server process, automatic Git push, and delayed cleanup.
+
+
+V6.0.6 UPDATE
+- Client order tracker now includes live Pending, Processing, and Completed totals from shared admin order data.
+- Prepared order table remains visible; search and status are optional filters only.
+- Payment Status controls use a compact centered width.
+- Service Client Tag is centered and balanced.
+- Admin Order History column sizing and action button wrapping were corrected.
+- Empty pagination/container artifacts are hidden when unused.
+
+V6.0.7 COMPACT DESKTOP PASS
+- Reduced desktop client tracker card heights, typography, filtering controls, and table spacing.
+- Reduced admin Order History summary cards, filters, table typography, status controls, and action buttons.
+- Reworked order actions into a compact two-column arrangement with Void spanning the second row.
+- Reduced Create Service Order, Create Digital Product Order, Edit Service, and related modal form dimensions.
+- Reduced Payment Status and Client Tag widths while keeping both centered.
+- Digital-product selectors now display only the product/platform name; internal dp_* IDs remain stored as record keys but are no longer shown to admins.

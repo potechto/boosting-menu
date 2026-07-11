@@ -1237,11 +1237,14 @@
     if (!els.orderItemSelect) return;
     els.orderItemSelect.innerHTML = items.map(item => {
       const itemId = item.id;
-      const displayId = normalizedType === 'digital-product' ? item.id : item.providerId;
+      const displayId = normalizedType === 'digital-product' ? '' : item.providerId;
       const statusNote = normalizedType === 'digital-product'
         ? (item.disabled ? ' (Disabled)' : item.visible === false ? ' (Hidden)' : '')
         : (item.archived ? ' (Disabled)' : item.visible === false ? ' (Hidden)' : '');
-      return `<option value="${sanitize(itemId)}" ${itemId === selectedId ? 'selected' : ''}>${sanitize(displayId)} | ${sanitize(item.name)}${sanitize(statusNote)}</option>`;
+      const optionLabel = normalizedType === 'digital-product'
+        ? `${item.name}${statusNote}`
+        : `${displayId} | ${item.name}${statusNote}`;
+      return `<option value="${sanitize(itemId)}" ${itemId === selectedId ? 'selected' : ''}>${sanitize(optionLabel)}</option>`;
     }).join('');
     if (!els.orderItemSelect.value && items[0]) els.orderItemSelect.value = items[0].id;
   }
