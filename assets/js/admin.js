@@ -983,6 +983,8 @@
 
     const start = (orderPage - 1) * orderPageSize;
     const paged = orders.slice(start, start + orderPageSize);
+    const ordersWrap = document.querySelector('#orders .orders-table-wrap');
+    if (ordersWrap) ordersWrap.scrollLeft = 0;
     els.ordersTable.innerHTML = paged.map(order => {
       const status = order.status || 'active';
       const payment = order.paymentStatus || 'paid';

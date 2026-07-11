@@ -119,9 +119,14 @@ grant execute on function public.novalyte_lookup_orders(text) to anon, authentic
 -- Public order board for the client page. Returns only the five fields displayed
 -- in the prepared order list. Internal costs, revenue, contacts, links, and notes
 -- are never returned.
-create or replace function public.novalyte_list_orders()
+drop function if exists public.novalyte_list_orders();
+
+create function public.novalyte_list_orders()
 returns table (
   order_id text,
+  provider_id text,
+  item_id text,
+  service_id text,
   client_name text,
   service_name text,
   client_charge numeric,
@@ -136,6 +141,9 @@ set search_path = public
 as $$
   select
     coalesce(order_row->>'id', '') as order_id,
+    coalesce(order_row->>'providerId', '') as provider_id,
+    coalesce(order_row->>'itemId', '') as item_id,
+    coalesce(order_row->>'serviceId', '') as service_id,
     coalesce(order_row->>'clientName', '') as client_name,
     coalesce(order_row->>'serviceName', order_row->>'itemName', 'Novalyte order') as service_name,
     0::numeric as client_charge,

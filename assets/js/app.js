@@ -202,7 +202,8 @@
     if (!saved || typeof saved !== 'object') return;
     if (els.serviceSearch && saved.serviceSearch) els.serviceSearch.value = saved.serviceSearch;
     if (els.platformFilter && saved.platformFilter && [...els.platformFilter.options].some(opt => opt.value === saved.platformFilter)) els.platformFilter.value = saved.platformFilter;
-    if (els.categoryFilter && saved.categoryFilter && [...els.categoryFilter.options].some(opt => opt.value === saved.categoryFilter)) els.categoryFilter.value = saved.categoryFilter;
+    // Recommended is intentionally the default every time the client site loads.
+    if (els.categoryFilter && [...els.categoryFilter.options].some(opt => opt.value === 'recommended')) els.categoryFilter.value = 'recommended';
     if (els.digitalProductSearch && saved.digitalProductSearch) els.digitalProductSearch.value = saved.digitalProductSearch;
     if (els.digitalProductFilter && saved.digitalProductFilter && [...els.digitalProductFilter.options].some(opt => opt.value === saved.digitalProductFilter)) els.digitalProductFilter.value = saved.digitalProductFilter;
     if (els.calcSearch && saved.calcSearch) els.calcSearch.value = saved.calcSearch;
@@ -1054,8 +1055,22 @@
     });
   }
 
+  function clientOrderServiceId(order) {
+    const direct = order.providerId || order.provider_id || '';
+    if (direct) return String(direct);
+    const internalId = order.itemId || order.item_id || order.serviceId || order.service_id || '';
+    const services = Store.getServices ? Store.getServices() : [];
+    const matched = services.find(service =>
+      String(service.id || '') === String(internalId) ||
+      String(service.name || '').trim().toLowerCase() === String(order.serviceName || order.itemName || '').trim().toLowerCase()
+    );
+    if (matched && matched.providerId) return String(matched.providerId);
+    if (order.orderType === 'digital-product') return String(order.serviceName || order.itemName || 'Digital product');
+    return '—';
+  }
+
   function clientOrderRow(order) {
-    const reference = order.providerId || order.itemId || order.serviceId || (order.orderType === 'digital-product' ? (order.serviceName || order.itemName) : '') || '—';
+    const reference = clientOrderServiceId(order);
     const clientName = order.clientName || '—';
     const serviceName = order.serviceName || order.itemName || 'Novalyte order';
     const status = order.status === 'active' ? 'pending' : (order.status || 'pending');
@@ -1085,7 +1100,7 @@
       .filter(order => !['cancelled', 'voided'].includes(String(order.status || '').toLowerCase()))
       .filter(order => {
         if (!needle) return true;
-        return String(order.providerId || order.itemId || order.serviceId || '').toLowerCase().includes(needle)
+        return clientOrderServiceId(order).toLowerCase().includes(needle)
           || String(order.clientName || '').toLowerCase().includes(needle)
           || String(order.serviceName || order.itemName || '').toLowerCase().includes(needle);
       })
@@ -1530,6 +1545,7 @@
     fillDigitalProductFilters();
     fillCalculatorServices(false);
     restoreClientState(saved);
+    if (els.categoryFilter) els.categoryFilter.value = 'recommended';
     renderCalculator();
     renderServices();
     renderDigitalProducts();

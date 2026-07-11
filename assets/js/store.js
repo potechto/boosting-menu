@@ -282,6 +282,7 @@
         orderType: normalized.orderType || 'service',
         itemId: normalized.itemId || '',
         serviceId: normalized.serviceId || '',
+        providerId: normalized.providerId || '',
         productId: normalized.productId || '',
         serviceName: normalized.serviceName || normalized.itemName || '',
         itemName: normalized.itemName || normalized.serviceName || '',

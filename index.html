@@ -135,13 +135,20 @@
               </select>
             </div>
             <button class="btn client-order-clear" id="clientOrderClearBtn" type="button">Clear filters</button>
-            <div class="client-order-summary" aria-live="polite"><strong id="clientOrderResultCount">0</strong><span>orders shown</span></div>
+            <div class="client-order-summary" aria-live="polite"><span>Orders shown</span><strong id="clientOrderResultCount">0</strong></div>
             <small class="client-order-lookup-notice" id="clientOrderLookupNotice" aria-live="polite">Showing all available orders.</small>
           </form>
 
           <div class="client-order-results" id="clientOrderResults" aria-live="polite">
             <div class="client-order-table-wrap">
               <table class="client-order-table">
+                <colgroup>
+                  <col class="client-order-col-id">
+                  <col class="client-order-col-client">
+                  <col class="client-order-col-service">
+                  <col class="client-order-col-date">
+                  <col class="client-order-col-status">
+                </colgroup>
                 <thead>
                   <tr>
                     <th scope="col">ID</th>

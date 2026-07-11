@@ -11083,3 +11083,166 @@ body:has(.admin-layout:not(.hidden)) #orders .actions-cell .btn:last-child:nth-c
   body:not(:has(.admin-layout:not(.hidden))) .public-services-table th,
   body:not(:has(.admin-layout:not(.hidden))) .public-services-table td { padding: .55rem .5rem !important; font-size: .72rem !important; }
 }
+
+
+/* v6.0.9 corrective layout pass: deterministic defaults and no broken admin scrolling */
+@media (min-width: 901px) {
+  /* Client order tracker: compact, centered summary, stable columns. */
+  body:not(:has(.admin-layout:not(.hidden))) .client-home-shell,
+  body:not(:has(.admin-layout:not(.hidden))) .client-standalone-shell,
+  body:not(:has(.admin-layout:not(.hidden))) .provider-shell {
+    max-width: 1100px !important;
+  }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-tracker {
+    padding: 1rem !important;
+  }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-count-card {
+    min-height: 60px !important;
+    padding: .6rem .85rem !important;
+  }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-count-card strong {
+    font-size: 1.45rem !important;
+  }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-filter-bar {
+    grid-template-columns: minmax(250px, 1.75fr) minmax(165px, .7fr) auto 86px !important;
+    align-items: end !important;
+  }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-summary {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: .18rem !important;
+    min-width: 86px !important;
+    text-align: center !important;
+    line-height: 1 !important;
+  }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-summary span {
+    order: 1;
+    white-space: nowrap;
+    font-size: .62rem !important;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-summary strong {
+    order: 2;
+    font-size: 1.15rem !important;
+  }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-table col.client-order-col-id { width: 11%; }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-table col.client-order-col-client { width: 21%; }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-table col.client-order-col-service { width: 34%; }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-table col.client-order-col-date { width: 23%; }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-table col.client-order-col-status { width: 11%; }
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-table th,
+  body:not(:has(.admin-layout:not(.hidden))) .client-order-table td {
+    padding: .58rem .65rem !important;
+    font-size: .75rem !important;
+  }
+
+  /* Admin Order History: fixed ledger, never horizontally scrollable on desktop. */
+  body:has(.admin-layout:not(.hidden)) #orders .orders-table-wrap,
+  body:has(.admin-layout:not(.hidden)) #orders .table-wrap.responsive-table {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    scrollbar-width: none !important;
+  }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-table-wrap::-webkit-scrollbar {
+    display: none !important;
+  }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    table-layout: fixed !important;
+  }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-date { width: 9%; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-client { width: 11%; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-service { width: 20%; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-qty { width: 5%; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-provider { width: 8%; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-client-fee { width: 8%; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-revenue { width: 7%; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-status { width: 10%; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-payment { width: 7%; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-actions { width: 15%; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table th,
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table td {
+    padding: .58rem .42rem !important;
+    font-size: .69rem !important;
+    line-height: 1.25 !important;
+    vertical-align: middle !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+  }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table th {
+    white-space: nowrap !important;
+    font-size: .63rem !important;
+    letter-spacing: .03em;
+  }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table td:nth-child(2),
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table td:nth-child(3) {
+    white-space: normal !important;
+  }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table td:nth-child(1),
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table td:nth-child(4),
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table td:nth-child(5),
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table td:nth-child(6),
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table td:nth-child(7),
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table td:nth-child(9) {
+    white-space: nowrap !important;
+  }
+  body:has(.admin-layout:not(.hidden)) #orders .order-status-inline {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 30px !important;
+    min-height: 30px !important;
+    padding: .2rem 1.15rem .2rem .42rem !important;
+    font-size: .65rem !important;
+  }
+  body:has(.admin-layout:not(.hidden)) #orders .actions-cell {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: .25rem !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+  body:has(.admin-layout:not(.hidden)) #orders .actions-cell .btn {
+    flex: 1 1 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+    height: 28px !important;
+    min-height: 28px !important;
+    padding: .2rem .28rem !important;
+    border-radius: 8px !important;
+    font-size: .61rem !important;
+    white-space: nowrap !important;
+  }
+  body:has(.admin-layout:not(.hidden)) #orders .actions-cell .btn:nth-child(3) {
+    grid-column: auto !important;
+  }
+
+  /* Service table remains compact without damaging the new Recommend column. */
+  body:has(.admin-layout:not(.hidden)) #services .recommend-col,
+  body:has(.admin-layout:not(.hidden)) #services .recommend-cell {
+    width: 6.5% !important;
+    min-width: 56px !important;
+    white-space: nowrap !important;
+  }
+}
+
+@media (max-width: 1100px) and (min-width: 901px) {
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table th,
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table td {
+    font-size: .62rem !important;
+    padding-inline: .28rem !important;
+  }
+  body:has(.admin-layout:not(.hidden)) #orders .actions-cell .btn {
+    font-size: .56rem !important;
+    padding-inline: .18rem !important;
+  }
+}

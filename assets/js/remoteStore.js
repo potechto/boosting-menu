@@ -278,6 +278,9 @@
   function normalizeLookupRow(row) {
     return {
       id: row.order_id || row.id || '',
+      providerId: row.provider_id || row.providerId || '',
+      itemId: row.item_id || row.itemId || '',
+      serviceId: row.service_id || row.serviceId || '',
       clientName: row.client_name || row.clientName || '',
       serviceName: row.service_name || row.serviceName || '',
       clientCharge: Number(row.client_charge ?? row.clientCharge ?? 0) || 0,
