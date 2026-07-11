@@ -50,3 +50,13 @@ Requested-only Admin Orders correction:
 
 8. No Client page, Services catalog, Investments, Digital
    Products, or unrelated Admin layout was changed.
+
+============================================================
+V6.0.23 UNDO VOID BUTTON FIX
+============================================================
+
+1. Made Undo Void occupy a complete row beneath View/Edit.
+2. Prevented Undo Void text from overflowing its container.
+3. Kept View, Edit, Void, and Undo Void behavior unchanged.
+4. Preserved Order History data, dates, status, and payments.
+5. Updated Admin CSS and JavaScript cache versions to v6.0.23.

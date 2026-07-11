@@ -2291,3 +2291,65 @@ window.addEventListener('pageshow', () => {
     requestAnimationFrame(novalyteNormalizeOrderHistoryLayout);
 });
 /* end v6.0.22 requested-only */
+
+/* v6.0.23 requested-only: identify Undo Void action safely */
+function novalyteMarkUndoVoidActions() {
+    document
+        .querySelectorAll('#orders .orders-actions-wrap button, #orders .orders-actions-wrap a')
+        .forEach((element) => {
+            const label = String(element.textContent || '')
+                .replace(/\s+/g, ' ')
+                .trim()
+                .toLowerCase();
+
+            element.classList.toggle(
+                'undo-void-action',
+                label === 'undo void'
+            );
+        });
+}
+
+function novalyteWatchUndoVoidActions() {
+    const ordersPanel = document.getElementById('orders');
+
+    if (!ordersPanel) {
+        return;
+    }
+
+    novalyteMarkUndoVoidActions();
+
+    if (ordersPanel.dataset.undoVoidObserverReady === 'true') {
+        return;
+    }
+
+    ordersPanel.dataset.undoVoidObserverReady = 'true';
+
+    const observer = new MutationObserver(() => {
+        requestAnimationFrame(novalyteMarkUndoVoidActions);
+    });
+
+    observer.observe(ordersPanel, {
+        childList: true,
+        subtree: true
+    });
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener(
+        'DOMContentLoaded',
+        novalyteWatchUndoVoidActions,
+        { once: true }
+    );
+}
+else {
+    novalyteWatchUndoVoidActions();
+}
+
+window.addEventListener('hashchange', () => {
+    requestAnimationFrame(novalyteMarkUndoVoidActions);
+});
+
+window.addEventListener('pageshow', () => {
+    requestAnimationFrame(novalyteMarkUndoVoidActions);
+});
+/* end v6.0.23 requested-only */
