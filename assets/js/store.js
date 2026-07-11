@@ -1,9 +1,14 @@
 (function () {
+  const IS_ADMIN_CONTEXT = window.NOVALYTE_IS_ADMIN === true;
+
   const KEYS = {
     services: 'novalyte.services.v4',
+    publicServices: 'novalyte.publicServices.v6',
     digitalProducts: 'novalyte.digitalProducts.v1',
+    publicDigitalProducts: 'novalyte.publicDigitalProducts.v6',
     deletedDigitalProductIds: 'novalyte.deletedDigitalProductIds.v1',
     orders: 'novalyte.orders.v1',
+    publicOrders: 'novalyte.publicOrders.v6',
     invest: 'novalyte.totalInvest.v1',
     investments: 'novalyte.investments.v1',
     financeEntries: 'novalyte.financeEntries.v1',
@@ -43,6 +48,13 @@
     return JSON.parse(JSON.stringify(value));
   }
 
+  function syncRemote(dataset, payload, options = {}) {
+    if (options && options.remote === false) return;
+    const Remote = window.NovalyteRemote;
+    if (!Remote || !Remote.queueSave || !Remote.hasAdminSession || !Remote.hasAdminSession()) return;
+    Remote.queueSave(dataset, clone(payload));
+  }
+
   function normalizeRating(value, fallback = 5) {
     const numeric = Number(value);
     const base = Number.isFinite(numeric) ? numeric : fallback;
@@ -63,7 +75,14 @@
     };
   }
 
-  function mergeSeedServices(services) {
+  function publicServicePayload(services) {
+    return (Array.isArray(services) ? services : []).map(service => {
+      const { providerRate, ...clientSafe } = normalizeService(service);
+      return clientSafe;
+    });
+  }
+
+  function mergeSeedServices(services, storageKey = KEYS.services) {
     const deprecatedServiceIds = new Set(['svc_telegram_members_sample', 'svc_youtube_views_sample']);
     const rawServices = Array.isArray(services) ? services.map(normalizeService) : [];
     const normalized = rawServices.filter(service => {
@@ -91,29 +110,43 @@
       }
     });
 
-    if (changed) writeJson(KEYS.services, normalized);
+    if (changed) writeJson(storageKey, normalized);
     return normalized;
   }
 
   function getServices() {
-    let services = readJson(KEYS.services, null);
+    const storageKey = IS_ADMIN_CONTEXT ? KEYS.services : KEYS.publicServices;
+    let services = readJson(storageKey, null);
     if (!Array.isArray(services) || services.length === 0) {
       services = clone(window.NOVALYTE_SEED_SERVICES || []).map(normalizeService);
-      writeJson(KEYS.services, services);
+      if (!IS_ADMIN_CONTEXT) services = publicServicePayload(services);
+      writeJson(storageKey, services);
     } else {
-      services = mergeSeedServices(services);
+      services = mergeSeedServices(services, storageKey);
     }
-    return services.map(normalizeService);
+
+    const normalized = services.map(normalizeService);
+    if (IS_ADMIN_CONTEXT) writeJson(KEYS.publicServices, publicServicePayload(normalized));
+    return normalized;
   }
 
-  function saveServices(services) {
-    writeJson(KEYS.services, services.map(normalizeService));
+  function saveServices(services, options = {}) {
+    const normalized = services.map(normalizeService);
+    const publicServices = publicServicePayload(normalized);
+    if (IS_ADMIN_CONTEXT) {
+      writeJson(KEYS.services, normalized);
+      writeJson(KEYS.publicServices, publicServices);
+      syncRemote('services', normalized, options);
+      syncRemote('public_services', publicServices, options);
+      return;
+    }
+    writeJson(KEYS.publicServices, publicServices);
   }
 
   function resetServices() {
     const services = clone(window.NOVALYTE_SEED_SERVICES || []).map(normalizeService);
     saveServices(services);
-    return services;
+    return IS_ADMIN_CONTEXT ? services : publicServicePayload(services);
   }
 
   function normalizeDigitalProduct(product) {
@@ -133,7 +166,14 @@
     };
   }
 
-  function mergeSeedDigitalProducts(products) {
+  function publicDigitalProductPayload(products) {
+    return (Array.isArray(products) ? products : []).map(product => {
+      const { providerPrice, ...clientSafe } = normalizeDigitalProduct(product);
+      return clientSafe;
+    });
+  }
+
+  function mergeSeedDigitalProducts(products, storageKey = KEYS.digitalProducts) {
     const normalized = Array.isArray(products) ? products.map(normalizeDigitalProduct) : [];
     const deletedIds = new Set(readJson(KEYS.deletedDigitalProductIds, []));
     const seeds = clone(window.NOVALYTE_DIGITAL_PRODUCTS || []).map(normalizeDigitalProduct).filter(product => !deletedIds.has(product.id));
@@ -148,23 +188,37 @@
       }
     });
 
-    if (changed) writeJson(KEYS.digitalProducts, normalized);
+    if (changed) writeJson(storageKey, normalized);
     return normalized;
   }
 
   function getDigitalProducts() {
-    let products = readJson(KEYS.digitalProducts, null);
+    const storageKey = IS_ADMIN_CONTEXT ? KEYS.digitalProducts : KEYS.publicDigitalProducts;
+    let products = readJson(storageKey, null);
     if (!Array.isArray(products) || products.length === 0) {
       products = clone(window.NOVALYTE_DIGITAL_PRODUCTS || []).map(normalizeDigitalProduct);
-      writeJson(KEYS.digitalProducts, products);
+      if (!IS_ADMIN_CONTEXT) products = publicDigitalProductPayload(products);
+      writeJson(storageKey, products);
     } else {
-      products = mergeSeedDigitalProducts(products);
+      products = mergeSeedDigitalProducts(products, storageKey);
     }
-    return products.map(normalizeDigitalProduct);
+
+    const normalized = products.map(normalizeDigitalProduct);
+    if (IS_ADMIN_CONTEXT) writeJson(KEYS.publicDigitalProducts, publicDigitalProductPayload(normalized));
+    return normalized;
   }
 
-  function saveDigitalProducts(products) {
-    writeJson(KEYS.digitalProducts, Array.isArray(products) ? products.map(normalizeDigitalProduct) : []);
+  function saveDigitalProducts(products, options = {}) {
+    const normalized = Array.isArray(products) ? products.map(normalizeDigitalProduct) : [];
+    const publicProducts = publicDigitalProductPayload(normalized);
+    if (IS_ADMIN_CONTEXT) {
+      writeJson(KEYS.digitalProducts, normalized);
+      writeJson(KEYS.publicDigitalProducts, publicProducts);
+      syncRemote('digital_products', normalized, options);
+      syncRemote('public_digital_products', publicProducts, options);
+      return;
+    }
+    writeJson(KEYS.publicDigitalProducts, publicProducts);
   }
 
   function getDeletedDigitalProductIds() {
@@ -197,25 +251,66 @@
   function normalizeOrder(order) {
     const status = order.status || 'active';
     const paymentStatus = order.paymentStatus || 'paid';
+    const orderType = order.orderType || (order.productId ? 'digital-product' : 'service');
+    const itemId = order.itemId || order.serviceId || order.productId || '';
     return {
+      clientName: '',
       clientContact: '',
       target: '',
       notes: '',
+      deliveryDetails: '',
       voidReason: '',
       cancelledReason: '',
       paymentStatus,
       status,
-      ...order
+      orderType,
+      itemId,
+      ...order,
+      orderType,
+      itemId
     };
   }
 
-  function getOrders() {
-    const orders = readJson(KEYS.orders, []);
-    return Array.isArray(orders) ? orders.map(normalizeOrder) : [];
+  function publicOrderPayload(orders) {
+    return (Array.isArray(orders) ? orders : []).map(order => {
+      const normalized = normalizeOrder(order);
+      return {
+        id: normalized.id || '',
+        createdAt: normalized.createdAt || '',
+        updatedAt: normalized.updatedAt || '',
+        clientName: normalized.clientName || '',
+        orderType: normalized.orderType || 'service',
+        itemId: normalized.itemId || '',
+        serviceId: normalized.serviceId || '',
+        productId: normalized.productId || '',
+        serviceName: normalized.serviceName || normalized.itemName || '',
+        itemName: normalized.itemName || normalized.serviceName || '',
+        platform: normalized.platform || '',
+        clientCharge: Number(normalized.clientCharge) || 0,
+        status: normalized.status || 'active',
+        paymentStatus: normalized.paymentStatus || 'paid'
+      };
+    });
   }
 
-  function saveOrders(orders) {
-    writeJson(KEYS.orders, orders.map(normalizeOrder));
+  function getOrders() {
+    const storageKey = IS_ADMIN_CONTEXT ? KEYS.orders : KEYS.publicOrders;
+    const orders = readJson(storageKey, []);
+    const normalized = Array.isArray(orders) ? orders.map(normalizeOrder) : [];
+    if (IS_ADMIN_CONTEXT) writeJson(KEYS.publicOrders, publicOrderPayload(normalized));
+    return normalized;
+  }
+
+  function saveOrders(orders, options = {}) {
+    const normalized = orders.map(normalizeOrder);
+    const publicOrders = publicOrderPayload(normalized);
+    if (IS_ADMIN_CONTEXT) {
+      writeJson(KEYS.orders, normalized);
+      writeJson(KEYS.publicOrders, publicOrders);
+      syncRemote('orders', normalized, options);
+      return;
+    }
+    writeJson(KEYS.publicOrders, publicOrders);
   }
 
   function getInvestments() {
@@ -239,10 +334,12 @@
     return entries;
   }
 
-  function saveInvestments(entries) {
-    writeJson(KEYS.investments, entries);
-    const total = entries.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+  function saveInvestments(entries, options = {}) {
+    const normalized = Array.isArray(entries) ? entries : [];
+    writeJson(KEYS.investments, normalized);
+    const total = normalized.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
     localStorage.setItem(KEYS.invest, String(total));
+    syncRemote('investments', normalized, options);
   }
 
   function addInvestment(amount, note = '') {
@@ -309,8 +406,10 @@
     return [...capital, ...finance].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }
 
-  function saveFinanceEntries(entries) {
-    writeJson(KEYS.financeEntries, Array.isArray(entries) ? entries.map(normalizeFinanceEntry) : []);
+  function saveFinanceEntries(entries, options = {}) {
+    const normalized = Array.isArray(entries) ? entries.map(normalizeFinanceEntry) : [];
+    writeJson(KEYS.financeEntries, normalized);
+    syncRemote('finance_entries', normalized, options);
   }
 
   function addFinanceEntry(type, amount, person = '', note = '') {
@@ -354,8 +453,10 @@
     return Array.isArray(members) ? members.map(normalizeTeamMember) : [];
   }
 
-  function saveTeamMembers(members) {
-    writeJson(KEYS.teamMembers, Array.isArray(members) ? members.map(normalizeTeamMember) : []);
+  function saveTeamMembers(members, options = {}) {
+    const normalized = Array.isArray(members) ? members.map(normalizeTeamMember) : [];
+    writeJson(KEYS.teamMembers, normalized);
+    syncRemote('team_members', normalized, options);
   }
 
   function addTeamMember(name, mode, amount, frequency) {
@@ -548,8 +649,10 @@
     return reviews;
   }
 
-  function saveReviews(reviews) {
-    writeJson(KEYS.reviews, normalizeReviewList(reviews, true));
+  function saveReviews(reviews, options = {}) {
+    const normalized = normalizeReviewList(reviews, true);
+    writeJson(KEYS.reviews, normalized);
+    syncRemote('reviews', normalized, options);
   }
 
   function ensureClientReviewToken() {
@@ -663,6 +766,41 @@
     return addReview('', message, rating);
   }
 
+  function applyRemoteDataset(dataset, payload) {
+    if (!Array.isArray(payload)) return false;
+    switch (dataset) {
+      case 'services':
+        saveServices(payload, { remote: false });
+        return true;
+      case 'digital_products': {
+        const incomingIds = new Set(payload.map(item => item && item.id).filter(Boolean));
+        const missingSeedIds = (window.NOVALYTE_DIGITAL_PRODUCTS || [])
+          .map(item => item.id)
+          .filter(id => id && !incomingIds.has(id));
+        saveDeletedDigitalProductIds(missingSeedIds);
+        saveDigitalProducts(payload, { remote: false });
+        return true;
+      }
+      case 'orders':
+        saveOrders(payload, { remote: false });
+        return true;
+      case 'investments':
+        saveInvestments(payload, { remote: false });
+        return true;
+      case 'finance_entries':
+        saveFinanceEntries(payload, { remote: false });
+        return true;
+      case 'team_members':
+        saveTeamMembers(payload, { remote: false });
+        return true;
+      case 'reviews':
+        saveReviews(payload, { remote: false });
+        return true;
+      default:
+        return false;
+    }
+  }
+
   function formatMoney(value) {
     return peso.format(Number(value) || 0);
   }
@@ -736,8 +874,10 @@
     getServices,
     saveServices,
     resetServices,
+    publicServicePayload,
     getDigitalProducts,
     saveDigitalProducts,
+    publicDigitalProductPayload,
     getDeletedDigitalProductIds,
     saveDeletedDigitalProductIds,
     deleteDigitalProduct,
@@ -763,6 +903,7 @@
     canEditReview,
     addReview,
     updateReview,
+    applyRemoteDataset,
     getFinanceTotals,
     getInvest,
     setInvest,

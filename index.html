@@ -6,15 +6,15 @@
   <title>Novalyte Digital Growth Portal</title>
   <meta name="description" content="Novalyte digital growth portal for social growth services, digital subscriptions, and Messenger-ready checkout.">
   <link rel="icon" href="assets/icons/novalyte.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/css/styles.css?v=5.3.27">
-  <link rel="stylesheet" href="assets/css/mobile.css?v=5.3.27" media="screen and (max-width: 820px)">
+  <link rel="stylesheet" href="assets/css/styles.css?v=6.0.0">
+  <link rel="stylesheet" href="assets/css/mobile.css?v=6.0.0" media="screen and (max-width: 820px)">
 </head>
-<body data-build="v5.3.27">
+<body data-build="v6.0.0">
   <header class="topbar">
     <div class="shell topbar-inner">
       <a class="brand" href="#top" id="homeBrand" aria-label="Novalyte home">
         <span class="logo-mark brand-logo-frame">
-          <img class="brand-logo-img" src="./Resources/Brand/novalyte.png?v=5.3.27" alt="Novalyte" loading="eager" decoding="async">
+          <img class="brand-logo-img" src="./Resources/Brand/novalyte.png?v=6.0.0" alt="Novalyte" loading="eager" decoding="async">
         </span>
         <span>
           <span class="brand-title">Novalyte</span>
@@ -96,7 +96,53 @@
           </article>
         </div>
 
+        <section class="client-order-tracker" aria-labelledby="clientOrderTrackerTitle">
+          <div class="client-order-tracker-head">
+            <div>
+              <span class="eyebrow">Track your order</span>
+              <h2 id="clientOrderTrackerTitle">Check your Novalyte order status</h2>
+              <p>Enter the exact client name or reference provided to the admin. Only your client-safe order details will appear.</p>
+            </div>
+            <form class="client-order-lookup" id="clientOrderLookupForm">
+              <label class="sr-only" for="clientOrderLookup">Client name or reference</label>
+              <input class="input" id="clientOrderLookup" type="text" autocomplete="off" placeholder="Exact client name or reference">
+              <button class="btn primary" id="clientOrderLookupBtn" type="submit">Check Orders</button>
+              <small class="client-order-lookup-notice" id="clientOrderLookupNotice" aria-live="polite">Use the same spelling saved by the admin.</small>
+            </form>
+          </div>
 
+          <div class="client-order-status-grid" aria-live="polite">
+            <article class="client-order-status-column pending">
+              <header><h3>Pending Orders</h3><span id="clientPendingCount">0</span></header>
+              <div class="client-order-list" id="clientPendingOrders"><p class="client-order-empty">Enter your client reference to view orders.</p></div>
+            </article>
+            <article class="client-order-status-column processing">
+              <header><h3>Processing Orders</h3><span id="clientProcessingCount">0</span></header>
+              <div class="client-order-list" id="clientProcessingOrders"><p class="client-order-empty">Enter your client reference to view orders.</p></div>
+            </article>
+            <article class="client-order-status-column finished">
+              <header><h3>Finished</h3><span id="clientFinishedCount">0</span></header>
+              <div class="client-order-list" id="clientFinishedOrders"><p class="client-order-empty">Enter your client reference to view orders.</p></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="client-announcement-card" aria-labelledby="clientAnnouncementTitle">
+          <div class="client-announcement-heading">
+            <span class="eyebrow">Important before ordering</span>
+            <h2 id="clientAnnouncementTitle">Please double-check your order details.</h2>
+            <p>Wrong quantities, links, services, or privacy settings can affect delivery and may not qualify for cancellation or refund.</p>
+          </div>
+          <ol class="client-announcement-list">
+            <li>Incorrect quantity, link format, or service selection may delay processing.</li>
+            <li>Invalid or unsupported order details may be cancelled automatically by the system.</li>
+            <li>Once an order has started processing, it can no longer be cancelled or refunded.</li>
+            <li>Correct and complete details help the order run more smoothly.</li>
+            <li>An order may be marked completed even when delivery is incomplete; partial refunds are not guaranteed.</li>
+            <li>In rare cases, an order may be marked completed even when no result is visible. Contact Novalyte immediately so it can be checked.</li>
+            <li>Your profile, page, post, or channel must remain public while the order is processing. Private or restricted targets may freeze, fail, or be cancelled.</li>
+          </ol>
+        </section>
 
       </div>
     </section>
@@ -368,8 +414,10 @@
     </div>
   </footer>
 
-  <script src="assets/js/data.js?v=5.3.27"></script>
-  <script src="assets/js/store.js?v=5.3.27"></script>
-  <script src="assets/js/app.js?v=5.3.27"></script>
+  <script src="assets/js/cloud-config.js?v=6.0.0"></script>
+  <script src="assets/js/remoteStore.js?v=6.0.0"></script>
+  <script src="assets/js/data.js?v=6.0.0"></script>
+  <script src="assets/js/store.js?v=6.0.0"></script>
+  <script src="assets/js/app.js?v=6.0.0"></script>
 </body>
 </html>

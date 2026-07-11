@@ -1,9 +1,10 @@
 (function () {
   const Store = window.NovalyteStore;
+  const Remote = window.NovalyteRemote;
   const MESSENGER_URL = 'https://www.facebook.com/messages/t/1240324299157071';
   const CLIENT_STATE_KEY = 'novalyte-client-view-state-v2';
   // v5.3.17: star rating stays, one-time feedback lock is restored after releasing the legacy current feedback.
-  const state = { servicePage: 1, perPage: 10, view: 'home', activeDigitalProductId: null };
+  const state = { servicePage: 1, perPage: 10, view: 'home', activeDigitalProductId: null, clientLookupRef: '' };
 
   const els = {
     homeSection: document.getElementById('home'),
@@ -25,6 +26,16 @@
     reviewFormNotice: document.getElementById('reviewFormNotice'),
     homeVisibleServices: document.getElementById('homeVisibleServices'),
     homeDigitalProducts: document.getElementById('homeDigitalProducts'),
+    clientOrderLookupForm: document.getElementById('clientOrderLookupForm'),
+    clientOrderLookup: document.getElementById('clientOrderLookup'),
+    clientOrderLookupBtn: document.getElementById('clientOrderLookupBtn'),
+    clientOrderLookupNotice: document.getElementById('clientOrderLookupNotice'),
+    clientPendingOrders: document.getElementById('clientPendingOrders'),
+    clientProcessingOrders: document.getElementById('clientProcessingOrders'),
+    clientFinishedOrders: document.getElementById('clientFinishedOrders'),
+    clientPendingCount: document.getElementById('clientPendingCount'),
+    clientProcessingCount: document.getElementById('clientProcessingCount'),
+    clientFinishedCount: document.getElementById('clientFinishedCount'),
     calcSearch: document.getElementById('calcSearch'),
     calcSearchSuggestions: document.getElementById('calcSearchSuggestions'),
     calcCategory: document.getElementById('calcCategory'),
@@ -1015,6 +1026,105 @@
     renderReviews();
   }
 
+  function clientOrderStatusLabel(status) {
+    const labels = {
+      active: 'Pending',
+      pending: 'Pending',
+      processing: 'Processing',
+      completed: 'Finished'
+    };
+    return labels[status] || String(status || 'Pending');
+  }
+
+  function clientOrderDate(value) {
+    if (!value) return '';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '';
+    return date.toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function clientOrderCard(order) {
+    const date = clientOrderDate(order.createdAt);
+    return `
+      <article class="client-order-card">
+        <div class="client-order-card-head">
+          <strong>${sanitize(order.clientName || state.clientLookupRef)}</strong>
+          <span class="status-pill ${sanitize(order.status || 'pending')}">${sanitize(clientOrderStatusLabel(order.status))}</span>
+        </div>
+        <p>${sanitize(order.serviceName || 'Novalyte order')}</p>
+        <div class="client-order-card-meta">
+          <span>Client fee</span>
+          <strong>${Store.formatMoney(order.clientCharge || 0)}</strong>
+        </div>
+        ${date ? `<small>${sanitize(date)}</small>` : ''}
+      </article>
+    `;
+  }
+
+  function clientOrderEmpty(message) {
+    return `<p class="client-order-empty">${sanitize(message)}</p>`;
+  }
+
+  function renderClientOrders(orders, message = '') {
+    const safeOrders = Array.isArray(orders) ? orders : [];
+    const pending = safeOrders.filter(order => ['active', 'pending'].includes(order.status));
+    const processing = safeOrders.filter(order => order.status === 'processing');
+    const finished = safeOrders.filter(order => order.status === 'completed');
+    const fallback = message || (state.clientLookupRef ? 'No matching orders in this status.' : 'Enter your client reference to view orders.');
+
+    if (els.clientPendingOrders) els.clientPendingOrders.innerHTML = pending.length ? pending.map(clientOrderCard).join('') : clientOrderEmpty(fallback);
+    if (els.clientProcessingOrders) els.clientProcessingOrders.innerHTML = processing.length ? processing.map(clientOrderCard).join('') : clientOrderEmpty(fallback);
+    if (els.clientFinishedOrders) els.clientFinishedOrders.innerHTML = finished.length ? finished.map(clientOrderCard).join('') : clientOrderEmpty(fallback);
+    if (els.clientPendingCount) els.clientPendingCount.textContent = String(pending.length);
+    if (els.clientProcessingCount) els.clientProcessingCount.textContent = String(processing.length);
+    if (els.clientFinishedCount) els.clientFinishedCount.textContent = String(finished.length);
+  }
+
+  async function lookupClientOrders(event) {
+    if (event) event.preventDefault();
+    if (!els.clientOrderLookup) return;
+    const clientRef = els.clientOrderLookup.value.trim();
+    if (!clientRef) {
+      state.clientLookupRef = '';
+      renderClientOrders([], 'Enter the exact client name or reference first.');
+      if (els.clientOrderLookupNotice) els.clientOrderLookupNotice.textContent = 'Enter the exact client name or reference first.';
+      return;
+    }
+
+    state.clientLookupRef = clientRef;
+    if (els.clientOrderLookupBtn) {
+      els.clientOrderLookupBtn.disabled = true;
+      els.clientOrderLookupBtn.textContent = 'Checking...';
+    }
+    if (els.clientOrderLookupNotice) els.clientOrderLookupNotice.textContent = 'Checking matching orders...';
+
+    try {
+      const result = Remote && Remote.lookupOrders
+        ? await Remote.lookupOrders(clientRef, Store)
+        : { ok: true, mode: 'local', orders: Store.getOrders().filter(order => String(order.clientName || '').trim().toLowerCase() === clientRef.toLowerCase()) };
+      if (!result.ok) {
+        renderClientOrders([], 'Order tracking could not connect. Please try again or message Novalyte.');
+        if (els.clientOrderLookupNotice) els.clientOrderLookupNotice.textContent = 'Order tracking could not connect. Please try again or message Novalyte.';
+        return;
+      }
+      const orders = (result.orders || []).filter(order => !['cancelled', 'voided'].includes(order.status));
+      renderClientOrders(orders);
+      if (els.clientOrderLookupNotice) {
+        els.clientOrderLookupNotice.textContent = orders.length
+          ? `${orders.length} matching order${orders.length === 1 ? '' : 's'} found for this exact reference.`
+          : 'No matching order was found. Check the spelling or message Novalyte.';
+      }
+    } catch (error) {
+      renderClientOrders([], 'Order tracking could not connect. Please try again or message Novalyte.');
+      if (els.clientOrderLookupNotice) els.clientOrderLookupNotice.textContent = 'Order tracking could not connect. Please try again or message Novalyte.';
+    } finally {
+      if (els.clientOrderLookupBtn) {
+        els.clientOrderLookupBtn.disabled = false;
+        els.clientOrderLookupBtn.textContent = 'Check Orders';
+      }
+    }
+  }
+
   function showClientView(view, shouldScroll = true) {
     const showHome = !view || view === 'home';
     const showServices = view === 'services';
@@ -1317,6 +1427,7 @@
     if (els.reviewText) els.reviewText.addEventListener('input', updateReviewCharCount);
     bindReviewRatingInput();
     if (els.reviewForm) els.reviewForm.addEventListener('submit', submitClientReview);
+    if (els.clientOrderLookupForm) els.clientOrderLookupForm.addEventListener('submit', lookupClientOrders);
 
 
     if (els.whatWeDoNavBtn) {
@@ -1377,7 +1488,7 @@
   }
 
   function init() {
-    document.body.classList.add('v53-mobile-build');
+    document.body.classList.add('v60-mobile-build');
     setupBrandLogos();
     setupMobileSelectMenus();
     setupAutoScrollbars();
@@ -1396,11 +1507,25 @@
     normalizeAndPersistPublicReviews();
     renderReviews();
     bindEvents();
+    renderClientOrders([]);
     const initialHash = window.location.hash;
     showClientView(viewFromHash() || saved.view || 'home', false);
     window.addEventListener('hashchange', () => {
       showClientView(viewFromHash() || 'home', false);
     });
+    window.addEventListener('novalyte:remote-updated', () => {
+      fillFilters();
+      fillDigitalProductFilters();
+      fillCalculatorServices(true);
+      renderCalculator();
+      renderServices();
+      renderDigitalProducts();
+      renderHomeMetrics();
+      if (state.clientLookupRef) lookupClientOrders();
+    });
+    if (Remote && Remote.hydratePublic) {
+      Remote.hydratePublic(Store).catch(() => {});
+    }
   }
 
   document.addEventListener('DOMContentLoaded', init);

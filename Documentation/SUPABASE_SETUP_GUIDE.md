@@ -1,212 +1,99 @@
-# Novalyte Supabase Setup Guide
+# Novalyte v6.0.0 Supabase Shared Sync Setup
 
-This guide is for moving Novalyte admin data from browser localStorage into Supabase later.
+Novalyte now contains an optional shared-data layer so admin records can stay consistent across desktop, mobile, and the public client view. The website still works in local browser mode while cloud configuration is disabled.
 
-## Goal
+## What syncs
 
-Keep these separate:
+When cloud mode is enabled, these datasets are shared:
 
 - Boosting services
 - Digital products
-- Orders
-- Investments
-- Product images/assets
-- Admin-only write access
-- Public/client read-only access
+- Service and digital-product orders
+- Investments and finance entries
+- Team members
+- Reviews
 
-## Recommended Supabase project
+The public client view reads separate sanitized catalog datasets and can look up matching orders using the exact client name/reference entered by the admin. Public catalog datasets omit provider rates and product costs. The public order lookup returns only the client name, service/product name, client fee, status, date, and order type. It does not return provider cost, provider rates, revenue/profit, notes, contact details, or target links.
 
-Use one dedicated Supabase project for Novalyte, preferably named `novalyte` or `novalyte-production`.
+## Security rules
 
-If you reuse an existing project, keep Novalyte tables in the `public` schema with clear names such as:
+- Never place the Supabase `service_role` key in any frontend file.
+- Use only the project URL and anon/publishable key in `assets/js/cloud-config.js`.
+- Admin writes are protected by Supabase Auth and Row Level Security.
+- Only users listed in `novalyte_admin_profiles` receive admin access.
+- The exact client reference should be treated as private. A unique order/reference code is recommended for a later privacy upgrade.
 
-- `novalyte_services`
-- `novalyte_digital_products`
-- `novalyte_orders`
-- `novalyte_investments`
+## 1. Create the Supabase project
+
+Create or choose a dedicated Supabase project. Copy:
+
+- Project URL
+- anon/publishable key
+
+## 2. Run the included SQL
+
+Open Supabase **SQL Editor** and run:
+
+```text
+Documentation/NOVALYTE_SUPABASE_SHARED_SYNC.sql
+```
+
+The script creates:
+
 - `novalyte_admin_profiles`
+- `novalyte_shared_state` with private admin datasets and sanitized public catalog datasets
+- RLS policies
+- `novalyte_is_admin()`
+- The limited public RPC `novalyte_lookup_orders()`
 
-## Important security rule
+## 3. Create the admin account
 
-Never place the Supabase `service_role` key inside frontend files.
+In **Authentication > Users**, create the admin email/password account. Then register its UUID by running the final commented `insert` statement from the SQL file after replacing the sample email.
 
-The public website can use the Supabase project URL and anon/publishable key only. Admin write access must be controlled by Supabase Auth plus Row Level Security policies.
+Example:
 
-## Step 1 - Create or choose project
-
-1. Open Supabase dashboard.
-2. Choose the organization you want to use.
-3. Create a new project or choose an existing project.
-4. Save these values for later:
-   - Project URL
-   - anon/publishable key
-
-## Step 2 - Create Storage bucket for product images
-
-Recommended bucket:
-
-```text
-novalyte-digital-products
+```sql
+insert into public.novalyte_admin_profiles (user_id)
+select id from auth.users where lower(email) = lower('admin@example.com')
+on conflict (user_id) do nothing;
 ```
 
-For catalog images that clients should see publicly, a public bucket is simplest.
+## 4. Enable cloud mode in the project
 
-Folder convention:
+Edit `assets/js/cloud-config.js`:
 
-```text
-digital-products/netflix.png
-digital-products/chatgpt.png
-digital-products/canva-pro.png
+```js
+window.NOVALYTE_CLOUD_CONFIG = {
+  enabled: true,
+  supabaseUrl: 'https://YOUR_PROJECT.supabase.co',
+  anonKey: 'YOUR_ANON_OR_PUBLISHABLE_KEY',
+  adminEmail: 'admin@example.com'
+};
 ```
 
-## Step 3 - Create tables
+`adminEmail` lets the existing username field continue to accept the normal Novalyte username. Enter the Supabase admin password in the password field and the existing Novalyte security PIN in the PIN field.
 
-Suggested tables:
+## 5. First cloud login
 
-### novalyte_services
+1. Open `admin.html`.
+2. Sign in with the configured Supabase admin credentials and Novalyte PIN.
+3. The dashboard status pill should change from **Loading shared data** to **Shared data is up to date**.
+4. If a cloud dataset is still empty, the first authenticated login initializes it from that browser's current Novalyte local data.
 
-Stores boosting services.
+Use the browser containing the correct/latest admin records for the first cloud login. Export a backup first as an additional safety copy.
 
-Suggested columns:
+## 6. Verify cross-device behavior
 
-```text
-id text primary key
-provider_id text
-platform text
-category text
-name text
-provider_rate numeric
-client_rate numeric
-rate_unit numeric
-min_order numeric
-max_order numeric
-avg_time text
-tag text
-visible boolean default true
-archived boolean default false
-created_at timestamptz default now()
-updated_at timestamptz default now()
-```
+1. Create or edit an order on desktop.
+2. Open the admin page on mobile and sign in with the same cloud admin account.
+3. Confirm the order and totals appear.
+4. Open the client view, enter the exact client name/reference, and confirm the status card appears.
+5. Change the order to Pending, Processing, or Completed and recheck the client view.
 
-### novalyte_digital_products
+## Local fallback
 
-Stores subscription/account products.
+With `enabled: false`, Novalyte keeps its existing localStorage behavior. Local mode is browser/device-specific and cannot reflect desktop records on another phone. Shared cross-device data requires the Supabase setup above.
 
-Suggested columns:
+## Product images
 
-```text
-id text primary key
-name text
-category text
-price numeric
-duration text
-image text
-image_url text
-visible boolean default true
-disabled boolean default false
-description text
-created_at timestamptz default now()
-updated_at timestamptz default now()
-```
-
-### novalyte_orders
-
-Stores admin-created boosting orders.
-
-Suggested columns:
-
-```text
-id text primary key
-service_id text
-service_name text
-client_name text
-contact text
-link text
-quantity numeric
-provider_total numeric
-client_total numeric
-revenue numeric
-status text
-payment_status text
-created_at timestamptz default now()
-updated_at timestamptz default now()
-```
-
-### novalyte_investments
-
-Stores reload/cash-in records.
-
-Suggested columns:
-
-```text
-id text primary key
-amount numeric
-note text
-created_at timestamptz default now()
-```
-
-### novalyte_admin_profiles
-
-Stores which authenticated Supabase users are admins.
-
-Suggested columns:
-
-```text
-user_id uuid primary key references auth.users(id) on delete cascade
-role text default 'admin'
-created_at timestamptz default now()
-```
-
-## Step 4 - Enable Row Level Security
-
-Enable RLS on every Novalyte table.
-
-Client-facing read policies should allow public select only for visible records.
-
-Admin write policies should allow insert/update/delete only when the logged-in user's id exists in `novalyte_admin_profiles`.
-
-## Step 5 - Admin login plan
-
-For admin, use Supabase Auth.
-
-Recommended setup:
-
-1. Create an admin user through Supabase Auth.
-2. Add that user's UUID into `novalyte_admin_profiles`.
-3. Admin page checks login session.
-4. If the user is an admin, allow editing services, digital products, orders, and investments.
-
-## Step 6 - Frontend integration plan
-
-Next code patch should add:
-
-```text
-assets/js/supabaseClient.js
-assets/js/remoteStore.js
-```
-
-Then replace localStorage-only flows with a hybrid flow:
-
-1. Try Supabase first.
-2. If Supabase is not configured, fall back to localStorage.
-3. Keep export/import backup for emergencies.
-
-## Step 7 - Migration plan
-
-Use the existing admin backup export as the migration source.
-
-1. Export backup from current admin.
-2. Import backup into Supabase through a migration script or admin import button.
-3. Verify services, digital products, and orders.
-4. Then enable Supabase mode in Novalyte.
-
-## Recommended next development patch
-
-After Supabase project details are ready, build:
-
-- Supabase config file with placeholders
-- Remote data loader
-- Admin login using Supabase Auth
-- Database table sync for services and digital products
-- Storage upload for digital product images
-- LocalStorage fallback
+Current image URLs/data continue to work as stored. A dedicated Supabase Storage bucket can be added later for larger product image libraries, but it is not required for the v6.0.0 shared-state patch.

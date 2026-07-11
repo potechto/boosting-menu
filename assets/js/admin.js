@@ -1,5 +1,6 @@
 (function () {
   const Store = window.NovalyteStore;
+  const Remote = window.NovalyteRemote;
   const AUTH = {
     username: 'Novalyte',
     password: 'Nova2026.lyte',
@@ -16,6 +17,7 @@
     loginAlert: document.getElementById('loginAlert'),
     logoutBtn: document.getElementById('logoutBtn'),
     adminMobileNavToggle: document.getElementById('adminMobileNavToggle'),
+    adminSidebarNav: document.getElementById('adminSidebarNav'),
     statsGrid: document.getElementById('statsGrid'),
     investAmount: document.getElementById('investAmount'),
     addInvestAmount: document.getElementById('addInvestAmount'),
@@ -72,6 +74,7 @@
     importBackupInput: document.getElementById('importBackupInput'),
     exportOrdersCsvBtn: document.getElementById('exportOrdersCsvBtn'),
     resetDemoBtn: document.getElementById('resetDemoBtn'),
+    cloudSyncStatus: document.getElementById('cloudSyncStatus'),
     orderSearch: document.getElementById('orderSearch'),
     orderStatusFilter: document.getElementById('orderStatusFilter'),
     paymentStatusFilter: document.getElementById('paymentStatusFilter'),
@@ -98,16 +101,22 @@
     serviceRevenuePreview: document.getElementById('serviceRevenuePreview'),
     orderModal: document.getElementById('orderModal'),
     orderForm: document.getElementById('orderForm'),
-    orderServiceId: document.getElementById('orderServiceId'),
-    orderServiceName: document.getElementById('orderServiceName'),
+    orderModalEyebrow: document.getElementById('orderModalEyebrow'),
+    orderModalTitle: document.getElementById('orderModalTitle'),
+    orderEditId: document.getElementById('orderEditId'),
+    orderItemType: document.getElementById('orderItemType'),
+    orderItemLabel: document.getElementById('orderItemLabel'),
+    orderItemSelect: document.getElementById('orderItemSelect'),
     orderClientName: document.getElementById('orderClientName'),
     orderClientContact: document.getElementById('orderClientContact'),
     orderQuantity: document.getElementById('orderQuantity'),
     orderStatus: document.getElementById('orderStatus'),
     orderPaymentStatus: document.getElementById('orderPaymentStatus'),
     orderTarget: document.getElementById('orderTarget'),
+    orderTargetField: document.getElementById('orderTargetField'),
     orderCalcPreview: document.getElementById('orderCalcPreview'),
     orderNotes: document.getElementById('orderNotes'),
+    orderSaveBtn: document.getElementById('orderSaveBtn'),
     voidModal: document.getElementById('voidModal'),
     voidOrderId: document.getElementById('voidOrderId'),
     voidReason: document.getElementById('voidReason'),
@@ -121,6 +130,9 @@
   let orderPage = 1;
   let digitalProductPage = 1;
   let pendingDigitalImageData = '';
+  let cloudHydrationPromise = null;
+  const adminNavHomeParent = els.adminSidebarNav ? els.adminSidebarNav.parentElement : null;
+  const adminNavNextSibling = els.adminSidebarNav ? els.adminSidebarNav.nextSibling : null;
   const servicePageSize = 8;
   const orderPageSize = 10;
   const digitalProductPageSize = 8;
@@ -322,16 +334,64 @@
     return ['dashboard', 'services', 'digital-products', 'investments', 'orders'].includes(panel) ? panel : '';
   }
 
+  function updateCloudSyncStatus(state = '', message = '') {
+    if (!els.cloudSyncStatus) return;
+    const configured = Boolean(Remote && Remote.isConfigured && Remote.isConfigured());
+    const authenticated = Boolean(Remote && Remote.hasAdminSession && Remote.hasAdminSession());
+    const mode = state || (configured ? (authenticated ? 'synced' : 'warning') : 'local');
+    const text = message || (configured
+      ? (authenticated ? 'Shared cloud sync ready' : 'Cloud login required')
+      : 'Local browser mode');
+    els.cloudSyncStatus.className = `sync-status-pill ${mode}`;
+    els.cloudSyncStatus.textContent = text;
+  }
+
+  async function hydrateCloudAdminData(force = false) {
+    if (!Remote || !Remote.isConfigured || !Remote.isConfigured()) {
+      updateCloudSyncStatus('local', 'Local browser mode');
+      return { ok: false, reason: 'not-configured' };
+    }
+    if (!Remote.hasAdminSession || !Remote.hasAdminSession()) {
+      updateCloudSyncStatus('warning', 'Cloud login required');
+      return { ok: false, reason: 'not-authenticated' };
+    }
+    if (cloudHydrationPromise && !force) return cloudHydrationPromise;
+    updateCloudSyncStatus('syncing', 'Loading shared data...');
+    cloudHydrationPromise = Remote.hydrateAdmin(Store)
+      .then(result => {
+        if (result && result.ok) {
+          renderAll();
+          updateCloudSyncStatus('synced', 'Shared data is up to date');
+        } else if (result) {
+          updateCloudSyncStatus('error', result.message || 'Shared sync failed');
+          Store.toast(result.message || 'Shared sync failed. Check the Supabase setup and admin profile.', 'error');
+        }
+        return result;
+      })
+      .catch(error => {
+        updateCloudSyncStatus('error', 'Shared sync failed');
+        Store.toast(`Shared sync failed: ${error.message}`, 'error');
+        return { ok: false, reason: 'request-failed', message: error.message };
+      })
+      .finally(() => {
+        cloudHydrationPromise = null;
+      });
+    return cloudHydrationPromise;
+  }
+
   function showDashboard() {
     activePanel = panelFromHash() || activePanel || 'dashboard';
     setAdminBodyMode('dashboard');
     els.loginView.classList.add('hidden');
     els.dashboardView.classList.remove('hidden');
     renderAll();
+    updateCloudSyncStatus();
     if (window.NovalyteShowAdminPanel) window.NovalyteShowAdminPanel(activePanel);
+    hydrateCloudAdminData();
   }
 
   function showLogin() {
+    closeAdminMobileNav();
     setAdminBodyMode('login');
     els.loginView.classList.remove('hidden');
     els.dashboardView.classList.add('hidden');
@@ -519,6 +579,7 @@
           <td data-label="Status"><span class="status-pill ${statusClass}">${statusText}</span></td>
           <td data-label="Actions">
             <div class="actions-cell admin-digital-actions">
+              <button class="btn small primary" type="button" data-create-digital-order="${sanitize(product.id)}" ${product.disabled || product.visible === false ? 'disabled' : ''}>Create Order</button>
               <button class="btn small" type="button" data-edit-digital-product="${sanitize(product.id)}">Edit</button>
               <button class="btn small ${toggleClass}" type="button" data-toggle-digital-product="${sanitize(product.id)}" data-toggle-value="${toggleValue}">${toggleText}</button>
               <button class="btn small danger ghost-danger" type="button" data-delete-digital-product="${sanitize(product.id)}">Delete</button>
@@ -903,6 +964,12 @@
     `;
   }
 
+  function orderStatusOptions(currentStatus) {
+    return ['active', 'pending', 'processing', 'completed'].map(value =>
+      `<option value="${value}" ${currentStatus === value ? 'selected' : ''}>${statusLabels[value]}</option>`
+    ).join('');
+  }
+
   function renderOrdersTable() {
     const orders = filteredOrders();
     renderAdminOrdersPagination(orders.length);
@@ -916,9 +983,14 @@
     els.ordersTable.innerHTML = paged.map(order => {
       const status = order.status || 'active';
       const payment = order.paymentStatus || 'paid';
+      const isClosed = ['voided', 'cancelled'].includes(status);
+      const statusControl = isClosed
+        ? `<span class="status-pill ${status}">${statusLabels[status] || status}</span>`
+        : `<select class="select order-status-inline" data-order-status-select="${sanitize(order.id)}" aria-label="Update order status">${orderStatusOptions(status)}</select>`;
       const actionButton = status === 'voided'
-        ? `<button class="btn small success" type="button" data-undo-void="${order.id}">Undo Void</button>`
-        : `<button class="btn small warning" type="button" data-void-order="${order.id}">Void</button>`;
+        ? `<button class="btn small success" type="button" data-undo-void="${sanitize(order.id)}">Undo Void</button>`
+        : `<button class="btn small warning" type="button" data-void-order="${sanitize(order.id)}">Void</button>`;
+      const orderType = order.orderType === 'digital-product' ? 'Digital product' : 'Boosting service';
       return `
         <tr>
           <td data-label="Date">${sanitize(dateText(order.createdAt))}</td>
@@ -926,18 +998,19 @@
             <strong>${sanitize(order.clientName || 'No client ref')}</strong><br>
             <span class="service-desc">${sanitize(order.clientContact || 'No contact')}</span>
           </td>
-          <td data-label="Service">
+          <td data-label="Service / Product">
             <strong>${sanitize(order.serviceName)}</strong><br>
-            <span class="service-desc">${sanitize(order.providerId)} · ${sanitize(order.platform)}</span>
+            <span class="service-desc">${sanitize(order.providerId || order.itemId || '')} · ${sanitize(order.platform || orderType)}</span>
           </td>
           <td data-label="Qty">${Store.formatNumber(order.quantity)}</td>
           <td data-label="Provider">${Store.formatMoney(order.providerCharge)}</td>
-          <td data-label="Client"><strong>${Store.formatMoney(order.clientCharge)}</strong></td>
+          <td data-label="Client Fee"><strong>${Store.formatMoney(order.clientCharge)}</strong></td>
           <td data-label="Revenue"><strong>${Store.formatMoney(order.revenue)}</strong></td>
-          <td data-label="Status"><span class="status-pill ${status}">${statusLabels[status] || status}</span></td>
+          <td data-label="Status">${statusControl}</td>
           <td data-label="Payment"><span class="status-pill payment-${payment}">${paymentLabels[payment] || payment}</span></td>
           <td data-label="Actions"><div class="actions-cell">
-            <button class="btn small" type="button" data-view-order="${order.id}">View</button>
+            <button class="btn small" type="button" data-view-order="${sanitize(order.id)}">View</button>
+            <button class="btn small" type="button" data-edit-order="${sanitize(order.id)}" ${isClosed ? 'disabled' : ''}>Edit</button>
             ${actionButton}
           </div></td>
         </tr>
@@ -1112,32 +1185,125 @@
     renderDigitalProductsTable();
   }
 
-  function fillOrderForm(service) {
-    els.orderServiceId.value = service.id;
-    els.orderServiceName.value = `${service.name} (${service.providerId})`;
-    els.orderClientName.value = '';
-    els.orderClientContact.value = '';
-    els.orderQuantity.value = service.rateUnit || 1000;
-    els.orderStatus.value = 'active';
-    els.orderPaymentStatus.value = 'paid';
-    els.orderTarget.value = '';
-    els.orderNotes.value = '';
+  function normalizedOrderType(value) {
+    return value === 'digital-product' ? 'digital-product' : 'service';
+  }
+
+  function orderItemId(order) {
+    return order.itemId || order.serviceId || order.productId || '';
+  }
+
+  function orderItemFromRecord(type, id) {
+    if (normalizedOrderType(type) === 'digital-product') return getDigitalProductById(id);
+    return getServiceById(id);
+  }
+
+  function orderItemData(type, item) {
+    if (!item) return null;
+    if (normalizedOrderType(type) === 'digital-product') {
+      return {
+        id: item.id,
+        name: item.name,
+        providerId: item.id,
+        platform: item.category || 'Digital Product',
+        category: 'Digital Product',
+        providerRate: Number(item.providerPrice) || 0,
+        clientRate: Number(item.price) || 0,
+        rateUnit: 1
+      };
+    }
+    return {
+      id: item.id,
+      name: item.name,
+      providerId: item.providerId,
+      platform: item.platform,
+      category: item.category,
+      providerRate: Number(item.providerRate) || 0,
+      clientRate: Number(item.clientRate) || 0,
+      rateUnit: Number(item.rateUnit) || 1000
+    };
+  }
+
+  function orderItemsForType(type) {
+    if (normalizedOrderType(type) === 'digital-product') {
+      return Store.getDigitalProducts().slice().sort((a, b) => String(a.name).localeCompare(String(b.name)));
+    }
+    return Store.getServices().slice().sort((a, b) => `${a.platform} ${a.name}`.localeCompare(`${b.platform} ${b.name}`));
+  }
+
+  function fillOrderItemOptions(type, selectedId = '') {
+    const normalizedType = normalizedOrderType(type);
+    const items = orderItemsForType(normalizedType);
+    if (!els.orderItemSelect) return;
+    els.orderItemSelect.innerHTML = items.map(item => {
+      const itemId = item.id;
+      const displayId = normalizedType === 'digital-product' ? item.id : item.providerId;
+      const statusNote = normalizedType === 'digital-product'
+        ? (item.disabled ? ' (Disabled)' : item.visible === false ? ' (Hidden)' : '')
+        : (item.archived ? ' (Disabled)' : item.visible === false ? ' (Hidden)' : '');
+      return `<option value="${sanitize(itemId)}" ${itemId === selectedId ? 'selected' : ''}>${sanitize(displayId)} | ${sanitize(item.name)}${sanitize(statusNote)}</option>`;
+    }).join('');
+    if (!els.orderItemSelect.value && items[0]) els.orderItemSelect.value = items[0].id;
+  }
+
+  function fillOrderForm(item, type = 'service', existingOrder = null) {
+    const normalizedType = normalizedOrderType(type);
+    const selectedId = item ? item.id : orderItemId(existingOrder || {});
+    if (els.orderEditId) els.orderEditId.value = existingOrder ? existingOrder.id : '';
+    if (els.orderItemType) els.orderItemType.value = normalizedType;
+    if (els.orderItemLabel) els.orderItemLabel.textContent = normalizedType === 'digital-product' ? 'Digital Product' : 'Service Type';
+    if (els.orderModalEyebrow) els.orderModalEyebrow.textContent = existingOrder ? 'Edit order' : 'Create order';
+    if (els.orderModalTitle) els.orderModalTitle.textContent = existingOrder
+      ? `Edit ${normalizedType === 'digital-product' ? 'Digital Product' : 'Service'} Order`
+      : `Create ${normalizedType === 'digital-product' ? 'Digital Product' : 'Service'} Order`;
+    if (els.orderSaveBtn) els.orderSaveBtn.textContent = existingOrder ? 'Update Order' : 'Save Order';
+
+    fillOrderItemOptions(normalizedType, selectedId);
+    els.orderClientName.value = existingOrder ? (existingOrder.clientName || '') : '';
+    els.orderClientContact.value = existingOrder ? (existingOrder.clientContact || '') : '';
+    els.orderQuantity.value = existingOrder ? (Number(existingOrder.quantity) || 1) : (normalizedType === 'digital-product' ? 1 : (Number(item && item.rateUnit) || 1000));
+    els.orderStatus.value = existingOrder ? (existingOrder.status || 'active') : 'active';
+    els.orderPaymentStatus.value = existingOrder ? (existingOrder.paymentStatus || 'paid') : 'paid';
+    els.orderTarget.value = existingOrder ? (existingOrder.target || '') : '';
+    els.orderNotes.value = existingOrder ? (existingOrder.notes || existingOrder.deliveryDetails || '') : '';
+    if (els.orderTargetField) els.orderTargetField.classList.toggle('hidden', normalizedType === 'digital-product');
     updateOrderCalcPreview();
     openModal(els.orderModal);
   }
 
-  function selectedOrderService() {
-    return getServiceById(els.orderServiceId.value);
+  function fillOrderEditForm(order) {
+    if (!order) return;
+    const type = normalizedOrderType(order.orderType || (order.productId ? 'digital-product' : 'service'));
+    const item = orderItemFromRecord(type, orderItemId(order));
+    fillOrderForm(item, type, order);
+  }
+
+  function selectedOrderItem() {
+    const type = normalizedOrderType(els.orderItemType ? els.orderItemType.value : 'service');
+    const item = orderItemFromRecord(type, els.orderItemSelect ? els.orderItemSelect.value : '');
+    return { type, raw: item, data: orderItemData(type, item) };
+  }
+
+  function selectedOrderCalculation() {
+    const selected = selectedOrderItem();
+    if (!selected.data) return { selected, calc: null };
+    const existing = els.orderEditId && els.orderEditId.value ? getOrderById(els.orderEditId.value) : null;
+    const sameSnapshot = existing && normalizedOrderType(existing.orderType) === selected.type && orderItemId(existing) === selected.data.id;
+    const rateSource = sameSnapshot ? {
+      rateUnit: Number(existing.rateUnit) || selected.data.rateUnit,
+      providerRate: Number(existing.providerRate) || 0,
+      clientRate: Number(existing.clientRate) || 0
+    } : selected.data;
+    return { selected, existing, calc: Store.calcForService(rateSource, els.orderQuantity.value) };
   }
 
   function updateOrderCalcPreview() {
-    const service = selectedOrderService();
-    if (!service) {
-      els.orderCalcPreview.textContent = 'No selected service.';
+    const result = selectedOrderCalculation();
+    if (!result.selected.data || !result.calc) {
+      els.orderCalcPreview.textContent = 'No selected service or digital product.';
       return;
     }
-
-    const calc = Store.calcForService(service, els.orderQuantity.value);
+    const calc = result.calc;
     els.orderCalcPreview.innerHTML = `
       <div class="preview-card"><span>Provider Charge</span><strong>${Store.formatMoney(calc.providerCharge)}</strong></div>
       <div class="preview-card"><span>Client Charge</span><strong>${Store.formatMoney(calc.clientCharge)}</strong></div>
@@ -1147,28 +1313,41 @@
 
   function saveOrder(event) {
     event.preventDefault();
-    const service = selectedOrderService();
-    if (!service) {
-      Store.toast('Service not found.', 'error');
+    const result = selectedOrderCalculation();
+    const selected = result.selected;
+    const calc = result.calc;
+    if (!selected.data || !calc) {
+      Store.toast('Selected service or digital product was not found.', 'error');
       return;
     }
-
-    const calc = Store.calcForService(service, els.orderQuantity.value);
+    if (!els.orderClientName.value.trim()) {
+      Store.toast('Enter the exact client name or reference.', 'error');
+      return;
+    }
     if (calc.quantity <= 0) {
       Store.toast('Enter valid quantity.', 'error');
       return;
     }
 
+    const orders = Store.getOrders();
+    const editId = els.orderEditId ? els.orderEditId.value : '';
+    const existingIndex = editId ? orders.findIndex(item => item.id === editId) : -1;
+    const existing = existingIndex >= 0 ? orders[existingIndex] : null;
     const order = {
-      id: Store.uid('order'),
-      createdAt: new Date().toISOString(),
+      ...(existing || {}),
+      id: existing ? existing.id : Store.uid('order'),
+      createdAt: existing ? existing.createdAt : new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
       status: els.orderStatus.value || 'active',
       paymentStatus: els.orderPaymentStatus.value || 'paid',
-      serviceId: service.id,
-      serviceName: service.name,
-      providerId: service.providerId,
-      platform: service.platform,
-      category: service.category,
+      orderType: selected.type,
+      itemId: selected.data.id,
+      serviceId: selected.type === 'service' ? selected.data.id : '',
+      productId: selected.type === 'digital-product' ? selected.data.id : '',
+      serviceName: selected.data.name,
+      providerId: selected.data.providerId,
+      platform: selected.data.platform,
+      category: selected.data.category,
       quantity: calc.quantity,
       rateUnit: calc.unit,
       providerRate: calc.providerRate,
@@ -1178,18 +1357,20 @@
       revenue: calc.revenue,
       clientName: els.orderClientName.value.trim(),
       clientContact: els.orderClientContact.value.trim(),
-      target: els.orderTarget.value.trim(),
+      target: selected.type === 'service' ? els.orderTarget.value.trim() : '',
       notes: els.orderNotes.value.trim(),
-      voidReason: '',
-      voidedAt: null
+      deliveryDetails: selected.type === 'digital-product' ? els.orderNotes.value.trim() : '',
+      voidReason: existing ? (existing.voidReason || '') : '',
+      voidedAt: existing ? (existing.voidedAt || null) : null
     };
 
-    const orders = Store.getOrders();
-    orders.unshift(order);
+    if (existingIndex >= 0) orders[existingIndex] = order;
+    else orders.unshift(order);
     Store.saveOrders(orders);
     closeModal(els.orderModal);
-    Store.toast('Order saved. Totals updated using the price snapshot.');
+    Store.toast(existing ? 'Order updated. Shared status and totals were refreshed.' : 'Order saved. Totals updated using the price snapshot.');
     renderAll();
+    if (window.NovalyteShowAdminPanel) window.NovalyteShowAdminPanel('orders');
     document.getElementById('orders').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
@@ -1198,6 +1379,7 @@
     const order = orders.find(item => item.id === orderId);
     if (!order) return;
     order.status = status;
+    order.updatedAt = new Date().toISOString();
     Object.assign(order, extra);
     if (status === 'voided') order.voidedAt = new Date().toISOString();
     if (status !== 'voided') {
@@ -1205,7 +1387,12 @@
       order.voidReason = '';
     }
     Store.saveOrders(orders);
-    Store.toast(status === 'voided' ? 'Order voided and removed from totals.' : 'Void undone. Order counted again.');
+    const message = status === 'voided'
+      ? 'Order voided and removed from totals.'
+      : status === 'active'
+        ? 'Order status changed to Active.'
+        : `Order status changed to ${statusLabels[status] || status}.`;
+    Store.toast(message);
     renderAll();
   }
 
@@ -1218,22 +1405,26 @@
   function viewOrder(orderId) {
     const order = getOrderById(orderId);
     if (!order) return;
+    const isProduct = order.orderType === 'digital-product';
+    const itemId = order.itemId || order.providerId || (isProduct ? order.productId : order.serviceId) || '-';
     const rows = [
       ['Date', dateText(order.createdAt)],
+      ['Order Type', isProduct ? 'Digital Product' : 'Boosting Service'],
       ['Status', statusLabels[order.status] || order.status],
       ['Payment', paymentLabels[order.paymentStatus] || order.paymentStatus],
       ['Client', order.clientName || 'No client ref'],
       ['Contact', order.clientContact || 'No contact'],
-      ['Service', `${order.serviceName} (${order.providerId})`],
-      ['Platform', order.platform],
+      ['Service / Product', order.serviceName || 'Unnamed item'],
+      ['Item ID', itemId],
+      ['Platform / Category', order.platform || (isProduct ? 'Digital Product' : '-')],
       ['Quantity', Store.formatNumber(order.quantity)],
-      ['Provider Rate', `${Store.formatMoney(order.providerRate)} / ${Store.formatNumber(order.rateUnit)}`],
-      ['Client Rate', `${Store.formatMoney(order.clientRate)} / ${Store.formatNumber(order.rateUnit)}`],
+      ['Provider Rate', `${Store.formatMoney(order.providerRate)} / ${Store.formatNumber(order.rateUnit || 1)}`],
+      ['Client Rate', `${Store.formatMoney(order.clientRate)} / ${Store.formatNumber(order.rateUnit || 1)}`],
       ['Provider Charge', Store.formatMoney(order.providerCharge)],
       ['Client Charge', Store.formatMoney(order.clientCharge)],
       ['Revenue', Store.formatMoney(order.revenue)],
-      ['Target', order.target || 'No target'],
-      ['Notes', order.notes || 'No notes'],
+      ['Target', isProduct ? 'Not required' : (order.target || 'No target')],
+      ['Notes / Delivery Details', order.deliveryDetails || order.notes || 'No notes'],
       ['Void Reason', order.voidReason || 'Not voided']
     ];
     els.orderDetailsBody.innerHTML = rows.map(([label, value]) => `
@@ -1244,16 +1435,17 @@
 
   function exportOrdersCsv() {
     const orders = Store.getOrders();
-    const header = ['Date', 'Status', 'Payment Status', 'Client', 'Contact', 'Service', 'Provider ID', 'Platform', 'Quantity', 'Rate Unit', 'Provider Rate', 'Client Rate', 'Provider Charge', 'Client Charge', 'Revenue', 'Target', 'Notes', 'Void Reason'];
+    const header = ['Date', 'Order Type', 'Status', 'Payment Status', 'Client', 'Contact', 'Service / Product', 'Item ID', 'Platform / Category', 'Quantity', 'Rate Unit', 'Provider Rate', 'Client Rate', 'Provider Charge', 'Client Charge', 'Revenue', 'Target', 'Notes / Delivery Details', 'Void Reason'];
     const rows = orders.map(order => [
       order.createdAt,
+      order.orderType || 'service',
       order.status,
       order.paymentStatus || 'paid',
       order.clientName || '',
       order.clientContact || '',
-      order.serviceName,
-      order.providerId,
-      order.platform,
+      order.serviceName || '',
+      order.itemId || order.providerId || order.productId || order.serviceId || '',
+      order.platform || '',
       order.quantity,
       order.rateUnit,
       order.providerRate,
@@ -1262,7 +1454,7 @@
       order.clientCharge,
       order.revenue,
       order.target || '',
-      order.notes || '',
+      order.deliveryDetails || order.notes || '',
       order.voidReason || ''
     ]);
     const csv = [header, ...rows].map(row => row.map(value => `"${String(value ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
@@ -1292,8 +1484,27 @@
     });
   }
 
+  function restoreAdminNavHome() {
+    if (!els.adminSidebarNav || !adminNavHomeParent) return;
+    els.adminSidebarNav.classList.remove('admin-floating-nav');
+    if (adminNavNextSibling && adminNavNextSibling.parentNode === adminNavHomeParent) {
+      adminNavHomeParent.insertBefore(els.adminSidebarNav, adminNavNextSibling);
+    } else {
+      adminNavHomeParent.appendChild(els.adminSidebarNav);
+    }
+  }
+
+  function floatAdminNavToViewport() {
+    if (!els.adminSidebarNav || !els.adminMobileNavToggle || !window.matchMedia('(max-width: 820px)').matches) return;
+    const rect = els.adminMobileNavToggle.getBoundingClientRect();
+    document.documentElement.style.setProperty('--admin-nav-top', `${Math.max(62, rect.bottom + 8)}px`);
+    els.adminSidebarNav.classList.add('admin-floating-nav');
+    document.body.appendChild(els.adminSidebarNav);
+  }
+
   function closeAdminMobileNav() {
     document.body.classList.remove('admin-nav-open');
+    restoreAdminNavHome();
     if (els.adminMobileNavToggle) els.adminMobileNavToggle.setAttribute('aria-expanded', 'false');
   }
 
@@ -1307,16 +1518,26 @@
   function bindEvents() {
     if (els.adminMobileNavToggle) {
       els.adminMobileNavToggle.addEventListener('click', () => {
-        if (window.matchMedia('(max-width: 820px)').matches) {
-          const rect = els.adminMobileNavToggle.getBoundingClientRect();
-          document.documentElement.style.setProperty('--admin-nav-top', `${Math.max(62, rect.bottom + 8)}px`);
+        const willOpen = !document.body.classList.contains('admin-nav-open');
+        if (willOpen) {
+          floatAdminNavToViewport();
+          document.body.classList.add('admin-nav-open');
+        } else {
+          closeAdminMobileNav();
         }
-        const isOpen = document.body.classList.toggle('admin-nav-open');
-        els.adminMobileNavToggle.setAttribute('aria-expanded', String(isOpen));
+        els.adminMobileNavToggle.setAttribute('aria-expanded', String(willOpen));
       });
     }
     document.querySelectorAll('.sidebar-nav a, .sidebar-nav button').forEach(item => {
       item.addEventListener('click', closeAdminMobileNav);
+    });
+    document.addEventListener('click', event => {
+      if (!document.body.classList.contains('admin-nav-open')) return;
+      if (event.target.closest('#adminSidebarNav') || event.target.closest('#adminMobileNavToggle')) return;
+      closeAdminMobileNav();
+    });
+    window.addEventListener('resize', () => {
+      if (!window.matchMedia('(max-width: 820px)').matches) closeAdminMobileNav();
     });
 
     const credentialToggle = document.querySelector('[data-toggle-login-credentials]');
@@ -1333,23 +1554,55 @@
       });
     }
 
-    els.loginForm.addEventListener('submit', event => {
+    els.loginForm.addEventListener('submit', async event => {
       event.preventDefault();
-      const ok = els.loginUser.value.trim() === AUTH.username && els.loginPass.value === AUTH.password && els.loginPin.value === AUTH.pin;
-      if (!ok) {
-        els.loginAlert.textContent = 'Wrong username, password, or PIN. Please check the admin credentials.';
-        els.loginAlert.classList.remove('hidden');
-        Store.toast('Login failed.', 'error');
-        return;
+      const username = els.loginUser.value.trim();
+      const password = els.loginPass.value;
+      const pinOk = els.loginPin.value === AUTH.pin;
+      const cloudEnabled = Boolean(Remote && Remote.isConfigured && Remote.isConfigured());
+      let ok = false;
+      let cloudMessage = '';
+
+      const submitBtn = els.loginForm.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = cloudEnabled ? 'Connecting...' : 'Checking...';
       }
-      els.loginAlert.classList.add('hidden');
-      setLoggedIn(true);
-      Store.toast('Welcome, admin.');
-      showDashboard();
+
+      try {
+        if (cloudEnabled) {
+          if (!pinOk) {
+            cloudMessage = 'Wrong security PIN.';
+          } else {
+            const result = await Remote.login(username, password);
+            ok = Boolean(result && result.ok);
+            cloudMessage = result && result.message ? result.message : 'Cloud email or password is incorrect.';
+          }
+        } else {
+          ok = username === AUTH.username && password === AUTH.password && pinOk;
+        }
+
+        if (!ok) {
+          els.loginAlert.textContent = cloudEnabled ? cloudMessage : 'Wrong username, password, or PIN. Please check the admin credentials.';
+          els.loginAlert.classList.remove('hidden');
+          Store.toast('Login failed.', 'error');
+          return;
+        }
+        els.loginAlert.classList.add('hidden');
+        setLoggedIn(true);
+        Store.toast(cloudEnabled ? 'Welcome, admin. Shared sync is connecting.' : 'Welcome, admin.');
+        showDashboard();
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Enter Dashboard';
+        }
+      }
     });
 
-    els.logoutBtn.addEventListener('click', () => {
+    els.logoutBtn.addEventListener('click', async () => {
       setLoggedIn(false);
+      if (Remote && Remote.logout) await Remote.logout();
       Store.toast('Logged out.');
       showLogin();
     });
@@ -1465,9 +1718,15 @@
     if (els.addDigitalProductBtn) els.addDigitalProductBtn.addEventListener('click', () => fillDigitalProductForm(null));
     if (els.digitalProductsTable) {
       els.digitalProductsTable.addEventListener('click', async event => {
+        const createOrderBtn = event.target.closest('[data-create-digital-order]');
         const editBtn = event.target.closest('[data-edit-digital-product]');
         const toggleBtn = event.target.closest('[data-toggle-digital-product]');
         const deleteBtn = event.target.closest('[data-delete-digital-product]');
+        if (createOrderBtn) {
+          const product = getDigitalProductById(createOrderBtn.dataset.createDigitalOrder);
+          if (product) fillOrderForm(product, 'digital-product');
+          return;
+        }
         if (editBtn) {
           const product = getDigitalProductById(editBtn.dataset.editDigitalProduct);
           if (product) fillDigitalProductForm(product);
@@ -1521,7 +1780,7 @@
       }
       if (orderBtn) {
         const service = getServiceById(orderBtn.dataset.createOrder);
-        if (service) fillOrderForm(service);
+        if (service) fillOrderForm(service, 'service');
       }
       if (archiveBtn) {
         const archived = archiveBtn.dataset.archiveValue === 'true';
@@ -1534,9 +1793,16 @@
       const voidBtn = event.target.closest('[data-void-order]');
       const undoBtn = event.target.closest('[data-undo-void]');
       const viewBtn = event.target.closest('[data-view-order]');
+      const editBtn = event.target.closest('[data-edit-order]');
       if (viewBtn) viewOrder(viewBtn.dataset.viewOrder);
+      if (editBtn) fillOrderEditForm(getOrderById(editBtn.dataset.editOrder));
       if (voidBtn) openVoidModal(voidBtn.dataset.voidOrder);
       if (undoBtn) updateOrderStatus(undoBtn.dataset.undoVoid, 'active');
+    });
+    els.ordersTable.addEventListener('change', event => {
+      const statusSelect = event.target.closest('[data-order-status-select]');
+      if (!statusSelect) return;
+      updateOrderStatus(statusSelect.dataset.orderStatusSelect, statusSelect.value);
     });
 
     els.confirmVoidBtn.addEventListener('click', () => {
@@ -1569,7 +1835,8 @@
     });
     els.serviceForm.addEventListener('submit', saveServiceFromForm);
 
-    [els.orderQuantity, els.orderStatus, els.orderPaymentStatus].forEach(el => el.addEventListener('input', updateOrderCalcPreview));
+    [els.orderItemSelect, els.orderQuantity, els.orderStatus, els.orderPaymentStatus].filter(Boolean).forEach(el => el.addEventListener('input', updateOrderCalcPreview));
+    if (els.orderItemSelect) els.orderItemSelect.addEventListener('change', updateOrderCalcPreview);
     els.orderForm.addEventListener('submit', saveOrder);
 
     if (els.exportBackupBtn) els.exportBackupBtn.addEventListener('click', Store.exportBackup);
@@ -1601,10 +1868,19 @@
       Store.toast('Demo data reset.');
       renderAll();
     });
+
+    window.addEventListener('novalyte:remote-status', event => {
+      const detail = event.detail || {};
+      updateCloudSyncStatus(detail.state || '', detail.message || '');
+    });
+    window.addEventListener('novalyte:remote-updated', () => {
+      renderAll();
+      updateCloudSyncStatus('synced', 'Shared data is up to date');
+    });
   }
 
-  function init() {
-    document.body.classList.add('v53-mobile-build');
+  async function init() {
+    document.body.classList.add('v60-mobile-build');
     setupBrandLogos();
     setupAutoScrollbars();
     Store.getServices();
@@ -1613,13 +1889,27 @@
     setupAdminPanels();
     bindEvents();
     setupAdminSessionSync();
-    // v5.3.23 root fix: never clear admin session on refresh; restore persistent session before showing login.
     activePanel = panelFromHash() || activePanel || 'dashboard';
-    if (restorePersistentAdminSession()) {
-      showDashboard();
-    } else {
+
+    const localSession = restorePersistentAdminSession();
+    const cloudEnabled = Boolean(Remote && Remote.isConfigured && Remote.isConfigured());
+    if (!localSession) {
       showLogin();
+      return;
     }
+    if (cloudEnabled) {
+      const cloudSession = Remote.ensureSession ? await Remote.ensureSession() : null;
+      if (!cloudSession) {
+        clearLoggedIn({ silent: true });
+        showLogin();
+        if (els.loginAlert) {
+          els.loginAlert.textContent = 'Your shared admin session expired. Please sign in again.';
+          els.loginAlert.classList.remove('hidden');
+        }
+        return;
+      }
+    }
+    showDashboard();
   }
 
   document.addEventListener('DOMContentLoaded', init);

@@ -6,14 +6,14 @@
   <title>Novalyte Admin Dashboard</title>
   <meta name="description" content="Novalyte admin dashboard for pricing control and income tracking.">
   <link rel="icon" href="assets/icons/novalyte.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/css/styles.css?v=5.3.27">
-  <link rel="stylesheet" href="assets/css/mobile.css?v=5.3.27" media="screen and (max-width: 820px)">
+  <link rel="stylesheet" href="assets/css/styles.css?v=6.0.0">
+  <link rel="stylesheet" href="assets/css/mobile.css?v=6.0.0" media="screen and (max-width: 820px)">
 </head>
-<body data-build="v5.3.27" class="admin-login-mode">
+<body data-build="v6.0.0" class="admin-login-mode">
   <main class="login-page" id="loginView">
     <section class="login-card elevated-card">
       <div class="login-brand-row">
-        <div class="lock-visual brand-logo-frame"><img class="brand-logo-img" src="./Resources/Brand/novalyte.png?v=5.3.27" alt="Novalyte" loading="eager" decoding="async"></div>
+        <div class="lock-visual brand-logo-frame"><img class="brand-logo-img" src="./Resources/Brand/novalyte.png?v=6.0.0" alt="Novalyte" loading="eager" decoding="async"></div>
         <div>
           <span class="eyebrow">Protected workspace</span>
           <h1>Admin Login</h1>
@@ -59,7 +59,7 @@
     <aside class="sidebar">
       <a class="brand" href="admin.html">
         <span class="logo-mark brand-logo-frame">
-          <img class="brand-logo-img" src="./Resources/Brand/novalyte.png?v=5.3.27" alt="Novalyte" loading="eager" decoding="async">
+          <img class="brand-logo-img" src="./Resources/Brand/novalyte.png?v=6.0.0" alt="Novalyte" loading="eager" decoding="async">
         </span>
         <span>
           <span class="brand-title">Novalyte Admin</span>
@@ -94,6 +94,7 @@
           <button class="btn small" type="button" id="exportBackupBtn">Export Backup</button>
           <label class="btn small" for="importBackupInput">Import Backup</label>
           <input id="importBackupInput" class="hidden" type="file" accept="application/json">
+          <span class="sync-status-pill local" id="cloudSyncStatus">Local browser mode</span>
         </div>
       </section>
 
@@ -538,21 +539,23 @@
     <div class="modal-card wide-modal">
       <div class="modal-head">
         <div>
-          <span class="eyebrow">Create order</span>
-          <h2>Create Order</h2>
-          <p class="service-desc">Service type auto-fills. Charges, client sales, and revenue update live.</p>
+          <span class="eyebrow" id="orderModalEyebrow">Create order</span>
+          <h2 id="orderModalTitle">Create Order</h2>
+          <p class="service-desc">Choose the service or digital product. Charges, client sales, and revenue update live.</p>
         </div>
         <button class="btn icon-btn modal-x-btn" type="button" data-close-modal="orderModal" aria-label="Close order form">×</button>
       </div>
       <form id="orderForm" class="form-grid">
-        <input type="hidden" id="orderServiceId">
+        <input type="hidden" id="orderEditId">
+        <input type="hidden" id="orderItemType" value="service">
         <div class="field full">
-          <label for="orderServiceName">Service Type</label>
-          <input class="input readonly-input" id="orderServiceName" readonly>
+          <label for="orderItemSelect" id="orderItemLabel">Service Type</label>
+          <select class="select" id="orderItemSelect" required></select>
+          <small class="field-hint">Transfer choices show only the item ID and name. Internal rates are not displayed here.</small>
         </div>
         <div class="field">
           <label for="orderClientName">Client Name / Reference</label>
-          <input class="input" id="orderClientName" placeholder="Example: Juan / Client A">
+          <input class="input" id="orderClientName" placeholder="Example: Juan / Client A" required>
         </div>
         <div class="field">
           <label for="orderClientContact">Client Contact</label>
@@ -579,17 +582,17 @@
             <option value="unpaid">Unpaid</option>
           </select>
         </div>
-        <div class="field full">
+        <div class="field full" id="orderTargetField">
           <label for="orderTarget">Target Link / Username</label>
           <input class="input" id="orderTarget" placeholder="Paste target link or username">
         </div>
         <div class="calc-preview full" id="orderCalcPreview">Enter quantity to compute charge and revenue.</div>
         <div class="field full">
-          <label for="orderNotes">Notes</label>
-          <textarea class="textarea" id="orderNotes" placeholder="Optional notes, provider reminders, or client instructions"></textarea>
+          <label for="orderNotes">Notes / Delivery Details</label>
+          <textarea class="textarea" id="orderNotes" placeholder="Optional notes, provider reminders, client instructions, or digital-product delivery details"></textarea>
         </div>
         <div class="modal-actions full">
-          <button class="btn primary" type="submit">Save Order</button>
+          <button class="btn primary" id="orderSaveBtn" type="submit">Save Order</button>
         </div>
       </form>
     </div>
@@ -629,8 +632,12 @@
     </div>
   </div>
 
-  <script src="assets/js/data.js?v=5.3.27"></script>
-  <script src="assets/js/store.js?v=5.3.27"></script>
-  <script src="assets/js/admin.js?v=5.3.27"></script>
+  <script>window.NOVALYTE_IS_ADMIN = true;</script>
+  <script src="assets/js/cloud-config.js?v=6.0.0"></script>
+  <script src="assets/js/remoteStore.js?v=6.0.0"></script>
+  <script src="assets/js/data.js?v=6.0.0"></script>
+  <script src="assets/js/admin-data.js?v=6.0.0"></script>
+  <script src="assets/js/store.js?v=6.0.0"></script>
+  <script src="assets/js/admin.js?v=6.0.0"></script>
 </body>
 </html>
