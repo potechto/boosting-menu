@@ -178,3 +178,31 @@ Requested-only visual cleanup:
 
 6. No other homepage, Admin navigation, service table, data,
    order, investment, or responsive behavior was changed.
+============================================================
+V6.0.20 ADMIN SERVICES ETA RESTORE
+============================================================
+
+Requested-only Admin Services table correction:
+
+1. Restored a dedicated ETA column immediately after Platform.
+
+2. Removed Average Time / ETA from underneath the service name.
+
+3. Preserved the service category underneath the service name.
+
+4. ETA now reads directly from the existing service avgTime
+   value, with "Not enough data" as the empty fallback.
+
+5. Reduced the Recommend column to a fixed 74px width and kept
+   the existing 32px switch centered inside it.
+
+6. Rebalanced the existing table columns without removing any
+   provider ID, platform, rate, revenue, status, or action data.
+
+7. Updated the empty Services table colspan from 9 to 10.
+
+8. Updated Admin styles.css and admin.js cache versions to
+   v6.0.20.
+
+9. No Client page, pricing, filter, order, investment, digital
+   product, recommendation, or service data logic was changed.

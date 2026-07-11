@@ -1000,7 +1000,7 @@ function renderStats() {
     const services = filteredServices();
     renderAdminServicesPagination(services.length);
     if (!services.length) {
-      els.servicesTable.innerHTML = '<tr class="empty-table-row"><td colspan="9"><div class="empty-state">No service found.</div></td></tr>';
+      els.servicesTable.innerHTML = '<tr class="empty-table-row"><td colspan="10"><div class="empty-state">No service found.</div></td></tr>';
       return;
     }
 
@@ -1024,7 +1024,8 @@ function renderStats() {
           </td>
           <td data-label="Provider ID"><span class="id-chip">${sanitize(service.providerId)}</span></td>
           <td data-label="Platform">${platformBadge(service.platform)}</td>
-          <td data-label="Provider Rate">${Store.formatMoney(service.providerRate)} / ${Store.formatNumber(service.rateUnit)}</td>
+<td data-label="ETA" class="service-eta-cell">${sanitize(service.avgTime || 'Not enough data')}</td>
+<td data-label="Provider Rate">${Store.formatMoney(service.providerRate)} / ${Store.formatNumber(service.rateUnit)}</td>
           <td data-label="Client Rate"><strong>${Store.formatMoney(service.clientRate)}</strong> / ${Store.formatNumber(service.rateUnit)}</td>
           <td data-label="Revenue/unit"><strong>${Store.formatMoney(revenue)}</strong></td>
           <td data-label="Status"><span class="status-pill ${statusClass}">${statusText}</span></td>

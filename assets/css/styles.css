@@ -12138,3 +12138,122 @@ body #statsGrid {
     text-underline-offset: 4px !important;
 }
 /* end v6.0.19 requested-only */
+
+/* v6.0.20 requested-only: restore Admin ETA and compact Recommend */
+@media (min-width: 821px) {
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-table {
+        width: 100% !important;
+        min-width: 0 !important;
+        table-layout: fixed !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-cols .services-col-recommend {
+        width: 74px !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .recommend-col,
+    body:has(.admin-layout:not(.hidden))
+    #services .recommend-cell {
+        width: 74px !important;
+        min-width: 74px !important;
+        max-width: 74px !important;
+        padding-left: 4px !important;
+        padding-right: 4px !important;
+        text-align: center !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .recommend-toggle {
+        display: inline-flex !important;
+        width: 32px !important;
+        min-width: 32px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-cols .services-col-name {
+        width: 20% !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-cols .services-col-id {
+        width: 6.5% !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-cols .services-col-platform {
+        width: 8.5% !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-cols .services-col-eta {
+        width: 8% !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-cols .services-col-provider-rate {
+        width: 9.5% !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-cols .services-col-client-rate {
+        width: 9.5% !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-cols .services-col-revenue {
+        width: 7.5% !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-cols .services-col-status {
+        width: 7% !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-cols .services-col-actions {
+        width: 17.5% !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-table th,
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-table td {
+        vertical-align: middle !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-table th:nth-child(4),
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-table
+    td[data-label="Platform"] {
+        text-align: center !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .services-ledger-table th:nth-child(5),
+    body:has(.admin-layout:not(.hidden))
+    #services .service-eta-cell {
+        text-align: center !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services .service-eta-cell {
+        color: var(--muted) !important;
+        font-size: 0.64rem !important;
+        line-height: 1.2 !important;
+        overflow-wrap: normal !important;
+        word-break: normal !important;
+    }
+
+    body:has(.admin-layout:not(.hidden))
+    #services td[data-label="Service"] .service-desc {
+        display: inline-block !important;
+        margin-top: 2px !important;
+    }
+}
+/* end v6.0.20 requested-only */
