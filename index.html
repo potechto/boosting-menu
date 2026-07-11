@@ -101,12 +101,23 @@
             <div>
               <span class="eyebrow">Track your order</span>
               <h2 id="clientOrderTrackerTitle">Novalyte order updates</h2>
-              <p>Browse the current client-safe order list. Use search or status only when you want to narrow the results.</p>
+              <p>View the live order list from admin. Use search or status only when you want to narrow the results.</p>
             </div>
-            <div class="client-order-summary" aria-live="polite">
-              <strong id="clientOrderResultCount">0</strong>
-              <span>orders shown</span>
-            </div>
+          </div>
+
+          <div class="client-order-count-grid" aria-label="Live order counts">
+            <article class="client-order-count-card pending">
+              <span>Pending</span>
+              <strong id="clientPendingCount">0</strong>
+            </article>
+            <article class="client-order-count-card processing">
+              <span>Processing</span>
+              <strong id="clientProcessingCount">0</strong>
+            </article>
+            <article class="client-order-count-card completed">
+              <span>Completed</span>
+              <strong id="clientCompletedCount">0</strong>
+            </article>
           </div>
 
           <form class="client-order-filter-bar" id="clientOrderLookupForm">
@@ -124,6 +135,7 @@
               </select>
             </div>
             <button class="btn client-order-clear" id="clientOrderClearBtn" type="button">Clear filters</button>
+            <div class="client-order-summary" aria-live="polite"><strong id="clientOrderResultCount">0</strong><span>orders shown</span></div>
             <small class="client-order-lookup-notice" id="clientOrderLookupNotice" aria-live="polite">Showing all available orders.</small>
           </form>
 

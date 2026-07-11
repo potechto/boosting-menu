@@ -10719,3 +10719,90 @@ body:has(.admin-layout:not(.hidden)) #orders .actions-cell .btn:last-child:nth-c
     width: 100%;
   }
 }
+
+
+/* Novalyte v6.0.6 tracker and admin layout corrections */
+.client-order-count-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+.client-order-count-card {
+  min-height: 112px;
+  padding: 1.15rem 1.25rem;
+  border: 1px solid rgba(148, 163, 184, .16);
+  border-radius: 18px;
+  background: rgba(2, 6, 23, .5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.client-order-count-card span {
+  color: var(--muted);
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.client-order-count-card strong { font-size: clamp(1.8rem, 4vw, 2.7rem); line-height: 1; }
+.client-order-count-card.pending { border-color: rgba(245, 158, 11, .32); }
+.client-order-count-card.processing { border-color: rgba(56, 189, 248, .32); }
+.client-order-count-card.completed { border-color: rgba(16, 185, 129, .32); }
+.client-order-filter-bar { grid-template-columns: minmax(280px, 1.6fr) minmax(190px, .65fr) auto auto !important; }
+.client-order-filter-bar .client-order-summary { align-self: center; justify-self: end; min-width: 92px; }
+
+#orderForm .order-payment-status-field {
+  width: min(100%, 430px) !important;
+  justify-self: center !important;
+}
+#serviceForm .service-client-tag-field {
+  grid-column: 1 / -1 !important;
+  width: min(100%, 520px) !important;
+  justify-self: center !important;
+  align-self: auto !important;
+}
+#serviceForm .service-client-tag-field label { text-align: center !important; }
+
+body:has(.admin-layout:not(.hidden)) #orders .table-wrap { overflow-x: auto !important; }
+body:has(.admin-layout:not(.hidden)) #orders table { min-width: 1240px !important; table-layout: fixed; }
+body:has(.admin-layout:not(.hidden)) #orders th:nth-child(1) { width: 120px; }
+body:has(.admin-layout:not(.hidden)) #orders th:nth-child(2) { width: 165px; }
+body:has(.admin-layout:not(.hidden)) #orders th:nth-child(3) { width: 225px; }
+body:has(.admin-layout:not(.hidden)) #orders th:nth-child(4) { width: 75px; }
+body:has(.admin-layout:not(.hidden)) #orders th:nth-child(5),
+body:has(.admin-layout:not(.hidden)) #orders th:nth-child(6),
+body:has(.admin-layout:not(.hidden)) #orders th:nth-child(7) { width: 105px; }
+body:has(.admin-layout:not(.hidden)) #orders th:nth-child(8) { width: 135px; }
+body:has(.admin-layout:not(.hidden)) #orders th:nth-child(9) { width: 95px; }
+body:has(.admin-layout:not(.hidden)) #orders th:nth-child(10) { width: 190px; }
+body:has(.admin-layout:not(.hidden)) #orders .actions-cell {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: .45rem !important;
+  min-width: 0 !important;
+  width: 100% !important;
+}
+body:has(.admin-layout:not(.hidden)) #orders .actions-cell .btn {
+  width: auto !important;
+  min-width: 72px !important;
+  height: 2.45rem !important;
+  min-height: 2.45rem !important;
+  padding: .45rem .7rem !important;
+  font-size: .78rem !important;
+  flex: 0 0 auto !important;
+}
+body:has(.admin-layout:not(.hidden)) #orders .actions-cell .btn:last-child:nth-child(3) {
+  width: auto !important;
+  grid-column: auto !important;
+  justify-self: auto !important;
+}
+.pagination-bar:empty { display: none !important; }
+
+@media (max-width: 900px) {
+  .client-order-count-grid { grid-template-columns: 1fr; }
+  .client-order-filter-bar { grid-template-columns: 1fr !important; }
+  .client-order-filter-bar .client-order-summary { justify-self: start; }
+}

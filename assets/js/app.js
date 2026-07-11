@@ -33,6 +33,9 @@
     clientOrderStatusSelect: document.getElementById('clientOrderStatusSelect'),
     clientOrderResults: document.getElementById('clientOrderResults'),
     clientOrderResultCount: document.getElementById('clientOrderResultCount'),
+    clientPendingCount: document.getElementById('clientPendingCount'),
+    clientProcessingCount: document.getElementById('clientProcessingCount'),
+    clientCompletedCount: document.getElementById('clientCompletedCount'),
     clientOrderResultList: document.getElementById('clientOrderResultList'),
     calcSearch: document.getElementById('calcSearch'),
     calcSearchSuggestions: document.getElementById('calcSearchSuggestions'),
@@ -1086,7 +1089,18 @@
   }
 
   function renderClientOrders(orders, message = '') {
-    const filtered = filterClientOrders(orders);
+    const visibleOrders = (Array.isArray(orders) ? orders : [])
+      .filter(order => !['cancelled', 'voided'].includes(String(order.status || '').toLowerCase()));
+    const counts = visibleOrders.reduce((summary, order) => {
+      const status = normalizeClientOrderStatus(order.status);
+      if (Object.prototype.hasOwnProperty.call(summary, status)) summary[status] += 1;
+      return summary;
+    }, { pending: 0, processing: 0, completed: 0 });
+    if (els.clientPendingCount) els.clientPendingCount.textContent = String(counts.pending);
+    if (els.clientProcessingCount) els.clientProcessingCount.textContent = String(counts.processing);
+    if (els.clientCompletedCount) els.clientCompletedCount.textContent = String(counts.completed);
+
+    const filtered = filterClientOrders(visibleOrders);
     if (els.clientOrderResultCount) els.clientOrderResultCount.textContent = String(filtered.length);
     if (els.clientOrderResultList) {
       els.clientOrderResultList.innerHTML = filtered.length
