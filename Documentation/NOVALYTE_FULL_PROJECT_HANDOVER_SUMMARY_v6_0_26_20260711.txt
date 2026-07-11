@@ -88,3 +88,17 @@ Requested-only Orders visual correction:
 6. Preserved the date/time layout, order data, status logic, payment logic, and mobile panel isolation.
 7. Updated the Admin stylesheet cache version to v6.0.25.
 8. No unrelated Admin or client layout was changed.
+
+============================================================
+V6.0.26 STATUS CONTROL FIT FIX
+============================================================
+
+Requested-only Orders correction:
+
+1. Reduced the desktop Status dropdown width and font size slightly.
+2. Increased the Status table column just enough to show the full control.
+3. Preserved the complete dropdown choices and native arrow.
+4. Kept Voided and other status pills centered and contained.
+5. Preserved all status-changing logic, payment data, dates, and actions.
+6. Updated the Admin stylesheet cache version to v6.0.26.
+7. No unrelated layout or data logic was changed.
