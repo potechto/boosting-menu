@@ -11561,8 +11561,8 @@ body:has(.admin-layout:not(.hidden)) #digital-products .table-wrap table {
 }
 
 /* Admin Services: Recommend is the first column; keep every heading on one line. */
-#services .services-ledger-cols .services-col-recommend { width: 5.5% !important; }
-#services .services-ledger-cols .services-col-name { width: 23% !important; }
+#services .services-ledger-cols .services-col-recommend { width: 4.5% !important; }
+#services .services-ledger-cols .services-col-name { width: 24% !important; }
 #services .services-ledger-cols .services-col-id { width: 7% !important; }
 #services .services-ledger-cols .services-col-platform { width: 9% !important; }
 #services .services-ledger-cols .services-col-provider-rate { width: 10% !important; }
@@ -11601,3 +11601,19 @@ body:has(.admin-layout:not(.hidden)) #services .recommend-cell {
   }
 }
 
+/* v6.0.12 requested-only: compact Recommend column and lock it for disabled services. */
+body:has(.admin-layout:not(.hidden)) #services .recommend-col,
+body:has(.admin-layout:not(.hidden)) #services .recommend-cell {
+  padding-left: 2px !important;
+  padding-right: 2px !important;
+}
+
+body:has(.admin-layout:not(.hidden)) #services .recommend-toggle:has(input:disabled) {
+  cursor: not-allowed !important;
+}
+
+body:has(.admin-layout:not(.hidden)) #services .recommend-toggle input:disabled + span {
+  opacity: 0.42 !important;
+  cursor: not-allowed !important;
+  filter: grayscale(0.35);
+}

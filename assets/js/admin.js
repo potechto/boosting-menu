@@ -95,7 +95,6 @@
     serviceMin: document.getElementById('serviceMin'),
     serviceMax: document.getElementById('serviceMax'),
     serviceTag: document.getElementById('serviceTag'),
-    serviceRecommended: document.getElementById('serviceRecommended'),
     serviceVisible: document.getElementById('serviceVisible'),
     serviceArchived: document.getElementById('serviceArchived'),
     serviceDescription: document.getElementById('serviceDescription'),
@@ -885,7 +884,7 @@
       const rowClass = [service.archived ? 'is-admin-service-disabled' : '', service.visible === false ? 'is-admin-service-hidden' : ''].filter(Boolean).join(' ');
       return `
         <tr class="${rowClass}">
-          <td data-label="Recommend" class="recommend-cell"><label class="recommend-toggle" title="Show in Recommended"><input type="checkbox" data-recommend-service="${service.id}" ${service.recommended === true ? 'checked' : ''}><span aria-hidden="true"></span></label></td>
+          <td data-label="Recommend" class="recommend-cell"><label class="recommend-toggle" title="${service.archived ? 'Enable service to change Recommended' : 'Show in Recommended'}"><input type="checkbox" data-recommend-service="${service.id}" ${service.recommended === true ? 'checked' : ''} ${service.archived ? 'disabled aria-disabled="true"' : ''}><span aria-hidden="true"></span></label></td>
           <td data-label="Service">
             <strong>${sanitize(service.name)}</strong><br>
             <span class="service-desc">${sanitize(service.category)} · ${sanitize(service.avgTime || 'Varies')}</span>
@@ -1105,7 +1104,6 @@
     els.serviceMin.value = data.min || 0;
     els.serviceMax.value = data.max || 0;
     els.serviceTag.value = data.tag || '';
-    if (els.serviceRecommended) els.serviceRecommended.checked = data.recommended === true;
     els.serviceVisible.checked = data.visible !== false;
     els.serviceArchived.checked = data.archived === true;
     els.serviceDescription.value = data.description || '';
@@ -1140,7 +1138,7 @@
       min: Number(els.serviceMin.value) || 0,
       max: Number(els.serviceMax.value) || 0,
       tag: els.serviceTag.value.trim(),
-      recommended: Boolean(els.serviceRecommended && els.serviceRecommended.checked),
+      recommended: existingIndex >= 0 ? services[existingIndex].recommended === true : false,
       visible: els.serviceArchived.checked ? true : els.serviceVisible.checked,
       archived: els.serviceArchived.checked,
       description: els.serviceDescription.value.trim()
@@ -1789,6 +1787,11 @@
         const services = Store.getServices();
         const service = services.find(item => item.id === recommendInput.dataset.recommendService);
         if (service) {
+          if (service.archived) {
+            recommendInput.checked = service.recommended === true;
+            Store.toast('Enable this service before changing its Recommended setting.', 'error');
+            return;
+          }
           service.recommended = recommendInput.checked;
           Store.saveServices(services);
           Store.toast(service.recommended ? 'Service added to Recommended.' : 'Service removed from Recommended.');

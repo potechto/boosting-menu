@@ -1,0 +1,42 @@
+NOVALYTE FULL PROJECT HANDOVER SUMMARY
+Version: 6.0.12
+Date: 2026-07-11
+
+SCOPE OF THIS UPDATE
+This is a requested-only patch based on v6.0.11. It changes only the client order-search wording and the existing Admin Services recommendation controls. No unrelated page, data model, price, order workflow, service record, filter, action, or layout was intentionally changed.
+
+COMPLETED CHANGES
+1. Client order search wording
+   - The visible label and search-field placeholder now read: Search Service ID or Your Name.
+   - Existing service-ID and client-name filtering behavior is unchanged.
+
+2. Service edit modal
+   - Removed the duplicate Recommended service checkbox from Add/Edit Service.
+   - Editing a service now preserves its current recommended value.
+   - New services remain not recommended by default and can be recommended only through the Services table switch.
+
+3. Disabled-service recommendation lock
+   - A disabled service cannot have its Recommend switch toggled.
+   - The switch is visibly disabled while the service is disabled.
+   - The saved recommended value is retained, so re-enabling the service restores access to the same switch state.
+
+4. Recommend column width
+   - Reduced the Recommend column from 5.5% to 4.5%.
+   - The recovered width was assigned to the Service column.
+   - Only the Recommend column spacing and disabled-state styling were adjusted.
+
+LOCKED WORKFLOW
+- Terminal-first update.
+- One ZIP package only.
+- Automatic patch copy to the main project.
+- Automatic exact verification and JavaScript syntax checks.
+- Hidden local server launch.
+- Automatic local browser opening and GitHub push.
+- Automatic removal of the downloaded ZIP and extracted updater after success.
+- No update-specific README, local-update note, or verification text file is added.
+
+MAIN PROJECT PATH
+C:\Users\Ralph John\OneDrive\Desktop\ME FILES\Novalyte
+
+DOWNLOADS PATH
+C:\Users\Ralph John\Downloads
