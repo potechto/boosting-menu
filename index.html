@@ -103,26 +103,29 @@
               <h2 id="clientOrderTrackerTitle">Check your Novalyte order status</h2>
               <p>Enter the exact client name or reference provided to the admin. Only your client-safe order details will appear.</p>
             </div>
-            <form class="client-order-lookup" id="clientOrderLookupForm">
-              <label class="sr-only" for="clientOrderLookup">Client name or reference</label>
-              <input class="input" id="clientOrderLookup" type="text" autocomplete="off" placeholder="Exact client name or reference">
-              <button class="btn primary" id="clientOrderLookupBtn" type="submit">Check Orders</button>
-              <small class="client-order-lookup-notice" id="clientOrderLookupNotice" aria-live="polite">Use the same spelling saved by the admin.</small>
+            <form class="client-order-lookup client-order-lookup-form" id="clientOrderLookupForm">
+              <div class="field client-order-search-field">
+                <label for="clientOrderLookup">Client name or Reference ID</label>
+                <input class="input" id="clientOrderLookup" type="text" autocomplete="off" placeholder="Enter exact client name or Reference ID">
+              </div>
+              <div class="field client-order-status-field">
+                <label for="clientOrderStatusSelect">Order status</label>
+                <select class="select" id="clientOrderStatusSelect" required>
+                  <option value="">Select status</option>
+                  <option value="pending">Pending</option>
+                  <option value="processing">Processing</option>
+                  <option value="completed">Completed</option>
+                </select>
+              </div>
+              <button class="btn primary client-order-submit" id="clientOrderLookupBtn" type="submit">Check Orders</button>
+              <small class="client-order-lookup-notice" id="clientOrderLookupNotice" aria-live="polite">Use the same spelling or Reference ID saved by the admin.</small>
             </form>
           </div>
 
-          <div class="client-order-status-grid" aria-live="polite">
-            <article class="client-order-status-column pending">
-              <header><h3>Pending Orders</h3><span id="clientPendingCount">0</span></header>
-              <div class="client-order-list" id="clientPendingOrders"><p class="client-order-empty">Enter your client reference to view orders.</p></div>
-            </article>
-            <article class="client-order-status-column processing">
-              <header><h3>Processing Orders</h3><span id="clientProcessingCount">0</span></header>
-              <div class="client-order-list" id="clientProcessingOrders"><p class="client-order-empty">Enter your client reference to view orders.</p></div>
-            </article>
-            <article class="client-order-status-column finished">
-              <header><h3>Finished</h3><span id="clientFinishedCount">0</span></header>
-              <div class="client-order-list" id="clientFinishedOrders"><p class="client-order-empty">Enter your client reference to view orders.</p></div>
+          <div class="client-order-results hidden" id="clientOrderResults" aria-live="polite">
+            <article class="client-order-status-column" id="clientOrderResultCard">
+              <header><h3 id="clientOrderResultTitle">Order results</h3><span id="clientOrderResultCount">0</span></header>
+              <div class="client-order-list" id="clientOrderResultList"></div>
             </article>
           </div>
         </section>

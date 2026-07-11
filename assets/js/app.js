@@ -30,12 +30,12 @@
     clientOrderLookup: document.getElementById('clientOrderLookup'),
     clientOrderLookupBtn: document.getElementById('clientOrderLookupBtn'),
     clientOrderLookupNotice: document.getElementById('clientOrderLookupNotice'),
-    clientPendingOrders: document.getElementById('clientPendingOrders'),
-    clientProcessingOrders: document.getElementById('clientProcessingOrders'),
-    clientFinishedOrders: document.getElementById('clientFinishedOrders'),
-    clientPendingCount: document.getElementById('clientPendingCount'),
-    clientProcessingCount: document.getElementById('clientProcessingCount'),
-    clientFinishedCount: document.getElementById('clientFinishedCount'),
+    clientOrderStatusSelect: document.getElementById('clientOrderStatusSelect'),
+    clientOrderResults: document.getElementById('clientOrderResults'),
+    clientOrderResultCard: document.getElementById('clientOrderResultCard'),
+    clientOrderResultTitle: document.getElementById('clientOrderResultTitle'),
+    clientOrderResultCount: document.getElementById('clientOrderResultCount'),
+    clientOrderResultList: document.getElementById('clientOrderResultList'),
     calcSearch: document.getElementById('calcSearch'),
     calcSearchSuggestions: document.getElementById('calcSearchSuggestions'),
     calcCategory: document.getElementById('calcCategory'),
@@ -1031,7 +1031,7 @@
       active: 'Pending',
       pending: 'Pending',
       processing: 'Processing',
-      completed: 'Finished'
+      completed: 'Completed'
     };
     return labels[status] || String(status || 'Pending');
   }
@@ -1065,29 +1065,36 @@
     return `<p class="client-order-empty">${sanitize(message)}</p>`;
   }
 
-  function renderClientOrders(orders, message = '') {
+  function renderClientOrders(orders, message = '', selectedStatus = '') {
     const safeOrders = Array.isArray(orders) ? orders : [];
-    const pending = safeOrders.filter(order => ['active', 'pending'].includes(order.status));
-    const processing = safeOrders.filter(order => order.status === 'processing');
-    const finished = safeOrders.filter(order => order.status === 'completed');
-    const fallback = message || (state.clientLookupRef ? 'No matching orders in this status.' : 'Enter your client reference to view orders.');
-
-    if (els.clientPendingOrders) els.clientPendingOrders.innerHTML = pending.length ? pending.map(clientOrderCard).join('') : clientOrderEmpty(fallback);
-    if (els.clientProcessingOrders) els.clientProcessingOrders.innerHTML = processing.length ? processing.map(clientOrderCard).join('') : clientOrderEmpty(fallback);
-    if (els.clientFinishedOrders) els.clientFinishedOrders.innerHTML = finished.length ? finished.map(clientOrderCard).join('') : clientOrderEmpty(fallback);
-    if (els.clientPendingCount) els.clientPendingCount.textContent = String(pending.length);
-    if (els.clientProcessingCount) els.clientProcessingCount.textContent = String(processing.length);
-    if (els.clientFinishedCount) els.clientFinishedCount.textContent = String(finished.length);
+    const normalizedStatus = selectedStatus === 'pending' ? ['active', 'pending'] : [selectedStatus];
+    const filtered = selectedStatus ? safeOrders.filter(order => normalizedStatus.includes(order.status)) : [];
+    const labels = { pending: 'Pending Orders', processing: 'Processing Orders', completed: 'Completed Orders' };
+    const fallback = message || (state.clientLookupRef ? `No ${selectedStatus || ''} orders found for this client name or Reference ID.` : 'Enter your client name or Reference ID and select a status.');
+    if (els.clientOrderResults) els.clientOrderResults.classList.toggle('hidden', !selectedStatus);
+    if (els.clientOrderResultCard) {
+      els.clientOrderResultCard.classList.remove('pending', 'processing', 'completed', 'finished');
+      if (selectedStatus) els.clientOrderResultCard.classList.add(selectedStatus);
+    }
+    if (els.clientOrderResultTitle) els.clientOrderResultTitle.textContent = labels[selectedStatus] || 'Order results';
+    if (els.clientOrderResultCount) els.clientOrderResultCount.textContent = String(filtered.length);
+    if (els.clientOrderResultList) els.clientOrderResultList.innerHTML = filtered.length ? filtered.map(clientOrderCard).join('') : clientOrderEmpty(fallback);
   }
 
   async function lookupClientOrders(event) {
     if (event) event.preventDefault();
     if (!els.clientOrderLookup) return;
     const clientRef = els.clientOrderLookup.value.trim();
+    const selectedStatus = els.clientOrderStatusSelect ? els.clientOrderStatusSelect.value : '';
     if (!clientRef) {
       state.clientLookupRef = '';
-      renderClientOrders([], 'Enter the exact client name or reference first.');
-      if (els.clientOrderLookupNotice) els.clientOrderLookupNotice.textContent = 'Enter the exact client name or reference first.';
+      renderClientOrders([], 'Enter your client name or Reference ID first.', selectedStatus);
+      if (els.clientOrderLookupNotice) els.clientOrderLookupNotice.textContent = 'Enter your client name or Reference ID first.';
+      return;
+    }
+    if (!selectedStatus) {
+      renderClientOrders([], 'Select an order status to continue.', '');
+      if (els.clientOrderLookupNotice) els.clientOrderLookupNotice.textContent = 'Select an order status to continue.';
       return;
     }
 
@@ -1101,7 +1108,7 @@
     try {
       const result = Remote && Remote.lookupOrders
         ? await Remote.lookupOrders(clientRef, Store)
-        : { ok: true, mode: 'local', orders: Store.getOrders().filter(order => String(order.clientName || '').trim().toLowerCase() === clientRef.toLowerCase()) };
+        : { ok: true, mode: 'local', orders: Store.getOrders().filter(order => { const ref = clientRef.toLowerCase(); return String(order.clientName || '').trim().toLowerCase() === ref || String(order.id || '').trim().toLowerCase() === ref; }) };
       if (!result.ok) {
         renderClientOrders([], 'Order tracking could not connect. Please try again or message Novalyte.');
         if (els.clientOrderLookupNotice) els.clientOrderLookupNotice.textContent = 'Order tracking could not connect. Please try again or message Novalyte.';
@@ -1507,7 +1514,7 @@
     normalizeAndPersistPublicReviews();
     renderReviews();
     bindEvents();
-    renderClientOrders([]);
+    renderClientOrders([], '', '');
     const initialHash = window.location.hash;
     showClientView(viewFromHash() || saved.view || 'home', false);
     window.addEventListener('hashchange', () => {
