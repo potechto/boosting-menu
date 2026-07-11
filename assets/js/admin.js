@@ -458,7 +458,7 @@
       [dashboard, stats, services, digitalProductsAdmin, investments, orders].forEach(el => el && el.classList.add('hidden'));
       if (activePanel === 'dashboard') {
         dashboard && dashboard.classList.remove('hidden');
-        stats && stats.classList.remove('hidden');
+        stats && stats.classList.add('hidden'); // v6.0.16: analytics-only Dashboard
       }
       if (activePanel === 'services') services && services.classList.remove('hidden');
       if (activePanel === 'digital-products') digitalProductsAdmin && digitalProductsAdmin.classList.remove('hidden');
@@ -694,7 +694,140 @@
     return value ? new Date(value).toLocaleString('en-PH', { dateStyle: 'medium', timeStyle: 'short' }) : '-';
   }
 
-  function renderStats() {
+
+// v6.0.15 requested-only: dashboard sales and revenue analytics
+function renderDashboardAnalytics() {
+  const chart = document.getElementById('dashboardSalesRevenueChart');
+  const summary = document.getElementById('dashboardAnalyticsSummary');
+  if (!chart || !summary) return;
+
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const orders = Store.getOrders().filter(order => !['voided', 'cancelled'].includes(String(order.status || '').toLowerCase()) && String(order.itemType || 'service') !== 'digital-product');
+  const validDates = orders
+    .map(order => new Date(order.createdAt))
+    .filter(date => !Number.isNaN(date.getTime()));
+  const chartYear = validDates.length
+    ? Math.max(...validDates.map(date => date.getFullYear()))
+    : new Date().getFullYear();
+
+  const monthlySales = Array(12).fill(0);
+  const monthlyRevenue = Array(12).fill(0);
+  const monthlyActivity = Array(12).fill(0);
+
+  orders.forEach(order => {
+    const date = new Date(order.createdAt);
+    if (Number.isNaN(date.getTime()) || date.getFullYear() !== chartYear) return;
+    const monthIndex = date.getMonth();
+    monthlySales[monthIndex] += Number(order.clientCharge) || 0;
+    monthlyRevenue[monthIndex] += Number(order.revenue) || 0;
+    monthlyActivity[monthIndex] += 1;
+  });
+
+  const activeMonths = monthlyActivity
+    .map((count, index) => count > 0 ? index : -1)
+    .filter(index => index >= 0);
+
+  const findPoint = (values, mode) => {
+    if (!activeMonths.length) return { index: 0, value: 0 };
+    const index = activeMonths.reduce((best, current) => {
+      if (mode === 'max') return values[current] > values[best] ? current : best;
+      return values[current] < values[best] ? current : best;
+    }, activeMonths[0]);
+    return { index, value: values[index] };
+  };
+
+  const highestSales = findPoint(monthlySales, 'max');
+  const lowestSales = findPoint(monthlySales, 'min');
+  const highestRevenue = findPoint(monthlyRevenue, 'max');
+  const lowestRevenue = findPoint(monthlyRevenue, 'min');
+
+  const totalProviderCost = orders.reduce((sum, order) => sum + (Number(order.providerCharge) || 0), 0);
+  const totalRevenue = monthlyRevenue.reduce((sum, value) => sum + value, 0);
+  const roi = totalProviderCost > 0 ? (totalRevenue / totalProviderCost) * 100 : 0;
+
+  const width = 1000;
+  const height = 330;
+  const left = 72;
+  const right = 28;
+  const top = 32;
+  const bottom = 50;
+  const plotWidth = width - left - right;
+  const plotHeight = height - top - bottom;
+  const scaleMax = Math.max(1, ...monthlySales, ...monthlyRevenue);
+  const x = index => left + (plotWidth / 11) * index;
+  const y = value => top + plotHeight * (1 - (value / scaleMax));
+  const pathFor = values => values
+    .map((value, index) => `${index === 0 ? 'M' : 'L'} ${x(index).toFixed(2)} ${y(value).toFixed(2)}`)
+    .join(' ');
+  const areaFor = values => `${pathFor(values)} L ${x(11).toFixed(2)} ${(top + plotHeight).toFixed(2)} L ${x(0).toFixed(2)} ${(top + plotHeight).toFixed(2)} Z`;
+
+  const gridLines = Array.from({ length: 5 }, (_, index) => {
+    const ratio = index / 4;
+    const yPosition = top + plotHeight * ratio;
+    const value = scaleMax * (1 - ratio);
+    return `<line class="dashboard-chart-gridline" x1="${left}" y1="${yPosition.toFixed(2)}" x2="${width - right}" y2="${yPosition.toFixed(2)}"></line><text class="dashboard-chart-y-label" x="${left - 12}" y="${(yPosition + 4).toFixed(2)}" text-anchor="end">${Store.formatMoney(value)}</text>`;
+  }).join('');
+
+  const monthLabels = monthNames.map((month, index) => `<text class="dashboard-chart-month-label" x="${x(index).toFixed(2)}" y="${height - 17}" text-anchor="middle">${month}</text>`).join('');
+
+  const pointsFor = (values, className) => values.map((value, index) => `<circle class="dashboard-chart-point ${className}" cx="${x(index).toFixed(2)}" cy="${y(value).toFixed(2)}" r="4"><title>${monthNames[index]} ${chartYear}: ${Store.formatMoney(value)}</title></circle>`).join('');
+
+  chart.innerHTML = `
+    <div class="dashboard-chart-year">${chartYear}</div>
+    <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="novalyteSalesArea" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ff5d6c" stop-opacity="0.24"></stop>
+          <stop offset="100%" stop-color="#ff5d6c" stop-opacity="0"></stop>
+        </linearGradient>
+        <linearGradient id="novalyteRevenueArea" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#67d8ff" stop-opacity="0.25"></stop>
+          <stop offset="100%" stop-color="#67d8ff" stop-opacity="0"></stop>
+        </linearGradient>
+        <filter id="novalyteSalesGlow" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="3" result="blur"></feGaussianBlur>
+          <feMerge><feMergeNode in="blur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge>
+        </filter>
+        <filter id="novalyteRevenueGlow" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="3" result="blur"></feGaussianBlur>
+          <feMerge><feMergeNode in="blur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge>
+        </filter>
+      </defs>
+      ${gridLines}
+      <path class="dashboard-chart-area sales" d="${areaFor(monthlySales)}"></path>
+      <path class="dashboard-chart-area revenue" d="${areaFor(monthlyRevenue)}"></path>
+      <path class="dashboard-chart-line sales" d="${pathFor(monthlySales)}"></path>
+      <path class="dashboard-chart-line revenue" d="${pathFor(monthlyRevenue)}"></path>
+      ${pointsFor(monthlySales, 'sales')}
+      ${pointsFor(monthlyRevenue, 'revenue')}
+      ${monthLabels}
+    </svg>
+    ${activeMonths.length ? '' : '<div class="dashboard-chart-empty">No order activity recorded for this year yet.</div>'}
+  `;
+
+  const summaryItems = [
+    { label: 'Highest sales', point: highestSales, tone: 'sales' },
+    { label: 'Lowest sales', point: lowestSales, tone: 'sales' },
+    { label: 'Highest revenue', point: highestRevenue, tone: 'revenue' },
+    { label: 'Lowest revenue', point: lowestRevenue, tone: 'revenue' }
+  ];
+
+  summary.innerHTML = summaryItems.map(item => `
+    <article class="dashboard-analytics-summary-card ${item.tone}">
+      <span>${item.label}</span>
+      <strong>${Store.formatMoney(item.point.value)}</strong>
+      <small>${monthNames[item.point.index]} ${chartYear}</small>
+    </article>
+  `).join('') + `
+    <article class="dashboard-analytics-summary-card roi">
+      <span>Service ROI</span>
+      <strong>${roi.toFixed(1)}%</strong>
+      <small>Revenue versus provider cost</small>
+    </article>
+  `;
+}
+// end v6.0.15 dashboard analytics
+function renderStats() {
     const totals = Store.getTotals();
     const fundClass = totals.availableFund < 0 ? 'bad' : totals.availableFund < Math.max(totals.invest * 0.25, 1) ? 'warn' : 'good';
     const stats = [
@@ -718,7 +851,7 @@
         <strong>${item.value}</strong>
       </article>
     `).join('');
-    els.investAmount.value = totals.invest || '';
+    renderDashboardAnalytics(); els.investAmount.value = totals.invest || '';
   }
 
   function financeTypeLabel(type) {
@@ -1937,3 +2070,65 @@
 
   document.addEventListener('DOMContentLoaded', init);
 })();
+
+/* v6.0.17 requested-only: prevent the legacy Dashboard cards
+   from being restored by later render or navigation functions. */
+function novalyteHideLegacyDashboardStats() {
+    const legacyStats = document.getElementById('statsGrid');
+
+    if (!legacyStats) {
+        return;
+    }
+
+    legacyStats.classList.add('hidden', 'dashboard-stats-hook');
+    legacyStats.hidden = true;
+    legacyStats.setAttribute('aria-hidden', 'true');
+    legacyStats.style.setProperty('display', 'none', 'important');
+    legacyStats.style.setProperty('visibility', 'hidden', 'important');
+    legacyStats.style.setProperty('height', '0', 'important');
+    legacyStats.style.setProperty('margin', '0', 'important');
+    legacyStats.style.setProperty('padding', '0', 'important');
+}
+
+function novalyteWatchLegacyDashboardStats() {
+    novalyteHideLegacyDashboardStats();
+
+    const legacyStats = document.getElementById('statsGrid');
+
+    if (!legacyStats || legacyStats.dataset.hideObserverReady === 'true') {
+        return;
+    }
+
+    legacyStats.dataset.hideObserverReady = 'true';
+
+    const observer = new MutationObserver(() => {
+        if (
+            legacyStats.style.getPropertyValue('display') !== 'none' ||
+            !legacyStats.classList.contains('hidden') ||
+            legacyStats.hidden !== true
+        ) {
+            novalyteHideLegacyDashboardStats();
+        }
+    });
+
+    observer.observe(legacyStats, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'hidden', 'aria-hidden']
+    });
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener(
+        'DOMContentLoaded',
+        novalyteWatchLegacyDashboardStats,
+        { once: true }
+    );
+}
+else {
+    novalyteWatchLegacyDashboardStats();
+}
+
+window.addEventListener('hashchange', () => {
+    queueMicrotask(novalyteHideLegacyDashboardStats);
+});
+/* end v6.0.17 requested-only */

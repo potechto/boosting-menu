@@ -87,18 +87,35 @@
         <span class="eyebrow">Internal dashboard</span>
         <h1>Welcome, Admin</h1>
         <p>Manage Novalyte services, digital products, orders, and finance records in one protected workspace.</p>
-        <div class="quick-links">
-          <a class="btn small" href="#services">Manage Services</a>
-          <a class="btn small" href="#digital-products">Manage Digital Products</a>
-          <a class="btn small" href="#orders">View Orders</a>
-          <button class="btn small" type="button" id="exportBackupBtn">Export Backup</button>
-          <label class="btn small" for="importBackupInput">Import Backup</label>
+        <div class="dashboard-utility-hooks" aria-hidden="true">
+          <button class="hidden" type="button" id="exportBackupBtn" tabindex="-1">Export Backup</button>
+          <label class="hidden" for="importBackupInput">Import Backup</label>
           <input id="importBackupInput" class="hidden" type="file" accept="application/json">
-          <span class="sync-status-pill local" id="cloudSyncStatus">Local browser mode</span>
+          <span class="sync-status-pill local hidden" id="cloudSyncStatus">Local browser mode</span>
         </div>
+
+        <section class="dashboard-analytics-card" id="dashboardAnalyticsCard" aria-labelledby="dashboardAnalyticsTitle">
+          <header class="dashboard-analytics-head">
+            <div>
+              <span class="dashboard-analytics-kicker">Monthly performance</span>
+              <h2 id="dashboardAnalyticsTitle">Sales &amp; Revenue Analytics</h2>
+              <p>Monthly client sales and revenue performance across all active service orders.</p>
+            </div>
+            <div class="dashboard-analytics-legend" aria-label="Chart legend">
+              <span><i class="dashboard-legend-dot sales" aria-hidden="true"></i>Client sales</span>
+              <span><i class="dashboard-legend-dot revenue" aria-hidden="true"></i>Revenue / ROI</span>
+            </div>
+          </header>
+
+          <div class="dashboard-chart-shell">
+            <div class="dashboard-chart-stage" id="dashboardSalesRevenueChart" role="img" aria-label="Monthly client sales and revenue line chart"></div>
+          </div>
+
+          <div class="dashboard-analytics-summary" id="dashboardAnalyticsSummary"></div>
+        </section>
       </section>
 
-      <section class="stats-grid" id="statsGrid"></section>
+      <section class="stats-grid hidden dashboard-stats-hook" id="statsGrid" aria-hidden="true"></section>
 
       <section class="section hidden" id="services">
         <div class="section-head">
