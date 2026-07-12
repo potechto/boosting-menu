@@ -960,9 +960,9 @@ One ZIP only, containing the patch payload and one readable multi-line PowerShel
 - Updated only admin.html, index.html, assets/css/styles.css, assets/css/mobile.css, and this main handover file.
 - Preserved Supabase configuration, shared data logic, order sorting, voided-row fading, modal sizing, calculations, records, and desktop/laptop layouts.
 
-[PATCH v6.0.43]
-- Locked the Admin navigation sidebar only on PC/desktop widths (1101px and wider).
-- The sidebar now remains visible while the main Admin content scrolls independently.
-- Preserved the 228px desktop navigation width and offset the main content by the same amount to prevent overlap.
-- Mobile and narrow-screen navigation behavior is unchanged; the existing hamburger/floating navigation remains active.
-- Preserved the v6.0.42 responsive Services, Digital Products, and Orders cards, centered notifications, Supabase configuration, records, calculations, and all unrelated behavior.
+[PATCH v6.0.44]
+- Corrected the navigation-lock scope: the public Client View top navigation is fixed while scrolling on widths 821px and above.
+- Added the client-site body scope and an exact 68px top offset so page content never sits under the fixed navigation.
+- The unintended v6.0.43 Admin sidebar lock is not part of the current state.
+- Mobile Client View navigation remains the existing hamburger menu at 820px and below.
+- Preserved v6.0.42 responsive record cards, centered action notifications, v6.0.40 Orders behavior, and v6.0.39 Supabase cloud sync.
