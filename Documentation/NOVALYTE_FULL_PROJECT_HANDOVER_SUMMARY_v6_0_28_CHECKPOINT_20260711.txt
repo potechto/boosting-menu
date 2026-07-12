@@ -980,3 +980,17 @@ One ZIP only, containing the patch payload and one readable multi-line PowerShel
 - Added an inline critical mobile guard in index.html so stale external CSS cannot keep the Home hero, buttons, or metric cards wider than the phone screen.
 - Preserved the hamburger navigation on mobile and the fixed Client View navigation at 821px and wider.
 - No Admin layout, Supabase configuration, shared records, calculations, Orders behavior, or client pages outside Home were changed.
+
+[PATCH v6.0.47] DEFINITIVE ADMIN MOBILE CARD LAYOUT
+- Removed the obsolete high-specificity mobile table guard that was still forcing every Admin table cell to display:block with min-width:100%, overriding the later v6.0.42 responsive-card rules.
+- Rebuilt the Admin Services, Digital Products, and Orders mobile rows as genuine full-width two-column cards, with long Service/Product content and Actions spanning the full card width.
+- Services now use the available phone width for provider/platform, ETA, rates, revenue, and status instead of stacking all values in a narrow strip.
+- Digital Products now show the image and product details at full width, with category, price/cost, duration, and status arranged compactly below.
+- Orders now use compact Date/Client, amount, Status/Payment pairs; Service remains full width, and View/Edit plus centered Void/Undo Void remain touch-friendly.
+- Restored intentional line breaks inside mobile records and added strict parent/table/row width containment so no Admin card can create a large unused right-side area.
+- Updated only admin.html, assets/css/mobile.css, and this main handover file. Desktop layouts, Client View, Supabase configuration, shared data, calculations, order sorting, and JavaScript remain unchanged.
+
+[PATCH v6.0.48] CORRECTED ADMIN MOBILE CARD UPDATER
+- Reissues the approved v6.0.47 Admin mobile card layout under v6.0.48 after the prior updater used an incorrect normalized baseline hash for assets/css/mobile.css and stopped before changing the project.
+- Applies the same requested full-width compact mobile cards for Services, Digital Products, and Orders, including centered Status/Payment and paired View/Edit with centered Void/Undo Void.
+- Changes only admin.html, assets/css/mobile.css, and this main handover file. Client View, desktop layout, JavaScript, Supabase configuration, calculations, sorting, and records remain unchanged.
