@@ -926,3 +926,11 @@ One ZIP only, containing the patch payload and one readable multi-line PowerShel
 - Preserved the accepted v6.0.37 table alignment, status sizing, button positions, responsive behavior, data logic, and Supabase files.
 - Added subtle hover and keyboard-focus states without changing button dimensions or the Actions column layout.
 - Updated only admin.html, index.html, assets/css/styles.css, and this main handover file.
+
+[PATCH v6.0.39]
+- Enabled Novalyte shared cloud synchronization using the new Supabase project.
+- Stored only the browser-safe Supabase project URL, publishable key, and configured admin email in assets/js/cloud-config.js.
+- Normalized the project URL to the required base form without the copied /rest/v1/ suffix because remoteStore.js appends the Auth and REST paths itself.
+- Updated only admin.html, index.html, assets/js/cloud-config.js, and this main handover file.
+- Preserved the complete v6.0.38 Orders layout, visible action-button containers, mobile behavior, local datasets, and all unrelated files.
+- First cloud initialization must be performed from the main laptop so its existing Novalyte records become the authoritative initial shared state before another device signs in.
