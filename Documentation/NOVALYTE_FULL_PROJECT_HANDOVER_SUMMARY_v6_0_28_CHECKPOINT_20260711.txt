@@ -959,3 +959,10 @@ One ZIP only, containing the patch payload and one readable multi-line PowerShel
 - Moved action-result toast notifications from the lower-right corner to a horizontally centered, responsive position on admin and client views.
 - Updated only admin.html, index.html, assets/css/styles.css, assets/css/mobile.css, and this main handover file.
 - Preserved Supabase configuration, shared data logic, order sorting, voided-row fading, modal sizing, calculations, records, and desktop/laptop layouts.
+
+[PATCH v6.0.43]
+- Locked the Admin navigation sidebar only on PC/desktop widths (1101px and wider).
+- The sidebar now remains visible while the main Admin content scrolls independently.
+- Preserved the 228px desktop navigation width and offset the main content by the same amount to prevent overlap.
+- Mobile and narrow-screen navigation behavior is unchanged; the existing hamburger/floating navigation remains active.
+- Preserved the v6.0.42 responsive Services, Digital Products, and Orders cards, centered notifications, Supabase configuration, records, calculations, and all unrelated behavior.
