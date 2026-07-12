@@ -12733,3 +12733,87 @@ body #statsGrid {
   }
 }
 /* end v6.0.31 status control */
+
+/* v6.0.37 requested-only: final desktop Orders alignment and smaller status text */
+@media (min-width: 821px) {
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    table-layout: fixed !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-date { width: 9% !important; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-client { width: 11% !important; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-service { width: 19% !important; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-qty { width: 5% !important; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-provider { width: 8% !important; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-client-fee { width: 8% !important; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-revenue { width: 7% !important; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-status { width: 11% !important; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-payment { width: 7% !important; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-actions { width: 15% !important; }
+
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table th,
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table td {
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+    vertical-align: middle !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table th:nth-child(-n+3),
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table td:nth-child(-n+3) {
+    text-align: left !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table th:nth-child(n+4),
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table td:nth-child(n+4) {
+    text-align: center !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table th:nth-child(8),
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table td:nth-child(8) {
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) #orders .order-status-select,
+  body:has(.admin-layout:not(.hidden)) #orders .order-status-inline {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 108px !important;
+    height: 34px !important;
+    min-height: 34px !important;
+    margin: 0 auto !important;
+    padding: 6px 25px 6px 8px !important;
+    box-sizing: border-box !important;
+    font-size: 0.64rem !important;
+    line-height: 1 !important;
+    letter-spacing: -0.01em !important;
+    white-space: nowrap !important;
+    text-overflow: clip !important;
+    overflow: visible !important;
+    background-position: right 7px center !important;
+    background-size: 12px 12px !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) #orders .payment-pill,
+  body:has(.admin-layout:not(.hidden)) #orders .order-status-pill {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  body:has(.admin-layout:not(.hidden)) #orders .orders-actions-cell,
+  body:has(.admin-layout:not(.hidden)) #orders .orders-actions-wrap {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
+/* end v6.0.37 desktop Orders alignment/status text */
