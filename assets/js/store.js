@@ -114,27 +114,44 @@
     return normalized;
   }
 
-/* v6.0.21 seed refresh merge */
+/* v6.0.29 preserve admin edits while still adding newly verified seed services */
   function mergeVerifiedSeedServices(existingServices, storageKey = KEYS.services) {
     const current = Array.isArray(existingServices) ? existingServices.map(normalizeService) : [];
     const seeds = clone(window.NOVALYTE_SEED_SERVICES || []).map(normalizeService);
-    const currentByProvider = new Map(current.map(item => [String(item.providerId || item.id || ''), item]));
-    const merged = seeds.map(seed => {
-      const key = String(seed.providerId || seed.id || '');
-      const old = currentByProvider.get(key);
-      if (!old) return seed;
-      const preserved = {
-        clientRate: old.clientRate,
-        recommended: old.recommended === true,
-        visible: old.visible !== false,
-        archived: old.archived === true
-      };
-      return normalizeService({ ...old, ...seed, ...preserved });
+    const merged = current.map(normalizeService);
+    const indexById = new Map();
+    const indexByProvider = new Map();
+
+    merged.forEach((item, index) => {
+      const id = String(item.id || '').trim();
+      const providerId = String(item.providerId || '').trim();
+      if (id) indexById.set(id, index);
+      if (providerId) indexByProvider.set(providerId, index);
     });
+
+    seeds.forEach(seed => {
+      const seedId = String(seed.id || '').trim();
+      const seedProviderId = String(seed.providerId || '').trim();
+      const existingIndex = (seedId && indexById.has(seedId))
+        ? indexById.get(seedId)
+        : (seedProviderId && indexByProvider.has(seedProviderId) ? indexByProvider.get(seedProviderId) : -1);
+
+      if (existingIndex >= 0) {
+        const existing = merged[existingIndex];
+        merged[existingIndex] = normalizeService({ ...seed, ...existing });
+        return;
+      }
+
+      const nextIndex = merged.length;
+      merged.push(seed);
+      if (seedId) indexById.set(seedId, nextIndex);
+      if (seedProviderId) indexByProvider.set(seedProviderId, nextIndex);
+    });
+
     writeJson(storageKey, merged);
     return merged;
   }
-/* end v6.0.21 seed refresh merge */
+/* end v6.0.29 preserve admin edits */
   function getServices() {
     const storageKey = IS_ADMIN_CONTEXT ? KEYS.services : KEYS.publicServices;
     let services = readJson(storageKey, null);
@@ -791,10 +808,15 @@
   function applyRemoteDataset(dataset, payload) {
     if (!Array.isArray(payload)) return false;
     switch (dataset) {
-      case 'services':
+      case 'services': {
+        const current = getServices();
+        if (payload.length === 0 && current.length > 0) return false;
         saveServices(payload, { remote: false });
         return true;
+      }
       case 'digital_products': {
+        const current = getDigitalProducts();
+        if (payload.length === 0 && current.length > 0) return false;
         const incomingIds = new Set(payload.map(item => item && item.id).filter(Boolean));
         const missingSeedIds = (window.NOVALYTE_DIGITAL_PRODUCTS || [])
           .map(item => item.id)

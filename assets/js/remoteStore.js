@@ -6,6 +6,11 @@
   ];
   const ADMIN_DATASETS = ['services', 'digital_products', 'orders', 'investments', 'finance_entries', 'team_members', 'reviews'];
   const queues = new Map();
+  const remoteFingerprints = new Map();
+  let adminSyncTimer = null;
+  let adminSyncStore = null;
+  let adminRefreshPromise = null;
+  let lifecycleListenersReady = false;
 
   function config() {
     return window.NOVALYTE_CLOUD_CONFIG || {};
@@ -130,6 +135,7 @@
   }
 
   async function logout() {
+    stopAdminSync();
     const session = await ensureSession();
     if (session && isConfigured()) {
       try {
@@ -145,7 +151,7 @@
     saveSession(null);
   }
 
-  async function fetchDataset(dataset, admin = false) {
+  async function fetchDatasetRecord(dataset, admin = false) {
     if (!isConfigured()) return null;
     const cfg = config();
     let token = '';
@@ -159,7 +165,29 @@
       headers: baseHeaders(token)
     });
     const rows = await parseResponse(response);
-    return Array.isArray(rows) && rows[0] ? rows[0].payload : null;
+    return Array.isArray(rows) && rows[0] ? rows[0] : null;
+  }
+
+  async function fetchDataset(dataset, admin = false) {
+    const record = await fetchDatasetRecord(dataset, admin);
+    return record ? record.payload : null;
+  }
+
+  function fingerprint(payload) {
+    try { return JSON.stringify(Array.isArray(payload) ? payload : []); }
+    catch (error) { return ''; }
+  }
+
+  function localAdminPayload(Store) {
+    return {
+      services: Store && Store.getServices ? Store.getServices() : [],
+      digital_products: Store && Store.getDigitalProducts ? Store.getDigitalProducts() : [],
+      orders: Store && Store.getOrders ? Store.getOrders() : [],
+      investments: Store && Store.getInvestments ? Store.getInvestments() : [],
+      finance_entries: Store && Store.getFinanceEntries ? Store.getFinanceEntries().filter(item => item.source !== 'investment') : [],
+      team_members: Store && Store.getTeamMembers ? Store.getTeamMembers() : [],
+      reviews: Store && Store.getReviews ? Store.getReviews() : []
+    };
   }
 
   async function saveDataset(dataset, payload) {
@@ -177,6 +205,7 @@
         body: JSON.stringify([{ key: dataset, payload, updated_at: new Date().toISOString() }])
       });
       await parseResponse(response);
+      remoteFingerprints.set(dataset, fingerprint(payload));
       dispatchStatus({ state: 'synced', dataset, message: `${dataset.replaceAll('_', ' ')} synced` });
       return { ok: true };
     } catch (error) {
@@ -230,49 +259,121 @@
     const updated = [];
     const missing = [];
     const failures = [];
+    const localBefore = localAdminPayload(Store);
     dispatchStatus({ state: 'syncing', dataset: 'all', message: 'Loading shared admin data...' });
+
     for (const dataset of ADMIN_DATASETS) {
       try {
-        const payload = await fetchDataset(dataset, true);
-        if (Array.isArray(payload)) {
-          Store.applyRemoteDataset(dataset, payload);
-          updated.push(dataset);
-        } else {
+        const record = await fetchDatasetRecord(dataset, true);
+        if (!record || !Array.isArray(record.payload)) {
           missing.push(dataset);
+          continue;
         }
+
+        const applied = Store.applyRemoteDataset(dataset, record.payload);
+        if (!applied && record.payload.length === 0 && Array.isArray(localBefore[dataset]) && localBefore[dataset].length > 0) {
+          missing.push(dataset);
+          continue;
+        }
+
+        remoteFingerprints.set(dataset, fingerprint(record.payload));
+        if (applied) updated.push(dataset);
       } catch (error) {
         failures.push(`${dataset}: ${error.message}`);
         dispatchStatus({ state: 'error', dataset, message: error.message });
       }
     }
 
-    const localPayload = {
-      services: Store.getServices ? Store.getServices() : [],
-      digital_products: Store.getDigitalProducts ? Store.getDigitalProducts() : [],
-      orders: Store.getOrders ? Store.getOrders() : [],
-      investments: Store.getInvestments ? Store.getInvestments() : [],
-      finance_entries: Store.getFinanceEntries ? Store.getFinanceEntries().filter(item => item.source !== 'investment') : [],
-      team_members: Store.getTeamMembers ? Store.getTeamMembers() : [],
-      reviews: Store.getReviews ? Store.getReviews() : []
-    };
+    const localPayload = localAdminPayload(Store);
     for (const dataset of missing) {
       const result = await saveDataset(dataset, localPayload[dataset] || []);
       if (!result || !result.ok) failures.push(`${dataset}: ${result && result.message ? result.message : 'could not initialize'}`);
     }
-    const publicServices = Store.publicServicePayload ? Store.publicServicePayload(localPayload.services) : localPayload.services;
-    const publicProducts = Store.publicDigitalProductPayload ? Store.publicDigitalProductPayload(localPayload.digital_products) : localPayload.digital_products;
+
+    const currentPayload = localAdminPayload(Store);
+    const publicServices = Store.publicServicePayload ? Store.publicServicePayload(currentPayload.services) : currentPayload.services;
+    const publicProducts = Store.publicDigitalProductPayload ? Store.publicDigitalProductPayload(currentPayload.digital_products) : currentPayload.digital_products;
     const publicServicesResult = await saveDataset('public_services', publicServices);
     const publicProductsResult = await saveDataset('public_digital_products', publicProducts);
     if (!publicServicesResult || !publicServicesResult.ok) failures.push(`public_services: ${publicServicesResult && publicServicesResult.message ? publicServicesResult.message : 'could not sync'}`);
     if (!publicProductsResult || !publicProductsResult.ok) failures.push(`public_digital_products: ${publicProductsResult && publicProductsResult.message ? publicProductsResult.message : 'could not sync'}`);
     if (updated.length) dispatchUpdated(updated);
+
     if (failures.length) {
       const message = failures[0];
       dispatchStatus({ state: 'error', dataset: 'all', message });
       return { ok: false, reason: 'sync-failed', message, datasets: updated, initialized: missing };
     }
+
     dispatchStatus({ state: 'synced', dataset: 'all', message: 'Shared data is up to date.' });
     return { ok: true, datasets: updated, initialized: missing };
+  }
+
+  async function refreshAdmin(Store = adminSyncStore) {
+    if (!isConfigured() || !hasAdminSession() || !Store || !Store.applyRemoteDataset) {
+      return { ok: false, reason: 'inactive', datasets: [] };
+    }
+    if (adminRefreshPromise) return adminRefreshPromise;
+
+    adminRefreshPromise = (async () => {
+      const updated = [];
+      const localBefore = localAdminPayload(Store);
+
+      for (const dataset of ADMIN_DATASETS) {
+        if (queues.has(dataset)) continue;
+        try {
+          const record = await fetchDatasetRecord(dataset, true);
+          if (!record || !Array.isArray(record.payload)) continue;
+          const nextFingerprint = fingerprint(record.payload);
+          if (remoteFingerprints.get(dataset) === nextFingerprint) continue;
+
+          const applied = Store.applyRemoteDataset(dataset, record.payload);
+          if (!applied && record.payload.length === 0 && Array.isArray(localBefore[dataset]) && localBefore[dataset].length > 0) {
+            await saveDataset(dataset, localBefore[dataset]);
+            continue;
+          }
+
+          remoteFingerprints.set(dataset, nextFingerprint);
+          if (applied) updated.push(dataset);
+        } catch (error) {
+          dispatchStatus({ state: 'error', dataset, message: error.message });
+        }
+      }
+
+      if (updated.length) {
+        dispatchUpdated(updated);
+        dispatchStatus({ state: 'synced', dataset: 'all', message: 'Shared data updated from another device.' });
+      }
+      return { ok: true, datasets: updated };
+    })().finally(() => {
+      adminRefreshPromise = null;
+    });
+
+    return adminRefreshPromise;
+  }
+
+  function stopAdminSync() {
+    if (adminSyncTimer) clearInterval(adminSyncTimer);
+    adminSyncTimer = null;
+    adminSyncStore = null;
+  }
+
+  function startAdminSync(Store, options = {}) {
+    stopAdminSync();
+    if (!isConfigured() || !hasAdminSession() || !Store) return { ok: false, reason: 'inactive' };
+    adminSyncStore = Store;
+    const intervalMs = Math.max(3000, Number(options.intervalMs) || 5000);
+    adminSyncTimer = setInterval(() => refreshAdmin(Store), intervalMs);
+
+    if (!lifecycleListenersReady) {
+      lifecycleListenersReady = true;
+      window.addEventListener('focus', () => refreshAdmin());
+      window.addEventListener('online', () => refreshAdmin());
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') refreshAdmin();
+      });
+    }
+    return { ok: true, intervalMs };
   }
 
   function normalizeLookupRow(row) {
@@ -351,10 +452,14 @@
     logout,
     ensureSession,
     fetchDataset,
+    fetchDatasetRecord,
     saveDataset,
     queueSave,
     hydratePublic,
     hydrateAdmin,
+    refreshAdmin,
+    startAdminSync,
+    stopAdminSync,
     lookupOrders,
     listOrders
   };

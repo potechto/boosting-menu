@@ -361,6 +361,7 @@
       .then(result => {
         if (result && result.ok) {
           renderAll();
+          if (Remote && Remote.startAdminSync) Remote.startAdminSync(Store, { intervalMs: 4000 });
           updateCloudSyncStatus('synced', 'Shared data is up to date');
         } else if (result) {
           updateCloudSyncStatus('error', result.message || 'Shared sync failed');
@@ -391,6 +392,7 @@
   }
 
   function showLogin() {
+    if (Remote && Remote.stopAdminSync) Remote.stopAdminSync();
     closeAdminMobileNav();
     setAdminBodyMode('login');
     els.loginView.classList.remove('hidden');

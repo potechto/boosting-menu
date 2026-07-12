@@ -1,0 +1,900 @@
+NOVALYTE FULL PROJECT HANDOVER SUMMARY
+Checkpoint: v6.0.28 Desktop Status Dropdown + Mobile Admin Follow-up
+Date: 2026-07-11
+Purpose: Transfer the complete Novalyte project context to a new ChatGPT conversation without losing decisions, rules, completed work, known problems, current state, and pending work.
+
+======================================================================
+1. PROJECT IDENTITY AND IMPORTANT PATHS
+======================================================================
+
+Project name:
+Novalyte
+
+Primary purpose:
+A public client portal and protected Admin workspace for managing social-media boosting services, digital products, orders, pricing, investments, finance records, client-safe order tracking, and service recommendations.
+
+Local Windows project path:
+C:\Users\Ralph John\OneDrive\Desktop\ME FILES\Novalyte
+
+Default Downloads path:
+C:\Users\Ralph John\Downloads
+
+GitHub repository:
+https://github.com/potechto/boosting-menu.git
+
+Git branch:
+main
+
+GitHub Pages live client site:
+https://potechto.github.io/boosting-menu/
+
+GitHub Pages live Admin site:
+https://potechto.github.io/boosting-menu/admin.html
+
+Typical local URLs:
+http://localhost:5500/
+http://localhost:5500/admin.html
+
+Important main project files frequently modified or verified:
+- index.html
+- admin.html
+- assets/css/styles.css
+- assets/css/mobile.css
+- assets/js/app.js
+- assets/js/admin.js
+- assets/js/store.js
+- assets/js/remoteStore.js
+- assets/js/data.js
+- assets/js/admin-data.js
+- assets/js/cloud-config.js
+- Documentation/
+
+The new chat must inspect the actual current project files and Git history before making changes. Do not assume that a version number shown in an old message is still the current deployed version.
+
+======================================================================
+2. PERMANENTLY LOCKED WORKFLOW RULES
+======================================================================
+
+These rules were repeatedly stated by the user and must remain locked for all future Novalyte work.
+
+2.1 Terminal-first workflow
+
+All coding, patching, verification, local testing, Git operations, and cleanup must be performed through terminal commands or a generated terminal updater script. This applies to small and large changes.
+
+Do not give only manual copy/paste file replacements when a terminal process can apply the update safely.
+
+For complicated changes, generate one downloadable PowerShell updater script and give one short command to run it. Avoid asking the user to paste hundreds of PowerShell lines directly because previous long pasted scripts caused multiline prompts and parser errors.
+
+2.2 One unified package/process
+
+When several files must change, use one unified patch or updater. Do not create multiple unnecessary ZIP files for one update.
+
+The expected automated flow is:
+1. Validate project path and Git branch.
+2. Confirm the working tree is safe before modifying files.
+3. Create a temporary rollback backup.
+4. Apply only the requested changes.
+5. Run syntax and content verification.
+6. Launch the correct local project in the browser when requested.
+7. Commit and push only when requested or when the agreed updater includes push.
+8. Verify local HEAD matches origin/main.
+9. Remove temporary update files after success.
+10. Print a clear verification checklist.
+
+2.3 Documentation before ZIP
+
+Before creating a full-project ZIP, first create or update a detailed main handover file inside:
+Novalyte\Documentation
+
+The documentation must exist before the ZIP is created so it is included inside the project archive.
+
+Do not create random update README files, local notes, temporary changelogs, or unnecessary documentation clutter. Only the main detailed project documentation/handover is needed unless the user explicitly asks for something else.
+
+2.4 No unrelated changes
+
+This is the most important implementation rule:
+- Do not change anything the user did not ask to change.
+- Do not remove anything the user did not ask to remove.
+- Do not add anything the user did not ask to add.
+- Do not redesign, rename, relocate, compress, expand, or restyle unrelated components.
+- When the user says to adjust only one control, change only that control.
+- Preserve current data, calculations, buttons, fields, components, and layout outside the exact requested scope.
+
+The user repeatedly summarized this as:
+"Nothing more, nothing less."
+
+2.5 Preserve live data and business settings
+
+Unless specifically requested, preserve:
+- Existing client-visible rates
+- Provider rates
+- Recommended states
+- Visible/disabled states
+- Existing orders
+- Order snapshots
+- Investments
+- Digital products
+- Payment statuses
+- Order statuses
+- Analytics calculations
+- Existing client names and contacts
+
+Old orders must keep their saved snapshot prices even when a service price is edited later.
+
+2.6 Mobile is responsive, not a different product
+
+The phone version should contain the same features, data, and controls as desktop. Only the responsive layout should differ.
+
+A Recommend switch on desktop must remain the same switch on mobile. It must not become a plain checkbox.
+
+Admin navigation panels must not mix. Dashboard, Services, Digital Products, Investments, Orders, and Client View must each show only their own content.
+
+2.7 Visual verification is required
+
+String checks and syntax checks alone are not enough. Previous scripts reported PASS while the rendered UI remained broken.
+
+Future work must verify:
+- Actual browser output
+- Correct project folder being served
+- Current cache-busted assets
+- Desktop screenshot
+- Mobile screenshot or phone recording
+- Control overflow and clipping
+- Navigation panel isolation
+
+2.8 Deployment and browser behavior
+
+Avoid deployment countdown loops unless the user specifically requests them.
+
+The user previously reported that an old domain kept launching. Always launch the exact current local or live URL.
+
+When starting a local server automatically, PowerShell should be hidden so it does not keep popping up and interrupting the user.
+
+Use cache-busting query strings after pushes, for example:
+admin.html?v=<new-version>#orders
+
+2.9 Communication style
+
+Be direct and honest. Do not say a visual fix is successful merely because the script committed and pushed.
+
+Separate these concepts clearly:
+- Script completed
+- Commit succeeded
+- Push succeeded
+- Live deployment updated
+- Visual behavior verified
+
+======================================================================
+3. CORE FUNCTIONAL REQUIREMENTS AND DATA RULES
+======================================================================
+
+3.1 Order statuses
+
+Required Admin order-status choices:
+- Active
+- Pending
+- Processing
+- Completed
+
+Voided/cancelled orders remain in history but are excluded from active totals. Undo Void restores the order.
+
+3.2 Payment statuses
+
+Required payment choices:
+- Paid
+- Partial
+- Unpaid
+
+3.3 Order financial fields
+
+Orders may contain:
+- Provider charge/cost
+- Client charge/sale
+- Revenue/profit
+- Receivable depending on payment state
+
+Revenue is generally client charge minus provider charge.
+
+3.4 Client-safe tracking
+
+The client-side order tracker must never expose provider cost or internal notes.
+
+Client-safe fields include:
+- Service ID
+- User/client name
+- Service name
+- Date ordered and time
+- Status
+
+The order tracking identifier requested by the user is the provider/service ID, such as 1723, not an automatically generated long order reference.
+
+Multiple clients can have orders under the same service ID. The client can further narrow results by entering their name.
+
+Search text requested on the client tracker:
+"Search Service ID or Your Name"
+
+Client-side tracking filters are optional tools for narrowing an already visible order list. The base order list should display available client-safe records and counts.
+
+3.5 Client tracker counts
+
+The client order section should show live counts from Admin data for:
+- Pending
+- Processing
+- Completed
+
+The list columns requested were:
+ID | USER / CLIENT NAME | SERVICE | DATE ORDERED | STATUS
+
+3.6 Recommended services
+
+Client Services page:
+- Recommended must be the first category option.
+- Recommended should be selected by default.
+- While Recommended is selected, platform filtering must still work and show only recommended services from the selected platform.
+- Service rows remain sorted/grouped appropriately by platform.
+
+Admin Services page:
+- Recommend control should be a compact switch.
+- The Recommend column should appear before the Service column.
+- The Recommend column must occupy only the space needed for its label and switch.
+- Toggling updates immediately without page refresh.
+- Disabled services must not be allowed to remain recommended or be toggled recommended.
+- The switch must remain a switch on mobile.
+
+A temporary Recommended-service checkbox was added inside the Edit Service form during an earlier attempt. The user explicitly requested its removal because the external list switch is the only Recommend control needed.
+
+3.7 Service transfers and internal rates
+
+When selecting a service for transfer/order creation, show only:
+- Service/provider ID
+- Service name
+
+Do not show internal provider fees in transfer choices.
+
+3.8 ETA / average time
+
+Client Services view displays ETA/average time.
+
+Admin Services table must also display ETA in a dedicated, sensible column. Do not move ETA underneath the Service name merely to make space unless the user specifically requests it.
+
+3.9 Digital product orders
+
+Admin Digital Products must support Create Order with the necessary client-order fields, similar to service orders but only including fields relevant to digital products.
+
+Expected information includes:
+- Digital product selection
+- Client name/reference
+- Client contact
+- Quantity when applicable
+- Order status
+- Payment status
+- Provider charge
+- Client charge
+- Revenue
+- Notes/delivery details
+
+Internal IDs such as dp_bilibili may be used internally, but client-facing or prominent UI labels should show the actual product/platform name, not ugly internal identifiers.
+
+3.10 Important Before Ordering notice
+
+The client page contains an Important Before Ordering section. The final content should contain eight warnings, grammatically cleaned but preserving the intended policy:
+
+1. Incorrect quantity, link format, or service selection may delay processing.
+2. Invalid or unsupported order details may be cancelled automatically by the system.
+3. Once an order has started processing, it can no longer be cancelled or refunded.
+4. Correct and complete details help the order run more smoothly.
+5. An order may be marked completed even when delivery is incomplete; partial refunds are not guaranteed.
+6. In rare cases, an order may be marked completed even when no result is visible. The client should contact Novalyte immediately for checking.
+7. The profile, page, post, or channel must remain public while the order is processing. Private or restricted settings can freeze, prevent, or cancel the boosting service.
+8. Make sure the account or link is not undergoing another process outside the Novalyte platform. If concurrent outside activity is detected or proven, cancellation or refund requests will not be accommodated.
+
+======================================================================
+4. MAJOR ACCOMPLISHMENTS COMPLETED DURING THIS PROJECT THREAD
+======================================================================
+
+4.1 Client order-tracking redesign
+
+The client order section went through several iterations and was ultimately changed from three permanently open empty cards into a live order-update section with:
+- Pending, Processing, and Completed counts
+- Optional search
+- Optional status filter
+- Clear filters
+- Orders shown count
+- Client-safe order table
+
+The user wanted filtering to narrow the visible list, not hide all orders until a search was performed.
+
+4.2 Admin order creation
+
+Service order creation supports:
+- Service selection
+- Client name/reference
+- Client contact
+- Quantity
+- Order status
+- Payment status
+- Target link/username
+- Provider charge
+- Client charge
+- Revenue
+- Notes/delivery details
+
+Digital Product order creation was also added with the corresponding product-specific fields.
+
+4.3 Status choices corrected
+
+Admin status controls were expanded to include Pending, Processing, and Completed rather than leaving only Active.
+
+4.4 Payment Status and Client Tag alignment
+
+The user requested Payment Status to be centered but not stretched excessively across the modal. Client Tag was also centered in Edit Service.
+
+Several attempts changed these layouts. Before modifying them again, inspect the current source and rendered state.
+
+4.5 Order History improvements
+
+Order History includes:
+- Summary metrics
+- Search
+- Status filter
+- Payment filter
+- Export Orders CSV
+- Reset Demo Data
+- Date/time
+- Client
+- Service
+- Quantity
+- Provider cost
+- Client sale
+- Revenue
+- Status
+- Payment
+- Actions
+
+Date/time was changed so the date appears on the first line and time appears below it.
+
+Order actions were changed so:
+- View and Edit appear on the first row
+- Void or Undo Void appears below them
+- Edit is disabled for voided orders
+
+4.6 Recommended services system
+
+The Recommended category and Admin Recommend switch were added. The client category is intended to default to Recommended. Admin can toggle each service without refreshing.
+
+Disabled services should not be recommendable.
+
+4.7 Service catalog expansion
+
+The previous catalog contained 199 services.
+
+A later full screenshot scan identified 425 total services.
+
+Correct difference:
+425 - 199 = 226 missing/additional services
+
+Platform totals after the complete scan:
+- Facebook: 86 total; 76 additional compared with the old catalog
+- Instagram: 47 total; 40 additional
+- Telegram: 126 total; no count gap
+- TikTok: 87 total; 74 additional
+- Twitter/X: 36 total; 36 additional because the old catalog had none
+- YouTube: 43 total; no count gap
+
+An earlier message incorrectly said 227 were missing. That was corrected to 226.
+
+All red provider-panel "View" buttons visible in the service screenshots were explicitly excluded. They are not service data and must not be imported.
+
+A stale/conflicting TikTok service ID 1865 was identified during review. The v6.0.21 process intended to remove or prevent the stale entry. Verify the current catalog rather than assuming it is absent.
+
+The imported catalog must preserve existing Admin-edited client rates, Recommended states, and visibility settings when merging updated seed services.
+
+4.8 Dashboard analytics
+
+The Admin Dashboard was changed to include a futuristic monthly Sales & Revenue Analytics line chart.
+
+Desired chart concept:
+- Red line: client sales/received payments performance
+- Blue/cyan line: revenue/ROI performance
+- Monthly view
+- Highest sales
+- Lowest sales
+- Highest revenue
+- Lowest revenue
+- Service ROI
+
+The user did not want unrelated Investment summary cards duplicated under the Dashboard analytics. Dashboard should contain Dashboard content only.
+
+4.9 Hero section adjustments
+
+The client home hero went through layout adjustments:
+- Main call-to-action buttons were moved lower to align more closely with the Messenger card.
+- Hero wording was rewritten toward easier browsing, preparation, processing, and messaging.
+- A decorative "Digital growth solutions" container/badge and some Client View navigation container styling were later questioned or removed in some versions.
+
+Inspect current state before touching these areas. They are not part of the immediate next task.
+
+======================================================================
+5. MOBILE ADMIN PROBLEMS AND CURRENT LIMITATION
+======================================================================
+
+5.1 Cross-device Admin data is not shared
+
+The phone Admin previously showed no records while desktop had records.
+
+Root cause identified:
+The current system falls back to browser-local storage when cloud synchronization is disabled. Desktop and phone use different local storage, so orders, investments, payment changes, and other Admin records do not automatically appear on both devices.
+
+This is not fixable by CSS alone.
+
+True cross-device sharing requires configuring the existing cloud/Supabase integration or another shared backend.
+
+Do not claim that mobile data sharing is fixed unless:
+- cloud-config.js is enabled with the correct public configuration
+- Admin authentication is working
+- tables/schema exist
+- read/write operations are verified
+- desktop-created records appear on phone
+- phone-created or edited records appear on desktop
+
+Never expose a Supabase service-role key in client-side code. Only public anon credentials belong in browser code, protected by proper Row Level Security.
+
+5.2 Mobile panel mixing
+
+The user repeatedly reported that mobile Dashboard showed content belonging to Services, Digital Products, Investments, or Orders at the same time.
+
+Several panel-isolation functions and CSS rules were attempted, including handling:
+- page load
+- hash changes
+- resize
+- orientation changes
+- pageshow/background restore
+
+However, the user later reported that the mobile layout remained very poor and showed no meaningful improvement.
+
+The next chat must perform a fresh mobile audit against the actual live code rather than trusting old PASS checks.
+
+5.3 Mobile visual problems reported
+
+Reported phone problems included:
+- Dashboard and other navigation panels appearing together
+- Oversized Welcome Admin section
+- Oversized analytics graph and summary cards
+- Excessively long vertical scrolling
+- Services rows too tall with large empty gaps
+- Recommend label and switch misaligned or becoming a checkbox
+- Client Rate and other fields floating in inconsistent positions
+- Digital Product cards too large
+- Orders poorly aligned or overflowing
+- Actions inconsistent
+- Admin tables not readable without zooming out
+- No shared desktop records
+
+The user explicitly says the mobile layout is still "sobrang pangit" and has shown no acceptable improvement.
+
+Mobile work remains a major pending task.
+
+======================================================================
+6. VERSION AND COMMIT HISTORY RELEVANT TO THE CURRENT PROBLEM
+======================================================================
+
+The following history was captured from terminal output in this chat.
+
+v6.0.23
+Commit: 004a98d
+Message: Novalyte v6.0.23 fix Undo Void button overflow
+Result: Pushed successfully.
+Problem: Used DOM/text-detection workarounds and did not reliably change the actual rendered structure.
+
+v6.0.24
+Commit: 31326ef
+Message: Novalyte v6.0.24 rebuild mobile Admin and Orders actions
+Result: Pushed successfully.
+Purpose:
+- Direct Orders markup
+- Mobile panel isolation
+- Compact layout attempts
+Important limitation printed by updater:
+Cross-device data remains browser-local until Supabase is configured.
+
+v6.0.25
+Commit: c12feed
+Message: Novalyte v6.0.25 restore Orders controls and center Void action
+Result: Pushed successfully.
+Purpose:
+- Restore status/payment/action containers
+- Center Void below View/Edit
+
+v6.0.26
+Commit: 1f7b5cb
+Message: Novalyte v6.0.26 fix Orders status control clipping
+Result: Pushed successfully.
+Problem:
+The layout became worse and the status control was still visually cut or poorly proportioned.
+
+v6.0.27
+Commit: 64fd5a4
+Message: Novalyte v6.0.27 finalize Orders table layout
+Result: Pushed successfully.
+Problem:
+The status values became truncated to forms such as C... and P..., and the overall layout degraded.
+
+v6.0.27 revert
+Commit: 14b2d2a
+Message: Revert "Novalyte v6.0.27 finalize Orders table layout"
+Result: Revert pushed successfully.
+This restored the previous state based on v6.0.26-era code.
+
+v6.0.28 attempt
+A direct pasted PowerShell update failed before execution because of a parser error around the AllowedFiles/Handover expression.
+
+The recorded error included:
+- Missing closing ')' in expression
+- Try statement missing Catch or Finally
+- Unexpected token
+
+Because it was a parser error, that failed pasted command did not apply the intended update, did not commit, and did not push.
+
+A corrected downloadable updater named:
+RUN_NOVALYTE_V628_FIX1_STATUS_DROPDOWN_ONLY.ps1
+was created afterward.
+
+The latest screenshot shows that status labels such as Completed, Processing, and Voided are visible, but the dropdown arrow for editable statuses is still not visible. The exact latest commit created by the corrected v6.0.28 updater was not included in the provided terminal output. Therefore, the new chat must verify the real current Git state before making the next patch.
+
+Minimum verification commands at the start of the new chat:
+- git status --short
+- git log -10 --oneline
+- git rev-parse HEAD
+- git rev-parse origin/main
+- inspect admin.html CSS/JS cache versions
+- inspect actual current Orders markup and CSS selectors
+
+======================================================================
+7. CURRENT DESKTOP ORDERS BASELINE - DO NOT BREAK
+======================================================================
+
+The latest accepted desktop screenshot is the current baseline.
+
+Current table columns:
+DATE | CLIENT | SERVICE | QTY | PROVIDER | CLIENT | REVENUE | STATUS | PAYMENT | ACTIONS
+
+Current acceptable parts that must remain unchanged:
+- Date on the first line
+- Time underneath the date
+- Client name and platform display
+- Service name and service ID/platform line
+- Quantity
+- Provider cost
+- Client sale
+- Revenue
+- Voided pill
+- Paid pill
+- View and Edit on the first action row
+- Void or Undo Void beneath them
+- Existing row spacing and current overall table structure
+
+Immediate unresolved desktop issue:
+The editable status dropdown is still too wide or its right-side arrow area is not visible. The user can see Completed and Processing text but cannot clearly see the dropdown arrow.
+
+Next desktop change must do only this:
+- Slightly reduce the editable status dropdown dimensions or adjust internal padding/appearance so the arrow is visible.
+- Keep Completed and Processing readable.
+- Keep the border complete.
+- Do not change the Status column width unless absolutely required.
+- Do not move Payment or Actions.
+- Do not change Voided.
+- Do not change buttons.
+- Do not change date/time.
+- Do not add a new overall table layout.
+- Do not stack another broad Orders redesign block.
+
+Before changing CSS, inspect the exact current element class and all existing competing declarations. The actual class used in an earlier source was order-status-inline, but verify it again in the current repo.
+
+A safer approach for the next patch is:
+1. Locate all declarations affecting the actual status select.
+2. Remove or neutralize only conflicting declarations for that one select.
+3. Add one narrowly scoped final declaration for desktop.
+4. Preserve native select appearance or explicitly set appearance:auto if an earlier rule hid the native arrow.
+5. Ensure enough right padding for the arrow.
+6. Test Completed and Processing at 100% browser zoom.
+7. Compare before/after screenshot before push.
+
+======================================================================
+8. KNOWN ERRORS, FAILED APPROACHES, AND LESSONS
+======================================================================
+
+8.1 PowerShell pasted-script errors
+
+Long scripts pasted directly into PowerShell caused:
+- multiline >> prompts
+- nested here-string collisions
+- parser failures
+- missing closing parentheses/braces
+- accidental commands such as a stray S
+
+Locked lesson:
+For future non-trivial updates, create a downloadable .ps1 file and give one short execution command.
+
+8.2 FINDSTR quoting error
+
+An earlier verifier printed:
+FINDSTR: Cannot open Order
+
+The script incorrectly split a search phrase. Static verifier commands must quote patterns correctly.
+
+8.3 Cleanup path errors
+
+An earlier updater finished the Git push but failed during cleanup with:
+- The filename, directory name, or volume label syntax is incorrect.
+- A stray S was interpreted as a command.
+
+Locked lesson:
+Change out of the extracted updater folder before deleting it, and use literal paths.
+
+8.4 CSS patch stacking
+
+Repeated v6.0.22-v6.0.27 overrides were stacked on top of one another. This caused:
+- controls losing borders
+- oversized action areas
+- clipped select fields
+- truncated text
+- inconsistent button sizing
+- regressions after each apparent fix
+
+Locked lesson:
+Inspect and clean the exact current rules. Do not keep adding broad !important blocks blindly.
+
+8.5 Source markup vs. post-render observers
+
+Some fixes relied on MutationObserver and text matching after render. These produced PASS results without reliably fixing the UI.
+
+Locked lesson:
+Prefer direct changes in the actual render function/markup when the structure must change. Use CSS-only changes only for true styling adjustments.
+
+8.6 Static PASS is not visual PASS
+
+Several updaters verified only that a CSS marker or function name existed. The browser still looked broken.
+
+Locked lesson:
+A complete update requires rendered browser verification.
+
+8.7 Browser cache and wrong local server
+
+At different times, local or live pages appeared unchanged because:
+- the browser could be using cached CSS/JS
+- a Live Server instance could be serving another folder
+- the old URL/domain could be opened
+
+Locked lesson:
+Verify the server root, current asset query versions, and use a new cache-busting URL.
+
+8.8 Git CRLF warnings
+
+Warnings such as:
+LF will be replaced by CRLF the next time Git touches it
+were repeatedly shown.
+
+These warnings alone are not fatal. Do not treat them as a failed update unless git diff --check or syntax validation actually fails.
+
+8.9 GitHub Pages delay
+
+A push may complete before GitHub Pages finishes deploying. Distinguish Git push success from live deployment readiness.
+
+======================================================================
+9. IMMEDIATE NEXT TASKS FOR THE NEW CHAT
+======================================================================
+
+Priority 1 - Establish the real current code state
+
+Before editing:
+- Read this handover fully.
+- Inspect the uploaded full-project ZIP.
+- Run Git status and recent log.
+- Confirm the last actual commit and cache versions.
+- Confirm whether the v6.0.28 fixed updater committed and pushed.
+- Open the actual current Admin Orders page at 100% zoom.
+
+Priority 2 - Fix only the desktop status dropdown arrow/size
+
+The user wants only the status dropdown reduced enough for the arrow to be visible.
+
+Do not alter anything else in the desktop Orders table.
+
+Required visual result:
+- Completed readable
+- Processing readable
+- arrow visible
+- rounded/bordered control complete
+- no overlap
+- no truncation to C... or P...
+- Voided unchanged
+- Payment unchanged
+- Actions unchanged
+
+Priority 3 - Fresh mobile Admin audit
+
+After the desktop status select is accepted, audit the phone version from scratch.
+
+Check each mobile panel separately:
+- Dashboard
+- Services
+- Digital Products
+- Investments
+- Orders
+- Client View
+
+Confirm:
+- only one selected panel is visible
+- no mixed panel content
+- no desktop-only oversized blocks
+- Recommended remains a switch
+- service cards are compact
+- ETA is visible in a proper location
+- product cards are compact
+- Orders are readable without zooming out
+- buttons remain inside containers
+- no horizontal overflow
+- phone orientation changes do not mix content
+
+Priority 4 - Cross-device data sharing
+
+The mobile "no records" problem requires a shared backend.
+
+Future cloud plan should include:
+- inspect existing remoteStore.js and cloud-config.js
+- identify intended Supabase tables
+- obtain/confirm public Supabase URL and anon key from the user
+- never use a service-role key in the browser
+- configure authentication
+- configure Row Level Security
+- migrate or seed existing desktop-local data carefully
+- verify desktop-to-phone and phone-to-desktop sync
+- preserve existing orders and financial totals
+
+Do not silently overwrite local data while enabling cloud sync.
+
+Priority 5 - Full regression verification
+
+After accepted fixes, verify:
+- 425 service total
+- platform counts
+- Recommended category behavior
+- service/provider IDs
+- client-safe rate exposure
+- Digital Product order creation
+- Service order creation
+- Orders status changes
+- Void and Undo Void
+- payment statuses
+- financial totals
+- analytics chart
+- mobile panel isolation
+- cloud/local mode indicator
+
+======================================================================
+10. FUTURE IMPROVEMENTS AFTER CURRENT BLOCKERS
+======================================================================
+
+These are future tasks, not permission to modify them automatically.
+
+10.1 Final service catalog audit
+
+Verify all 425 services field-by-field:
+- ID
+- Platform
+- Service name
+- Category
+- Provider rate
+- Client rate
+- Rate unit
+- Min/max
+- ETA
+- Visibility
+- Recommended state
+
+Preserve client pricing and Admin settings during seed updates.
+
+10.2 Mobile responsive polish
+
+Once panel isolation and data sync are correct, refine:
+- typography scale
+- card padding
+- table-to-card transformations
+- action-button widths
+- modal sizing
+- fixed headers/navigation
+- overflow behavior
+
+Do not redesign the desktop layout while fixing mobile.
+
+10.3 Reliable automated tests
+
+Possible future test coverage:
+- JavaScript syntax
+- duplicate service IDs
+- catalog platform counts
+- provider-rate leakage into client-safe data
+- panel visibility state
+- status choices
+- disabled-service Recommend lock
+- responsive DOM assertions
+- screenshot comparison if a browser automation tool is available
+
+10.4 Deployment process improvement
+
+Create a stable reusable project updater that:
+- accepts a patch directory
+- backs up only modified files
+- verifies actual selectors/functions
+- starts the correct local server hidden
+- uses the current live domain
+- commits and pushes only expected files
+- cleans Downloads after success
+- avoids nested here-strings
+
+======================================================================
+11. NEW-CHAT STARTUP INSTRUCTIONS
+======================================================================
+
+When this project is transferred to a new conversation:
+
+1. Upload the full Novalyte checkpoint ZIP created after this documentation file.
+2. Tell the assistant to read:
+   Documentation\NOVALYTE_FULL_PROJECT_HANDOVER_SUMMARY_v6_0_28_CHECKPOINT_20260711.txt
+3. The assistant must inspect the actual project files before proposing code.
+4. The assistant must not rely only on old screenshots or version numbers.
+5. The assistant must restate the current baseline and requested scope before modifying files.
+6. The first actual code change should be limited to the status dropdown arrow/size issue.
+7. Mobile Admin work should follow only after the desktop status control is accepted.
+8. Every future major checkpoint must update the main handover before producing a new full-project ZIP.
+
+======================================================================
+12. CHECKPOINT SUMMARY
+======================================================================
+
+What is working or substantially implemented:
+- Expanded 425-service catalog workflow
+- Client Services filters and Recommended concept
+- Admin service recommendation controls
+- Service and Digital Product order creation
+- Client-safe order tracker concept and counts
+- Order History with financial fields and filters
+- Date/time on two lines
+- View/Edit plus Void/Undo Void action arrangement
+- Admin analytics concept
+- GitHub Pages deployment workflow
+- Main Documentation folder workflow
+
+What is not yet accepted/final:
+- Desktop editable Status dropdown still does not show its arrow clearly
+- Mobile Admin layout remains unacceptable
+- Mobile panels may still mix or render poorly
+- Desktop and phone Admin records are not shared because cloud sync is not configured
+- Actual latest v6.0.28 commit/push status must be verified
+- Full post-import 425-service field-level audit remains recommended
+
+Current user instruction at checkpoint:
+Continue the remaining work in a new chat because this conversation is too long and may crash the browser. Preserve every locked rule, do not touch unrelated code, and use the terminal-first workflow.
+
+END OF HANDOVER
+
+======================================================================
+13. V6.0.29 REQUESTED FIXES - 2026-07-12
+======================================================================
+
+Applied only the requested scope:
+- Restored the approved 16-item Digital Products seed catalog that had disappeared from assets/js/data.js.
+- Fixed Services editing so saved admin changes are no longer overwritten by the verified seed merge on the next render/read.
+- Added safe automatic cross-device refresh every four seconds when the existing Supabase cloud configuration and authenticated admin session are active.
+- Prevented an empty cloud Services or Digital Products payload from silently erasing a populated local catalog.
+- Kept mobile Services and Digital Products in the same desktop table structure, using horizontal responsive scrolling rather than changing them into a different card layout.
+- Centered Service ROI below the four dashboard summary cards on mobile.
+- Reduced the desktop Orders status selector and added a guaranteed visible dropdown arrow.
+- Updated cache-busting versions only for changed assets.
+
+Important cloud limitation:
+The uploaded checkpoint still has assets/js/cloud-config.js disabled with blank Supabase URL, anon key, and admin email. The code now supports automatic two-way cross-device reflection when that existing cloud configuration is activated, but a static GitHub Pages site cannot share browser-local data between PC and phone without a configured shared backend. The updater must preserve any already-configured cloud-config.js in the user's main project and report whether cloud sync is active in the verification checklist.
+
+Updater/package rule for this release:
+One ZIP only, containing the patch payload and one readable multi-line PowerShell updater. The updater must apply only the listed files, back them up temporarily, verify syntax/content/browser output, start the correct local site with hidden PowerShell, push to origin/main, print a checklist, and delete its extracted files plus the downloaded ZIP after success.
+
