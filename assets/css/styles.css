@@ -12817,3 +12817,39 @@ body #statsGrid {
   }
 }
 /* end v6.0.37 desktop Orders alignment/status text */
+/* v6.0.38 requested-only: visible containers for Orders View/Edit/Void */
+#orders .orders-actions-wrap .order-action-btn[data-view-order],
+#orders .orders-actions-wrap .order-action-btn[data-edit-order],
+#orders .orders-actions-wrap .order-action-btn[data-void-order] {
+  background: rgba(14, 27, 49, 0.96) !important;
+  border: 1px solid rgba(131, 171, 210, 0.58) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.24) !important;
+}
+
+#orders .orders-actions-wrap .order-action-btn[data-view-order]:hover:not(:disabled),
+#orders .orders-actions-wrap .order-action-btn[data-edit-order]:hover:not(:disabled),
+#orders .orders-actions-wrap .order-action-btn[data-view-order]:focus-visible,
+#orders .orders-actions-wrap .order-action-btn[data-edit-order]:focus-visible {
+  background: rgba(22, 42, 72, 0.98) !important;
+  border-color: rgba(112, 225, 255, 0.78) !important;
+}
+
+#orders .orders-actions-wrap .order-action-btn[data-void-order] {
+  background: rgba(88, 61, 9, 0.34) !important;
+  border-color: rgba(250, 204, 21, 0.68) !important;
+  color: #fde68a !important;
+}
+
+#orders .orders-actions-wrap .order-action-btn[data-void-order]:hover:not(:disabled),
+#orders .orders-actions-wrap .order-action-btn[data-void-order]:focus-visible {
+  background: rgba(113, 78, 10, 0.48) !important;
+  border-color: rgba(253, 224, 71, 0.92) !important;
+}
+
+#orders .orders-actions-wrap .order-action-btn[data-view-order]:focus-visible,
+#orders .orders-actions-wrap .order-action-btn[data-edit-order]:focus-visible,
+#orders .orders-actions-wrap .order-action-btn[data-void-order]:focus-visible {
+  outline: 2px solid rgba(112, 225, 255, 0.22) !important;
+  outline-offset: 2px !important;
+}
+/* end v6.0.38 visible Orders action containers */

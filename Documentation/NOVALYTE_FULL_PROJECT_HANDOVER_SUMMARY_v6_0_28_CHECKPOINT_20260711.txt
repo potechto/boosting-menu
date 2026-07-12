@@ -920,3 +920,9 @@ One ZIP only, containing the patch payload and one readable multi-line PowerShel
 - Reduced editable Status text to 0.64rem while preserving the complete Active, Pending, Processing, and Completed labels plus the inset chevron.
 - Changed only admin.html, index.html, assets/css/styles.css, and this main handover file. Supabase/cloud-config.js remains untouched.
 - The unified updater uses a unique temporary extraction folder, stages only approved files, pushes to origin/main, starts the correct cache-busted local Orders URL with a hidden server, prints a verification checklist, and removes current plus known failed v6.0.32-v6.0.36 patch artifacts after verified success.
+
+[PATCH v6.0.38]
+- Added clearly visible bordered and filled containers to the Order History View, Edit, and Void buttons only.
+- Preserved the accepted v6.0.37 table alignment, status sizing, button positions, responsive behavior, data logic, and Supabase files.
+- Added subtle hover and keyboard-focus states without changing button dimensions or the Actions column layout.
+- Updated only admin.html, index.html, assets/css/styles.css, and this main handover file.
