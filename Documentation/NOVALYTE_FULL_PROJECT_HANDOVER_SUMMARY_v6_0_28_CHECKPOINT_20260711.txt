@@ -934,3 +934,11 @@ One ZIP only, containing the patch payload and one readable multi-line PowerShel
 - Updated only admin.html, index.html, assets/js/cloud-config.js, and this main handover file.
 - Preserved the complete v6.0.38 Orders layout, visible action-button containers, mobile behavior, local datasets, and all unrelated files.
 - First cloud initialization must be performed from the main laptop so its existing Novalyte records become the authoritative initial shared state before another device signs in.
+
+[PATCH v6.0.40]
+- Kept all non-voided orders above voided orders in Order History automatically after every render, status change, filter change, and page refresh.
+- Preserved newest-to-oldest date/time ordering inside both groups, so voided records remain chronologically ordered after moving to the bottom.
+- Added a muted gray/faded visual treatment only to voided rows while keeping their information readable.
+- Added a clearly visible teal bordered/filled container, hover state, and keyboard-focus state to Undo Void.
+- Updated only admin.html, index.html, assets/js/admin.js, assets/css/styles.css, and this main handover file.
+- Preserved the active Supabase v6.0.39 configuration, v6.0.38 action layout, all records, calculations, mobile structure, and unrelated files.

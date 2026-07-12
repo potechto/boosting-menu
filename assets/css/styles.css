@@ -12853,3 +12853,57 @@ body #statsGrid {
   outline-offset: 2px !important;
 }
 /* end v6.0.38 visible Orders action containers */
+
+/* v6.0.40 requested-only: group voided orders last, fade voided rows, and show Undo Void container */
+#orders .order-row.is-voided > td {
+  background: rgba(100, 116, 139, 0.075) !important;
+  color: rgba(203, 213, 225, 0.68) !important;
+  transition: background-color 0.18s ease, opacity 0.18s ease !important;
+}
+
+#orders .order-row.is-voided > td:not(.orders-actions-cell) > * {
+  opacity: 0.70 !important;
+  filter: grayscale(0.28) saturate(0.55) !important;
+}
+
+#orders .order-row.is-voided .order-cell-subtext,
+#orders .order-row.is-voided .order-time-line {
+  color: rgba(148, 163, 184, 0.72) !important;
+}
+
+#orders .order-row.is-voided .order-status-pill.voided {
+  background: rgba(71, 85, 105, 0.28) !important;
+  border-color: rgba(148, 163, 184, 0.42) !important;
+  color: rgba(203, 213, 225, 0.78) !important;
+}
+
+#orders .order-row.is-voided .payment-pill {
+  opacity: 0.68 !important;
+  filter: grayscale(0.35) saturate(0.50) !important;
+}
+
+#orders .order-row.is-voided .order-action-btn:not([data-undo-void]) {
+  opacity: 0.62 !important;
+  filter: grayscale(0.25) saturate(0.58) !important;
+}
+
+#orders .orders-actions-wrap .order-action-btn[data-undo-void] {
+  background: rgba(6, 78, 69, 0.38) !important;
+  border: 1px solid rgba(45, 212, 191, 0.72) !important;
+  color: #99f6e4 !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.24) !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+#orders .orders-actions-wrap .order-action-btn[data-undo-void]:hover:not(:disabled),
+#orders .orders-actions-wrap .order-action-btn[data-undo-void]:focus-visible {
+  background: rgba(8, 104, 91, 0.56) !important;
+  border-color: rgba(94, 234, 212, 0.95) !important;
+}
+
+#orders .orders-actions-wrap .order-action-btn[data-undo-void]:focus-visible {
+  outline: 2px solid rgba(45, 212, 191, 0.24) !important;
+  outline-offset: 2px !important;
+}
+/* end v6.0.40 voided-order grouping and presentation */

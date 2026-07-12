@@ -1048,13 +1048,24 @@ function renderStats() {
     const status = els.orderStatusFilter.value;
     const payment = els.paymentStatusFilter.value;
 
+    const orderTimestamp = order => {
+      const timestamp = new Date(order?.createdAt || 0).getTime();
+      return Number.isFinite(timestamp) ? timestamp : 0;
+    };
+
     return Store.getOrders().filter(order => {
       const text = `${order.clientName} ${order.clientContact} ${order.serviceName} ${order.providerId} ${order.platform} ${order.target} ${order.notes} ${order.voidReason}`.toLowerCase();
       const matchesSearch = !search || text.includes(search);
       const matchesStatus = status === 'all' || order.status === status;
       const matchesPayment = payment === 'all' || order.paymentStatus === payment;
       return matchesSearch && matchesStatus && matchesPayment;
-    }).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    }).sort((a, b) => {
+      const aVoided = String(a.status || '').toLowerCase() === 'voided';
+      const bVoided = String(b.status || '').toLowerCase() === 'voided';
+
+      if (aVoided !== bVoided) return aVoided ? 1 : -1;
+      return orderTimestamp(b) - orderTimestamp(a);
+    });
   }
 
   function renderOrderSummary() {
@@ -1144,7 +1155,7 @@ function renderStats() {
             : `<button type="button" class="order-action-btn void" data-void-order="${safeId}">Void</button>`;
 
         return `
-            <tr class="order-row ${isClosed ? 'is-closed' : ''}">
+            <tr class="order-row ${isClosed ? 'is-closed' : ''} ${status === 'voided' ? 'is-voided' : ''}">
                 <td data-label="Date" class="order-date-cell">
                     <span class="order-date-line">${sanitize(dateLine)}</span>
                     <span class="order-time-line">${sanitize(timeLine)}</span>
