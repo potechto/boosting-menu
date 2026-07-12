@@ -12683,25 +12683,28 @@ body #statsGrid {
     }
 }
 /* end v6.0.28 status dropdown size only */
-/* v6.0.29 requested-only: compact Orders status dropdown with visible arrow */
+/* v6.0.30 requested-only: slimmer Orders status dropdown visible at normal zoom */
 @media (min-width: 821px) {
   #orders table th:nth-child(8),
   #orders table td:nth-child(8) {
-    width: 122px !important;
-    min-width: 122px !important;
-    max-width: 122px !important;
+    width: 114px !important;
+    min-width: 114px !important;
+    max-width: 114px !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
   }
 
   #orders .order-status-select,
   #orders .order-status-inline {
     display: block !important;
-    width: 106px !important;
-    min-width: 106px !important;
-    max-width: 106px !important;
-    height: 36px !important;
-    min-height: 36px !important;
+    width: 98px !important;
+    min-width: 98px !important;
+    max-width: 98px !important;
+    height: 35px !important;
+    min-height: 35px !important;
     margin: 0 auto !important;
-    padding: 6px 27px 6px 10px !important;
+    padding: 6px 24px 6px 9px !important;
+    border-radius: 12px !important;
     appearance: none !important;
     -webkit-appearance: none !important;
     background-color: rgba(7, 14, 30, 0.96) !important;
@@ -12709,13 +12712,14 @@ body #statsGrid {
       linear-gradient(45deg, transparent 50%, #8fb7dc 50%),
       linear-gradient(135deg, #8fb7dc 50%, transparent 50%) !important;
     background-position:
-      calc(100% - 15px) 50%,
-      calc(100% - 10px) 50% !important;
-    background-size: 5px 5px, 5px 5px !important;
+      calc(100% - 13px) 50%,
+      calc(100% - 8px) 50% !important;
+    background-size: 4px 4px, 4px 4px !important;
     background-repeat: no-repeat !important;
-    font-size: 0.72rem !important;
-    line-height: 1.1 !important;
+    font-size: 0.70rem !important;
+    line-height: 1.05 !important;
     text-overflow: clip !important;
+    overflow: visible !important;
   }
 }
-/* end v6.0.29 status dropdown */
+/* end v6.0.30 status dropdown */

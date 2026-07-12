@@ -898,3 +898,10 @@ The uploaded checkpoint still has assets/js/cloud-config.js disabled with blank 
 Updater/package rule for this release:
 One ZIP only, containing the patch payload and one readable multi-line PowerShell updater. The updater must apply only the listed files, back them up temporarily, verify syntax/content/browser output, start the correct local site with hidden PowerShell, push to origin/main, print a checklist, and delete its extracted files plus the downloaded ZIP after success.
 
+
+
+[PATCH v6.0.30]
+- Slimmed the Orders status dropdown so the full control and arrow remain visible at normal desktop zoom.
+- Reinforced the mobile admin Services and Digital Products panels to preserve the desktop table layout with horizontal scrolling instead of stacked mobile cards.
+- Kept the fifth dashboard analytics card (Service ROI) centered on mobile.
+- Updated admin/client cache-busting references to v6.0.30.

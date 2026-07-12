@@ -2531,74 +2531,114 @@
     #services .actions { width: 100% !important; max-width: 100% !important; }
 }
 /* end v6.0.24 mobile admin rebuild */
-/* v6.0.29 requested-only: mobile mirror layout and centered Service ROI */
+/* v6.0.30 requested-only: strict mobile mirror tables and centered Service ROI */
 @media (max-width: 820px) {
-  #dashboardAnalyticsSummary,
-  .dashboard-analytics-summary {
+  body.admin-dashboard-mode #dashboardAnalyticsSummary,
+  body.admin-dashboard-mode .dashboard-analytics-summary {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 8px !important;
   }
 
-  #dashboardAnalyticsSummary .dashboard-analytics-summary-card.roi,
-  .dashboard-analytics-summary-card.roi {
+  body.admin-dashboard-mode #dashboardAnalyticsSummary .dashboard-analytics-summary-card.roi,
+  body.admin-dashboard-mode .dashboard-analytics-summary-card.roi {
     grid-column: 1 / -1 !important;
     width: calc(50% - 4px) !important;
     max-width: calc(50% - 4px) !important;
     justify-self: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
 
-  #services .responsive-table,
-  #digital-products .responsive-table {
+  body.admin-dashboard-mode #services .responsive-table,
+  body.admin-dashboard-mode #digital-products .responsive-table {
     display: block !important;
     width: 100% !important;
     max-width: 100% !important;
     overflow-x: auto !important;
     overflow-y: visible !important;
-    -webkit-overflow-scrolling: touch;
+    -webkit-overflow-scrolling: touch !important;
     border-radius: 16px !important;
   }
 
-  #services .responsive-table table,
-  #digital-products .responsive-table table {
+  body.admin-dashboard-mode #services .responsive-table table,
+  body.admin-dashboard-mode #digital-products .responsive-table table,
+  body.admin-dashboard-mode #services table.services-ledger-table,
+  body.admin-dashboard-mode #digital-products table {
     display: table !important;
-    width: 100% !important;
-    table-layout: fixed !important;
+    width: max-content !important;
+    min-width: 100% !important;
+    table-layout: auto !important;
     border-collapse: separate !important;
     border-spacing: 0 !important;
   }
 
-  #services .responsive-table table { min-width: 1160px !important; }
-  #digital-products .responsive-table table { min-width: 940px !important; }
+  body.admin-dashboard-mode #services .responsive-table table,
+  body.admin-dashboard-mode #services table.services-ledger-table { min-width: 1160px !important; }
+  body.admin-dashboard-mode #digital-products .responsive-table table,
+  body.admin-dashboard-mode #digital-products table { min-width: 940px !important; }
 
-  #services .responsive-table thead,
-  #digital-products .responsive-table thead {
-    display: table-header-group !important;
+  body.admin-dashboard-mode #services .responsive-table thead,
+  body.admin-dashboard-mode #services .responsive-table tbody,
+  body.admin-dashboard-mode #services .responsive-table tr,
+  body.admin-dashboard-mode #services .responsive-table th,
+  body.admin-dashboard-mode #services .responsive-table td,
+  body.admin-dashboard-mode #digital-products .responsive-table thead,
+  body.admin-dashboard-mode #digital-products .responsive-table tbody,
+  body.admin-dashboard-mode #digital-products .responsive-table tr,
+  body.admin-dashboard-mode #digital-products .responsive-table th,
+  body.admin-dashboard-mode #digital-products .responsive-table td,
+  body.admin-dashboard-mode #services table.services-ledger-table thead,
+  body.admin-dashboard-mode #services table.services-ledger-table tbody,
+  body.admin-dashboard-mode #services table.services-ledger-table tr,
+  body.admin-dashboard-mode #services table.services-ledger-table th,
+  body.admin-dashboard-mode #services table.services-ledger-table td,
+  body.admin-dashboard-mode #digital-products table thead,
+  body.admin-dashboard-mode #digital-products table tbody,
+  body.admin-dashboard-mode #digital-products table tr,
+  body.admin-dashboard-mode #digital-products table th,
+  body.admin-dashboard-mode #digital-products table td {
     position: static !important;
+  }
+
+  body.admin-dashboard-mode #services .responsive-table thead,
+  body.admin-dashboard-mode #digital-products .responsive-table thead,
+  body.admin-dashboard-mode #services table.services-ledger-table thead,
+  body.admin-dashboard-mode #digital-products table thead {
+    display: table-header-group !important;
     width: auto !important;
     height: auto !important;
     overflow: visible !important;
     clip: auto !important;
   }
 
-  #services .responsive-table tbody,
-  #digital-products .responsive-table tbody {
+  body.admin-dashboard-mode #services .responsive-table tbody,
+  body.admin-dashboard-mode #digital-products .responsive-table tbody,
+  body.admin-dashboard-mode #services table.services-ledger-table tbody,
+  body.admin-dashboard-mode #digital-products table tbody {
     display: table-row-group !important;
   }
 
-  #services .responsive-table tr,
-  #digital-products .responsive-table tr {
+  body.admin-dashboard-mode #services .responsive-table tr,
+  body.admin-dashboard-mode #digital-products .responsive-table tr,
+  body.admin-dashboard-mode #services table.services-ledger-table tbody tr,
+  body.admin-dashboard-mode #digital-products table tbody tr {
     display: table-row !important;
     margin: 0 !important;
     padding: 0 !important;
     border: 0 !important;
     border-radius: 0 !important;
     background: transparent !important;
+    box-shadow: none !important;
   }
 
-  #services .responsive-table th,
-  #services .responsive-table td,
-  #digital-products .responsive-table th,
-  #digital-products .responsive-table td {
+  body.admin-dashboard-mode #services .responsive-table th,
+  body.admin-dashboard-mode #services .responsive-table td,
+  body.admin-dashboard-mode #digital-products .responsive-table th,
+  body.admin-dashboard-mode #digital-products .responsive-table td,
+  body.admin-dashboard-mode #services table.services-ledger-table th,
+  body.admin-dashboard-mode #services table.services-ledger-table td,
+  body.admin-dashboard-mode #digital-products table th,
+  body.admin-dashboard-mode #digital-products table td {
     display: table-cell !important;
     width: auto !important;
     min-width: 0 !important;
@@ -2611,37 +2651,38 @@
     white-space: normal !important;
   }
 
-  #services .responsive-table td::before,
-  #digital-products .responsive-table td::before {
+  body.admin-dashboard-mode #services .responsive-table td::before,
+  body.admin-dashboard-mode #digital-products .responsive-table td::before,
+  body.admin-dashboard-mode #services table.services-ledger-table td::before,
+  body.admin-dashboard-mode #digital-products table td::before {
     content: none !important;
     display: none !important;
   }
 
-  #services .responsive-table td[data-label="Actions"],
-  #digital-products .responsive-table td[data-label="Actions"] {
-    display: table-cell !important;
-  }
-
-  #services .responsive-table .actions-cell,
-  #digital-products .responsive-table .actions-cell,
-  #digital-products .responsive-table .admin-digital-actions {
+  body.admin-dashboard-mode #services .responsive-table .actions-cell,
+  body.admin-dashboard-mode #digital-products .responsive-table .actions-cell,
+  body.admin-dashboard-mode #digital-products .responsive-table .admin-digital-actions,
+  body.admin-dashboard-mode #services table.services-ledger-table .actions-cell,
+  body.admin-dashboard-mode #digital-products table .actions-cell,
+  body.admin-dashboard-mode #digital-products table .admin-digital-actions {
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     width: 100% !important;
     gap: 6px !important;
   }
 
-  #services .responsive-table .recommend-toggle {
+  body.admin-dashboard-mode #services .responsive-table .recommend-toggle,
+  body.admin-dashboard-mode #services table.services-ledger-table .recommend-toggle {
     display: inline-flex !important;
     justify-self: start !important;
   }
 }
 
 @media (max-width: 380px) {
-  #dashboardAnalyticsSummary .dashboard-analytics-summary-card.roi,
-  .dashboard-analytics-summary-card.roi {
+  body.admin-dashboard-mode #dashboardAnalyticsSummary .dashboard-analytics-summary-card.roi,
+  body.admin-dashboard-mode .dashboard-analytics-summary-card.roi {
     width: calc(50% - 4px) !important;
     max-width: calc(50% - 4px) !important;
   }
 }
-/* end v6.0.29 mobile mirror layout */
+/* end v6.0.30 mobile mirror layout */
