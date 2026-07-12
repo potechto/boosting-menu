@@ -966,3 +966,9 @@ One ZIP only, containing the patch payload and one readable multi-line PowerShel
 - The unintended v6.0.43 Admin sidebar lock is not part of the current state.
 - Mobile Client View navigation remains the existing hamburger menu at 820px and below.
 - Preserved v6.0.42 responsive record cards, centered action notifications, v6.0.40 Orders behavior, and v6.0.39 Supabase cloud sync.
+
+[PATCH v6.0.45]
+- Reverted the temporary client-site body class introduced by v6.0.44.
+- Kept the Client View navigation fixed only at 821px and wider using the direct topbar/main relationship.
+- Restored the original sticky hamburger header on mobile and added a client-only width guard so the home hero, action buttons, metric cards, and other Client View sections stay inside the phone viewport.
+- No Admin layout, Supabase configuration, records, calculations, or shared-data logic was changed.

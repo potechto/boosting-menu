@@ -13050,14 +13050,9 @@ body #statsGrid {
 }
 /* end v6.0.42 centered action notifications */
 
-/* v6.0.44 corrected scope: lock the public Client View navigation on non-mobile widths only */
+/* v6.0.45 corrected Client View navigation: desktop-only and class-free */
 @media (min-width: 821px) {
-  body.client-site {
-    --client-desktop-nav-height: 68px;
-    padding-top: var(--client-desktop-nav-height) !important;
-  }
-
-  body.client-site > .topbar {
+  body > .topbar {
     position: fixed !important;
     top: 0 !important;
     right: 0 !important;
@@ -13065,5 +13060,9 @@ body #statsGrid {
     width: 100% !important;
     z-index: 2200 !important;
   }
+
+  body > .topbar + main {
+    padding-top: 68px !important;
+  }
 }
-/* end v6.0.44 fixed Client View navigation */
+/* end v6.0.45 desktop Client View navigation */
