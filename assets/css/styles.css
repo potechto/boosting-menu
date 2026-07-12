@@ -12683,38 +12683,48 @@ body #statsGrid {
     }
 }
 /* end v6.0.28 status dropdown size only */
-/* v6.0.30 requested-only: slimmer Orders status dropdown visible at normal zoom */
+/* v6.0.31 requested-only: fully visible Orders status control at 100% zoom */
 @media (min-width: 821px) {
-  #orders table th:nth-child(8),
-  #orders table td:nth-child(8) {
-    width: 114px !important;
-    min-width: 114px !important;
-    max-width: 114px !important;
-    padding-left: 6px !important;
-    padding-right: 6px !important;
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-date { width: 9% !important; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-client { width: 11% !important; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-service { width: 19.5% !important; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-qty { width: 5% !important; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-provider { width: 7.5% !important; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-client-fee { width: 7.5% !important; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-revenue { width: 6.5% !important; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-status { width: 11% !important; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-payment { width: 7% !important; }
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table col.orders-col-actions { width: 16% !important; }
+
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table th:nth-child(8),
+  body:has(.admin-layout:not(.hidden)) #orders .orders-ledger-table td:nth-child(8) {
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    padding-left: 7px !important;
+    padding-right: 7px !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
   }
 
-  #orders .order-status-select,
-  #orders .order-status-inline {
+  body:has(.admin-layout:not(.hidden)) #orders .order-status-select,
+  body:has(.admin-layout:not(.hidden)) #orders .order-status-inline {
     display: block !important;
-    width: 98px !important;
-    min-width: 98px !important;
-    max-width: 98px !important;
-    height: 35px !important;
-    min-height: 35px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 112px !important;
+    height: 36px !important;
+    min-height: 36px !important;
     margin: 0 auto !important;
-    padding: 6px 24px 6px 9px !important;
+    padding: 6px 29px 6px 10px !important;
     border-radius: 12px !important;
+    box-sizing: border-box !important;
     appearance: none !important;
     -webkit-appearance: none !important;
     background-color: rgba(7, 14, 30, 0.96) !important;
-    background-image:
-      linear-gradient(45deg, transparent 50%, #8fb7dc 50%),
-      linear-gradient(135deg, #8fb7dc 50%, transparent 50%) !important;
-    background-position:
-      calc(100% - 13px) 50%,
-      calc(100% - 8px) 50% !important;
-    background-size: 4px 4px, 4px 4px !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238fb7dc' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3C/svg%3E") !important;
+    background-position: right 9px center !important;
+    background-size: 14px 14px !important;
     background-repeat: no-repeat !important;
     font-size: 0.70rem !important;
     line-height: 1.05 !important;
@@ -12722,4 +12732,4 @@ body #statsGrid {
     overflow: visible !important;
   }
 }
-/* end v6.0.30 status dropdown */
+/* end v6.0.31 status control */

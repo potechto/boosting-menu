@@ -905,3 +905,10 @@ One ZIP only, containing the patch payload and one readable multi-line PowerShel
 - Reinforced the mobile admin Services and Digital Products panels to preserve the desktop table layout with horizontal scrolling instead of stacked mobile cards.
 - Kept the fifth dashboard analytics card (Service ROI) centered on mobile.
 - Updated admin/client cache-busting references to v6.0.30.
+
+
+[PATCH v6.0.31]
+- Corrected the Orders status control at normal 100% desktop zoom by reallocating the table columns instead of clipping the dropdown.
+- Made the status selector use the full available cell width with a clearly visible inset chevron.
+- Removed fixed pixel constraints from the Status cell and prevented right-edge clipping.
+- Updated cache-busting references to v6.0.31.
