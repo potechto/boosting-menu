@@ -12907,3 +12907,121 @@ body #statsGrid {
   outline-offset: 2px !important;
 }
 /* end v6.0.40 voided-order grouping and presentation */
+
+/* v6.0.41 requested-only: compact centered modal cards where the content allows it */
+#voidModal,
+#orderDetailsModal,
+#digitalProductModal {
+  align-items: center !important;
+  justify-content: center !important;
+  padding: clamp(12px, 3vw, 24px) !important;
+}
+
+#voidModal .modal-card,
+#orderDetailsModal .modal-card,
+#digitalProductModal .modal-card {
+  width: min(520px, calc(100vw - 28px)) !important;
+  max-width: 520px !important;
+  max-height: calc(100dvh - 28px) !important;
+  padding: 22px !important;
+  border-radius: 22px !important;
+  overflow: auto !important;
+}
+
+#voidModal .modal-head,
+#orderDetailsModal .modal-head,
+#digitalProductModal .modal-head {
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 14px !important;
+  margin-bottom: 16px !important;
+}
+
+#voidModal .modal-head > div,
+#orderDetailsModal .modal-head > div,
+#digitalProductModal .modal-head > div {
+  min-width: 0 !important;
+}
+
+#voidModal .modal-head .modal-x-btn,
+#orderDetailsModal .modal-head .modal-x-btn,
+#digitalProductModal .modal-head .icon-btn {
+  width: 42px !important;
+  min-width: 42px !important;
+  height: 42px !important;
+  min-height: 42px !important;
+  padding: 0 !important;
+  flex: 0 0 42px !important;
+}
+
+#voidModal .service-desc {
+  max-width: 38rem !important;
+  margin-top: 6px !important;
+  line-height: 1.45 !important;
+}
+
+#voidModal #voidReason {
+  min-height: 112px !important;
+  max-height: 180px !important;
+}
+
+#voidModal .modal-actions {
+  margin-top: 16px !important;
+}
+
+#voidModal #confirmVoidBtn {
+  min-width: 150px !important;
+}
+
+#orderDetailsModal .details-grid {
+  max-height: min(62dvh, 520px) !important;
+  overflow: auto !important;
+  padding-right: 2px !important;
+}
+
+#digitalProductModal .digital-product-modal-image {
+  max-height: 220px !important;
+  object-fit: contain !important;
+}
+
+@media (max-width: 560px) {
+  #voidModal,
+  #orderDetailsModal,
+  #digitalProductModal {
+    align-items: center !important;
+    padding: 12px !important;
+  }
+
+  #voidModal .modal-card,
+  #orderDetailsModal .modal-card,
+  #digitalProductModal .modal-card {
+    width: calc(100vw - 24px) !important;
+    max-width: 520px !important;
+    max-height: calc(100dvh - 24px) !important;
+    padding: 17px !important;
+    border-radius: 19px !important;
+  }
+
+  #voidModal .modal-head,
+  #orderDetailsModal .modal-head,
+  #digitalProductModal .modal-head {
+    flex-direction: row !important;
+  }
+
+  #voidModal .modal-head .modal-x-btn,
+  #orderDetailsModal .modal-head .modal-x-btn,
+  #digitalProductModal .modal-head .icon-btn {
+    width: 38px !important;
+    min-width: 38px !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    flex-basis: 38px !important;
+  }
+
+  #voidModal #confirmVoidBtn,
+  #digitalProductModal .modal-actions .btn {
+    width: 100% !important;
+  }
+}
+/* end v6.0.41 compact modal presentation */
