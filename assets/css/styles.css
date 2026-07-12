@@ -13050,9 +13050,9 @@ body #statsGrid {
 }
 /* end v6.0.42 centered action notifications */
 
-/* v6.0.45 corrected Client View navigation: desktop-only and class-free */
+/* v6.0.46 Client View navigation lock: unique desktop-only class, no Admin or mobile spillover */
 @media (min-width: 821px) {
-  body > .topbar {
+  body > .client-topbar {
     position: fixed !important;
     top: 0 !important;
     right: 0 !important;
@@ -13061,8 +13061,8 @@ body #statsGrid {
     z-index: 2200 !important;
   }
 
-  body > .topbar + main {
+  body > .client-topbar + main {
     padding-top: 68px !important;
   }
 }
-/* end v6.0.45 desktop Client View navigation */
+/* end v6.0.46 desktop Client View navigation */

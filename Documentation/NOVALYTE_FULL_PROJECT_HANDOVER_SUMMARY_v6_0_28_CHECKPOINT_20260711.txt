@@ -972,3 +972,11 @@ One ZIP only, containing the patch payload and one readable multi-line PowerShel
 - Kept the Client View navigation fixed only at 821px and wider using the direct topbar/main relationship.
 - Restored the original sticky hamburger header on mobile and added a client-only width guard so the home hero, action buttons, metric cards, and other Client View sections stay inside the phone viewport.
 - No Admin layout, Supabase configuration, records, calculations, or shared-data logic was changed.
+
+[PATCH v6.0.46] CLIENT HOME MOBILE CONTAINMENT + UNIQUE DESKTOP NAV SCOPE
+- Corrected the public Client View Home page only after v6.0.44-v6.0.45 still allowed the hero and cards to exceed the phone viewport.
+- Added a unique client-topbar class so the desktop fixed-navigation rule cannot spill into Admin or mobile behavior.
+- Replaced the broad v6.0.45 mobile selectors with #home-scoped containment rules only.
+- Added an inline critical mobile guard in index.html so stale external CSS cannot keep the Home hero, buttons, or metric cards wider than the phone screen.
+- Preserved the hamburger navigation on mobile and the fixed Client View navigation at 821px and wider.
+- No Admin layout, Supabase configuration, shared records, calculations, Orders behavior, or client pages outside Home were changed.

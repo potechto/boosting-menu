@@ -6,11 +6,94 @@
   <title>Novalyte Digital Growth Portal</title>
   <meta name="description" content="Novalyte digital growth portal for social growth services, digital subscriptions, and Messenger-ready checkout.">
   <link rel="icon" href="assets/icons/novalyte.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/css/styles.css?v=6.0.45">
-  <link rel="stylesheet" href="assets/css/mobile.css?v=6.0.45" media="screen and (max-width: 820px)">
+  <link rel="stylesheet" href="assets/css/styles.css?v=6.0.46">
+  <link rel="stylesheet" href="assets/css/mobile.css?v=6.0.46" media="screen and (max-width: 820px)">
+  <style id="novalyte-client-home-mobile-v6046">
+    /* v6.0.46 critical home-only mobile containment. Kept inline so stale external CSS cannot widen the Home page. */
+    @media (max-width: 820px) {
+      html,
+      body,
+      body > main#top,
+      body > main#top > #home {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+      }
+
+      body > .client-topbar {
+        position: sticky !important;
+        top: 0 !important;
+        right: auto !important;
+        left: auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+
+      #home > .client-home-shell {
+        display: block !important;
+        width: calc(100% - 20px) !important;
+        min-width: 0 !important;
+        max-width: calc(100% - 20px) !important;
+        margin-right: auto !important;
+        margin-left: auto !important;
+        padding-right: 0 !important;
+        padding-left: 0 !important;
+        box-sizing: border-box !important;
+      }
+
+      #home .client-home-hero,
+      #home .client-home-copy,
+      #home .client-home-panel,
+      #home .client-home-actions,
+      #home .client-info-grid,
+      #home .client-info-card,
+      #home .home-metric-card {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+      }
+
+      #home .client-home-hero,
+      #home .client-home-panel,
+      #home .client-info-grid {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+      }
+
+      #home .client-home-hero {
+        overflow: hidden !important;
+      }
+
+      #home .client-home-copy > *,
+      #home .client-home-copy h1,
+      #home .client-home-copy p {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        white-space: normal !important;
+        overflow-wrap: anywhere !important;
+      }
+
+      #home .client-home-actions {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+        align-items: stretch !important;
+      }
+
+      #home .client-home-actions .btn {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        white-space: normal !important;
+        text-align: center !important;
+      }
+    }
+  </style>
 </head>
 <body data-build="v6.0.0">
-  <header class="topbar">
+  <header class="topbar client-topbar">
     <div class="shell topbar-inner">
       <a class="brand" href="#top" id="homeBrand" aria-label="Novalyte home">
         <span class="logo-mark brand-logo-frame">
