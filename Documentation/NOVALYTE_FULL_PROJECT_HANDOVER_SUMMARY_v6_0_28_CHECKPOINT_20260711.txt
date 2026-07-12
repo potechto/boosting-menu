@@ -950,3 +950,12 @@ One ZIP only, containing the patch payload and one readable multi-line PowerShel
 - Added responsive compact-card overrides so eligible dialogs stay centered and proportionate on smaller screens instead of becoming bottom sheets or full-width banners.
 - Updated only admin.html, index.html, assets/css/styles.css, and this main handover file.
 - Preserved Supabase configuration, order logic, records, calculations, v6.0.40 voided-order grouping/fading, and all unrelated files.
+
+[PATCH v6.0.42]
+- Replaced the forced desktop-width mobile Services and Digital Products tables with true full-width record cards, eliminating squeezed columns and large unused horizontal areas.
+- Rebuilt mobile Orders rows as compact label/value cards so Date, Client, Service, Qty, Provider, Client, and Revenue use the available screen width instead of hugging the left edge.
+- Centered mobile Status, Payment, and Actions sections; View and Edit remain paired while Void and Undo Void span the action row and sit visibly in the middle.
+- Kept mobile action buttons touch-friendly and arranged Service/Digital Product actions into presentable two-column groups with primary and delete actions spanning appropriately.
+- Moved action-result toast notifications from the lower-right corner to a horizontally centered, responsive position on admin and client views.
+- Updated only admin.html, index.html, assets/css/styles.css, assets/css/mobile.css, and this main handover file.
+- Preserved Supabase configuration, shared data logic, order sorting, voided-row fading, modal sizing, calculations, records, and desktop/laptop layouts.

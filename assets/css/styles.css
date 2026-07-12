@@ -13025,3 +13025,27 @@ body #statsGrid {
   }
 }
 /* end v6.0.41 compact modal presentation */
+
+/* v6.0.42 requested-only: center action notifications instead of pinning them to a corner */
+.toast-stack {
+  left: 50% !important;
+  right: auto !important;
+  bottom: max(18px, env(safe-area-inset-bottom)) !important;
+  width: min(420px, calc(100vw - 32px)) !important;
+  transform: translateX(-50%) !important;
+  justify-items: stretch !important;
+}
+
+.toast-stack .toast {
+  width: 100% !important;
+  max-width: 100% !important;
+  text-align: center !important;
+}
+
+@media (max-width: 560px) {
+  .toast-stack {
+    bottom: max(12px, calc(env(safe-area-inset-bottom) + 10px)) !important;
+    width: calc(100vw - 24px) !important;
+  }
+}
+/* end v6.0.42 centered action notifications */
