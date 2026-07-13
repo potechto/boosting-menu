@@ -1,0 +1,1290 @@
+NOVALYTE FULL PROJECT HANDOVER SUMMARY
+Checkpoint: v6.0.51 Finance Management + Concise Finance Account Labels
+Checkpoint date: 2026-07-13
+Purpose: Transfer the complete working context of the Novalyte project to a new ChatGPT conversation without losing the user's rules, the project's architecture, completed work, mistakes and failed patches, current accepted state, unresolved verification items, and future upgrade plan.
+
+IMPORTANT STATUS NOTE
+---------------------
+The latest requested checkpoint is v6.0.51. The terminal log in this chat fully confirms:
+- v6.0.48 was committed and pushed at 3ccd83ec.
+- The v6.0.48 handover-only checkpoint was committed and pushed at f7996626.
+- v6.0.49 Finance Management was committed and pushed at 3ef301d6.
+- v6.0.50 failed only because its verifier incorrectly rejected a valid unquoted JavaScript object key. The updater restored all protected files before commit, so v6.0.50 changed nothing.
+- v6.0.51 was created as the corrected replacement for v6.0.50.
+
+The accompanying handover-and-backup creator is intentionally allowed to run only after the actual main project contains the v6.0.51 cache marker and the eight concise Finance Management dropdown labels, and only when local HEAD matches origin/main. Therefore, if this v6.0.51 handover exists inside the project, that creator preflight passed. Even so, the next chat must independently inspect the real Git state before making any change.
+
+Required first verification in a new chat:
+- git status --short
+- git branch --show-current
+- git remote get-url origin
+- git log -15 --oneline
+- git rev-parse HEAD
+- git fetch origin main
+- git rev-parse origin/main
+- confirm admin.html loads assets/js/admin.js?v=6.0.51 or a later approved version
+- confirm the Finance Management dropdown labels and signed-entry behavior
+- visually verify Admin mobile pages and Client View at phone width
+- verify Supabase data synchronization between laptop and phone
+
+Do not treat a version number from this document as the only proof that it is deployed. Verify the real files, Git history, and rendered behavior first.
+
+======================================================================
+1. PROJECT IDENTITY, PATHS, REPOSITORY, AND LIVE URLS
+======================================================================
+
+Project name:
+Novalyte
+
+Product purpose:
+Novalyte is a browser-based pricing, order, service, digital-product, investment, finance, and client-tracking system. It contains:
+- A protected Admin workspace for services, prices, recommendations, digital products, orders, investments, finance logs, team/payroll rules, analytics, and client-safe order data.
+- A public Client View for browsing services and products, viewing client-safe order information, and preparing an order message.
+- A shared-data layer intended to synchronize Admin data across laptop, phone, and other devices through Supabase.
+
+Main Windows project path:
+C:\Users\Ralph John\OneDrive\Desktop\ME FILES\Novalyte
+
+Downloads path:
+C:\Users\Ralph John\Downloads
+
+Git repository:
+https://github.com/potechto/boosting-menu.git
+
+Required branch:
+main
+
+GitHub Pages Client View:
+https://potechto.github.io/boosting-menu/
+
+GitHub Pages Admin View:
+https://potechto.github.io/boosting-menu/admin.html
+
+Typical cache-busted test forms:
+https://potechto.github.io/boosting-menu/index.html?v=<VERSION>#home
+https://potechto.github.io/boosting-menu/admin.html?v=<VERSION>#dashboard
+https://potechto.github.io/boosting-menu/admin.html?v=<VERSION>#services
+https://potechto.github.io/boosting-menu/admin.html?v=<VERSION>#digital-products
+https://potechto.github.io/boosting-menu/admin.html?v=<VERSION>#orders
+
+Important files:
+- index.html
+- admin.html
+- assets/css/styles.css
+- assets/css/mobile.css
+- assets/js/app.js
+- assets/js/admin.js
+- assets/js/store.js
+- assets/js/remoteStore.js
+- assets/js/data.js
+- assets/js/admin-data.js
+- assets/js/cloud-config.js
+- Documentation/NOVALYTE_SUPABASE_SHARED_SYNC.sql
+- Documentation/NOVALYTE_FULL_PROJECT_HANDOVER_SUMMARY_v6_0_28_CHECKPOINT_20260711.txt
+- Documentation/NOVALYTE_FULL_PROJECT_HANDOVER_SUMMARY_v6_0_51_CHECKPOINT_20260713.txt
+
+The older v6.0.28-named and v6.0.48 handover files must not be deleted. This v6.0.51 checkpoint is the newest primary handover for startup context and supersedes the older handovers without removing them.
+
+======================================================================
+2. PERMANENT USER RULES AND LOCKED WORKFLOW
+======================================================================
+
+These rules were repeated many times and must be treated as permanent project requirements.
+
+2.1 Nothing more, nothing less
+
+The strongest rule is:
+- Do not change anything the user did not ask to change.
+- Do not remove anything the user did not ask to remove.
+- Do not add anything the user did not ask to add.
+- Do not rename, relocate, restyle, redesign, simplify, reorganize, or "improve" unrelated code or UI.
+- Preserve all unaffected data, logic, prices, calculations, controls, files, and layouts.
+
+Before every patch, restate the exact requested scope internally and list the exact files that genuinely require modification. Do not add unrelated files to a patch manifest.
+
+2.2 Terminal-first automated process
+
+All meaningful code updates must be applied through a generated terminal updater or a short terminal-driven process. The user does not want long manual file-edit instructions.
+
+The preferred package format is one ZIP containing:
+- One readable PowerShell updater.
+- One patch payload directory.
+- No extra README, no local-update notes, and no unnecessary documentation files.
+
+The updater should:
+1. Verify the exact project path.
+2. Verify the Git repository and origin URL.
+3. Verify branch main.
+4. Check for pre-existing staged files and stop if unrelated staged work exists.
+5. Preserve unrelated unstaged files.
+6. Verify patch hashes.
+7. Back up only the exact target files.
+8. Apply only the exact approved target files.
+9. Run syntax, content, and Git whitespace checks.
+10. Perform a hidden local server probe when a browser change is involved.
+11. Commit only approved files.
+12. Push to origin/main.
+13. Fetch and verify local HEAD equals origin/main.
+14. Open only the correct new cache-busted URL when requested.
+15. Delete the downloaded patch ZIP, extracted updater, and temporary backup only after verified success.
+16. Print a clear final verification checklist.
+
+Use a unique temporary folder containing a GUID. Do not reuse a fixed temp directory because v6.0.35 failed when an old updater file was still locked.
+
+2.3 Hidden processes and correct browser URL
+
+When starting a local Python server, launch it with a hidden window. Do not allow PowerShell or the server window to keep popping up.
+
+Do not launch an old domain, old port, old route, or old cache version. The user previously experienced the old site opening even after a new update.
+
+Use a fresh cache-busting query string after each deployment.
+
+2.4 Documentation before full project ZIP
+
+Before creating a full-project archive:
+- Create or update the main handover inside the project's Documentation folder first.
+- Then create the full project ZIP so the new handover is inside the archive.
+- Do not create random temporary README files or update notes.
+- The main handover is the only required checkpoint document unless the user explicitly asks for another file.
+
+2.5 Visual verification is mandatory
+
+Static marker checks are not enough. Several previous scripts printed PASS while the UI still looked broken.
+
+A UI patch is not accepted until the actual rendered result is reviewed at the relevant viewport.
+
+For desktop changes, verify:
+- Actual browser output at 100% zoom.
+- Column alignment and control clipping.
+- Correct page and asset version.
+
+For mobile changes, verify:
+- Actual phone screenshot or recording.
+- Portrait and, when relevant, landscape.
+- No horizontal overflow.
+- No large unused blank area.
+- Readable text without zooming out.
+- Buttons remain within their card/container.
+- Only the selected navigation panel is visible.
+
+Separate these facts in communication:
+- Patch applied.
+- Commit created.
+- Push verified.
+- GitHub Pages deployed.
+- Visual result accepted.
+
+Do not call a design "fixed" only because Git succeeded.
+
+2.6 Preserve business data and settings
+
+Unless specifically requested, preserve:
+- Service provider rates.
+- Client-visible service rates.
+- Service IDs.
+- Visibility/disabled state.
+- Recommended state.
+- Existing orders.
+- Saved provider/client price snapshots in old orders.
+- Order statuses and payment statuses.
+- Digital products.
+- Investments and finance records.
+- Team/payroll rules.
+- Existing client information.
+- Revenue, receivable, and dashboard calculations.
+
+Editing a current service price must not rewrite historical order snapshots.
+
+2.7 Mobile must be the same product, not a reduced product
+
+Mobile must have the same features and data as desktop. Only presentation changes.
+
+A desktop switch must remain a switch on mobile. Do not convert a Recommend switch into a checkbox.
+
+Do not hide features solely to make the mobile screen easier. Reflow them into usable cards or grids.
+
+2.8 No broad CSS override stacking
+
+The project accumulated many competing responsive and Orders CSS blocks. Do not add another broad !important block without first locating the exact conflicting selectors.
+
+Prefer:
+- Narrowly scoped selectors.
+- Unique page classes or IDs.
+- Direct source markup/render fixes when structure is the real problem.
+- Removal or neutralization of obsolete conflicting rules.
+
+Avoid:
+- Text-detection hacks.
+- MutationObserver-only layout fixes.
+- Generic selectors that affect both Admin and Client View.
+- Rules that force every td to display:block without a deliberate card grid.
+
+2.9 Communication and honesty
+
+Be direct. If a patch fails, identify the exact failure and state whether files were rolled back.
+
+Never invent a Git commit, deployment state, or browser result.
+
+Do not include passwords, PINs, database passwords, Supabase secret keys, or service-role keys in documentation or replies.
+
+======================================================================
+3. CURRENT SYSTEM ARCHITECTURE AND DATA BEHAVIOR
+======================================================================
+
+3.1 Frontend structure
+
+The system is a static HTML/CSS/JavaScript site hosted on GitHub Pages.
+
+Client View is primarily index.html.
+Admin View is primarily admin.html.
+
+Data behavior is implemented through JavaScript modules including:
+- data.js for approved seed data.
+- store.js for local state and persistence behavior.
+- remoteStore.js for Supabase Auth/REST/RPC operations and shared state.
+- cloud-config.js for the browser-safe cloud configuration.
+- admin.js for Admin rendering, orders, forms, filters, actions, and status logic.
+- app.js for public Client View behavior.
+
+3.2 Service catalog
+
+The project work established a 425-service catalog.
+
+Known platform totals from the prior detailed scan:
+- Facebook: 86
+- Instagram: 47
+- Telegram: 126
+- TikTok: 87
+- Twitter/X: 36
+- YouTube: 43
+- Total: 425
+
+The previous catalog had 199 services. The corrected additional count was 226, not 227.
+
+Red provider-panel "View" buttons from source screenshots were not services and must never be imported as catalog data.
+
+A stale/conflicting TikTok service ID 1865 was previously identified. Verify the current catalog if service-data work resumes.
+
+Seed merging must preserve Admin-edited client rates, provider rates where appropriate, Recommend state, and visibility state.
+
+3.3 Digital products
+
+The approved catalog contains 16 digital products. v6.0.29 restored these after they disappeared and added protection against an empty remote payload wiping populated local seed data.
+
+Examples visible during testing included Bilibili, Canva Pro, and CapCut Pro.
+
+Digital product Admin actions include Create Order, Edit, Enable/Disable, and Delete where applicable.
+
+3.4 Order model and status rules
+
+Required order statuses:
+- Active
+- Pending
+- Processing
+- Completed
+
+Voided is represented as an order state/history condition. Voided/cancelled records stay in history but are excluded from active totals. Undo Void restores the order.
+
+Required payment statuses:
+- Paid
+- Partial
+- Unpaid
+
+Order financial fields include:
+- Provider cost/charge.
+- Client sale/charge.
+- Revenue, generally client charge minus provider charge.
+- Receivable based on payment state.
+
+Client-safe order output must never expose provider cost, internal notes, or other private Admin fields.
+
+3.5 Client-safe tracking
+
+Client-safe fields include:
+- Service/provider ID.
+- Client name.
+- Service name.
+- Date/time.
+- Status.
+
+The intended search prompt is:
+Search Service ID or Your Name
+
+The provider/service ID is the meaningful tracking identifier, not an arbitrary long generated order reference.
+
+3.6 Recommended services
+
+Client Services should default to Recommended.
+
+Platform filtering must continue to work while Recommended is selected.
+
+Admin Services has a compact Recommend switch before the Service column.
+
+Disabled services cannot remain recommended and cannot be newly recommended.
+
+The list switch is the authoritative Recommend control. A duplicate Recommend checkbox inside Edit Service was previously rejected.
+
+3.7 Dashboard and finance
+
+The Admin Dashboard includes Sales & Revenue Analytics and Service ROI concepts.
+
+Do not duplicate Investment cards inside Dashboard.
+
+Investments, finance logs/history, team rules, and future payroll rules belong to their own Admin areas.
+
+======================================================================
+4. SUPABASE SHARED SYNC: COMPLETED SETUP AND SECURITY RULES
+======================================================================
+
+4.1 Why Supabase was needed
+
+Before cloud configuration, Admin data used browser-local storage. Laptop and phone therefore had separate records.
+
+The user's requirement is:
+- Main laptop data must remain available when logging into Admin from another device.
+- Laptop and mobile should read the same authoritative shared data.
+- Changes should reflect across devices after synchronization.
+
+CSS cannot solve this. A shared backend is required.
+
+4.2 Supabase project
+
+Supabase organization:
+Novalyte
+
+Supabase project:
+Novalyte
+
+Project base URL configured for the frontend:
+https://yuzyyxnjbkwntutmfhcj.supabase.co
+
+The URL originally copied by the user included /rest/v1/. The v6.0.39 patch correctly removed that suffix because remoteStore.js appends its own /auth/v1 and /rest/v1 endpoint paths.
+
+Configured Admin email:
+ralphjohnsantos5@gmail.com
+
+The browser-safe publishable key is stored in assets/js/cloud-config.js. Do not repeat it in new documentation unless required. Never replace it with a secret key or service-role key.
+
+4.3 Database setup completed in Supabase
+
+The user successfully ran:
+Documentation/NOVALYTE_SUPABASE_SHARED_SYNC.sql
+
+Supabase showed:
+Success. No rows returned
+
+The SQL created/configured the shared database structures and security policies, including the following known objects:
+- public.novalyte_admin_profiles
+- public.novalyte_shared_state
+- Admin-check/security functions
+- Public client-safe order listing RPC/function
+- Row Level Security policies and grants
+
+The user created a Supabase Auth user, then deleted/recreated it after a password was typed into the chat. The password must never be recorded.
+
+The new user was registered as an authorized Novalyte Admin by running:
+
+insert into public.novalyte_admin_profiles (user_id)
+select id
+from auth.users
+where lower(email) = lower('ralphjohnsantos5@gmail.com')
+on conflict (user_id) do nothing;
+
+Supabase showed:
+Success. No rows returned
+
+4.4 Login mapping
+
+The visible Novalyte Admin username remains:
+Novalyte
+
+Supabase authenticates with the configured Admin email behind the scenes.
+
+The Admin password is the current Supabase Auth password. The existing Novalyte security PIN remains part of the login flow.
+
+Do not document or expose the password or PIN.
+
+4.5 v6.0.39 verified cloud patch
+
+v6.0.39 changed only:
+- admin.html
+- index.html
+- assets/js/cloud-config.js
+- the main handover
+
+The terminal output confirmed:
+- Supabase Auth endpoint reachable.
+- Public Novalyte orders RPC reachable.
+- Base URL normalized.
+- Publishable key used.
+- cloud-config.js passed node --check.
+- Git commit created at 020646b4.
+- origin/main verified at 020646b4.
+
+4.6 Initial shared-state rule
+
+The main laptop should sign in first and wait for:
+Shared data is up to date
+
+Only after the main laptop's existing records become the initial authoritative shared state should another device sign in.
+
+IMPORTANT PENDING VERIFICATION:
+The chat did not capture a completed end-to-end proof that:
+- The main laptop uploaded its current data.
+- A phone downloaded the same records.
+- A phone edit appeared on the laptop.
+- A laptop edit appeared on the phone.
+- Data survived logout/relogin and browser refresh.
+
+The next chat must verify this before declaring cloud sync final.
+
+======================================================================
+5. CHRONOLOGICAL PATCH AND DECISION HISTORY IN THIS CHAT
+======================================================================
+
+5.1 Starting situation
+
+The user lost access to a previous account/project conversation and wanted to reconstruct the latest work by scanning:
+- The uploaded Novalyte ZIP.
+- Terminal history.
+- Screenshots.
+- Previous handovers inside the project.
+
+Initial requested desktop issue:
+- Order History headers, columns, and rows were not aligned.
+- Status labels were clipped or too large.
+- The status dropdown arrow was not fully visible.
+
+The user also wanted Supabase to share Admin data between the main laptop and other devices.
+
+5.2 v6.0.29
+
+Terminal-recorded result:
+- Restored the approved 16 digital products.
+- Protected Services and Digital Products from empty remote data.
+- Fixed service edits being replaced by seed values.
+- Added periodic shared refresh support when Supabase is enabled.
+- Included mobile mirror/table work and dashboard Service ROI centering.
+
+Commit:
+9a90818
+
+The first updater stopped after the GitHub delivery stage even though the local commit remained. A follow-up verification confirmed origin/main matched 9a90818b, opened the correct local URL, and cleaned the patch files.
+
+Supabase was still disabled/blank at that time.
+
+5.3 v6.0.30
+
+Purpose:
+- Compact status control.
+- Strict mobile mirror/table behavior.
+
+Commit:
+dfb43d9
+
+The first updater again stopped during/after GitHub delivery. A follow-up script verified GitHub main, opened a hidden local preview, and cleaned artifacts.
+
+5.4 v6.0.31
+
+Purpose:
+- Reallocate Orders table space so the Status dropdown could use its full cell.
+- Keep the chevron visible and avoid clipping.
+
+Commit:
+900e70b
+
+Terminal confirmed a successful push and cleanup.
+
+This became the recovery baseline after the next failed patches.
+
+5.5 v6.0.32 failed and rolled back
+
+Purpose:
+- Reduce Status text size.
+
+Failure:
+The updater's own marker verification could not find the v6.0.32 smaller-status-text marker.
+
+Result:
+- Target files were restored.
+- Backup and patch were retained for review.
+- No final update was accepted.
+
+5.6 v6.0.33 stopped before changes
+
+Purpose:
+- Desktop Orders alignment and Status text size.
+
+Failure:
+Safety stop reported unexpected local edits in admin.html.
+
+Result:
+No update completed.
+
+5.7 v6.0.34 failed at Git commit and rolled back
+
+Purpose:
+- Reconcile v6.0.32 rollback.
+- Apply final Orders alignment/status layout.
+- Fix cleanup.
+
+Failure:
+The Git commit message was passed incorrectly as separate pathspec arguments:
+error: pathspec 'v6.0.34' did not match any file(s) known to git
+and similar errors for each word.
+
+Result:
+- Protected files restored.
+- Backup retained.
+- No final commit.
+
+Lesson:
+Pass a multi-word commit message as one array argument after -m.
+
+5.8 v6.0.35 extraction/locking failure
+
+Failure causes:
+- A fixed temporary folder was reused.
+- Expand-Archive encountered missing paths while trying to overwrite remnants.
+- Update-Novalyte.ps1 was locked by another process.
+- Extraction failed with Access denied and file-in-use errors.
+
+Lesson:
+Every updater extraction directory must include a GUID and never be reused.
+
+5.9 v6.0.36 whitespace failure and rollback
+
+Purpose:
+- Final desktop Orders alignment and 0.64rem Status text.
+
+Failure:
+git diff --check detected:
+- New blank line at EOF in the main handover.
+- New blank line at EOF in styles.css.
+
+CRLF warnings also appeared, but the fatal part was the extra blank line at EOF.
+
+Result:
+- Target files restored.
+- Patch retained.
+
+Lesson:
+CRLF conversion warnings alone are not fatal. Actual whitespace errors from git diff --check are fatal. Ensure exactly one final newline and no extra blank line.
+
+5.10 v6.0.37 successful recovery
+
+Purpose:
+- Reconcile the v6.0.31 baseline after v6.0.32-v6.0.36 failures.
+- Apply exact desktop Orders colgroup allocation.
+- Match header and body alignment.
+- Reduce Status text to 0.64rem.
+- Preserve the complete label and chevron.
+
+Files changed:
+- admin.html
+- index.html
+- assets/css/styles.css
+- main handover
+
+Commit:
+2f987f84
+
+Terminal confirmed origin/main and cleanup.
+
+5.11 v6.0.38 successful action-button containers
+
+User request:
+Make View, Edit, and Void visibly enclosed and presentable.
+
+Result:
+- View and Edit received visible dark fill/border containers.
+- Void received a visible amber-tinted fill/border.
+- Hover and focus states were added.
+- Button positions and table layout were preserved.
+
+Commit:
+6b82560d
+
+Terminal confirmed origin/main.
+
+5.12 Supabase setup and v6.0.39 successful connection
+
+Completed activities:
+- Created the Novalyte Supabase organization and project.
+- Ran the shared-sync SQL successfully.
+- Created the Auth user.
+- Registered the user in novalyte_admin_profiles.
+- Copied Project URL and publishable key.
+- Normalized the base URL.
+- Enabled cloud-config.js.
+
+Commit:
+020646b4
+
+Terminal confirmed origin/main and the cloud endpoint/RPC checks.
+
+5.13 v6.0.40 intended void-order improvements
+
+User request:
+- Automatically move all voided orders to the bottom.
+- Keep date/time sorting within non-voided and voided groups.
+- Give voided rows a faded/gray appearance.
+- Add a visible container to Undo Void.
+- After Undo Void, restore the order to its correct chronological position.
+
+Intended changed files:
+- admin.html
+- index.html
+- assets/js/admin.js
+- assets/css/styles.css
+- main handover
+
+The user later continued from this behavior. The exact v6.0.40 commit was not pasted into the chat; verify the current code rather than relying only on this description.
+
+5.14 v6.0.41 intended modal presentation
+
+User showed a good compact confirmation modal and a bad very-wide Void Order modal.
+
+Requested behavior:
+- Compact-content modals should be centered, proportional cards.
+- Void Order, Order Details, and Client Digital Product details should not span the whole page.
+- Data-heavy forms such as Create/Edit Order and product/service managers may remain wider for usability.
+- Mobile eligible modals should remain centered cards, not full-width bottom sheets.
+
+The exact v6.0.41 commit was not pasted into the chat; verify current CSS and markup.
+
+5.15 v6.0.42 attempted Admin mobile cards and centered notifications
+
+User screenshots showed:
+- Services table collapsed into a thin strip on the left with a huge blank area.
+- Digital Products used only a narrow left portion of the screen.
+- Orders stacked every field vertically with too much height and misaligned actions.
+- Toasts appeared at the lower-right corner.
+
+Requested behavior:
+- Services and Digital Products should become true full-width mobile cards.
+- Orders should become compact label/value cards.
+- Status and Payment centered.
+- View/Edit paired.
+- Void/Undo Void centered below.
+- Action notifications centered horizontally instead of appearing in a corner.
+
+v6.0.42 attempted these changes, but later screenshots showed that old high-specificity CSS still overrode the new layout. Therefore v6.0.42 was not a final visual success.
+
+5.16 v6.0.43 wrong navigation interpretation
+
+User asked to "lock the nav panels" for desktop while mobile stayed hamburger.
+
+The patch incorrectly interpreted this as locking the Admin left sidebar.
+
+The user clarified that they meant the Client View navigation should remain visible while scrolling.
+
+Locked lesson:
+Ask what navigation surface is meant when Admin and Client View both have navigation, unless the context is completely unambiguous.
+
+5.17 v6.0.44 Client navigation lock but mobile regression
+
+Purpose:
+- Fix Client View top navigation on desktop.
+- Keep hamburger on mobile.
+
+Problem:
+The new client-site body scope and offsets broke the Client Home mobile layout. Hero content and cards exceeded the viewport.
+
+5.18 v6.0.45 incomplete mobile Client Home repair
+
+Purpose:
+- Remove the temporary body class.
+- Keep desktop Client View navigation fixed.
+- Restore mobile hamburger.
+- Add width guards.
+
+Problem:
+The user reported the Client Home was still not properly responsive.
+
+5.19 v6.0.46 Client Home-specific containment
+
+Purpose:
+- Scope the mobile containment specifically to #home.
+- Add a unique client-topbar class.
+- Add critical inline mobile guards to prevent cached external CSS from making the hero wider than the viewport.
+
+Later, the user said the Client side had already been made good and the remaining difficulty was the Admin mobile side. This indicates the Client Home issue was substantially resolved by this point.
+
+Do not rework Client View unless a new screenshot shows a current regression.
+
+5.20 v6.0.47 intended definitive Admin mobile fix, but updater preflight was wrong
+
+Diagnosis:
+A legacy, high-specificity mobile rule still forced table cells into block/min-width behavior and overrode the newer card layout.
+
+Intended scope:
+- Services full-width two-column cards.
+- Digital Products full-width cards.
+- Orders compact two-column cards.
+- Long service/product text spans the card width.
+- Status and Payment centered.
+- View/Edit paired.
+- Void/Undo Void centered below.
+- No large blank area or horizontal overflow.
+
+Files intended:
+- admin.html
+- assets/css/mobile.css
+- main handover
+
+Failure:
+The v6.0.47 updater contained an incorrect accepted baseline hash for mobile.css and falsely reported local edits.
+
+Result:
+The patch did not safely apply.
+
+5.21 v6.0.48 corrected Admin mobile patch
+
+Purpose:
+- Correct the v6.0.47 baseline hash.
+- Apply the same Admin mobile Services, Digital Products, and Orders card-layout fix.
+
+Correct verified baseline hash recorded for assets/css/mobile.css:
+da03b670f41bb8cb88d8836b1ecf37046b94d6e5a601eb220e137a311a8f7020
+
+Intended files:
+- admin.html
+- assets/css/mobile.css
+- main handover
+
+User's comment after this work:
+"Well, I guess everything was fair enough, checkpoint tayo man..."
+
+The later terminal log confirmed that v6.0.48 successfully committed and pushed at 3ccd83ec. It became the verified base for the v6.0.49 Finance Management work documented in sections 13 and 14.
+
+======================================================================
+6. CURRENT DESIRED VISUAL BASELINE
+======================================================================
+
+6.1 Desktop Admin Orders
+
+Columns:
+DATE | CLIENT | SERVICE | QTY | PROVIDER | CLIENT | REVENUE | STATUS | PAYMENT | ACTIONS
+
+Required accepted behavior:
+- Date first line, time below.
+- Client name and platform visible.
+- Service name and service ID/platform line visible.
+- Qty, provider cost, client sale, and revenue aligned with headers.
+- Status labels fully readable.
+- Status chevron visible.
+- Payment pill visible.
+- View and Edit side-by-side.
+- Void or Undo Void below.
+- Visible containers for View, Edit, Void, and Undo Void.
+- Voided orders appear below active/non-voided orders.
+- Voided rows have muted/faded styling.
+- Date/time sorting is preserved within each group.
+
+Do not change this desktop layout unless the user specifically requests it.
+
+6.2 Admin mobile Services
+
+Desired layout:
+- Each service is a full-width card using the phone width.
+- No narrow left column with a blank right side.
+- Recommend switch remains a switch.
+- Service name/details use full width where needed.
+- Provider ID, platform, ETA, provider rate, client rate, revenue, visibility, and actions remain readable.
+- Create Order, Edit, and Disable/Enable remain present and touch-friendly.
+- No need to zoom out.
+
+6.3 Admin mobile Digital Products
+
+Desired layout:
+- Full-width product card.
+- Product image and product information are readable.
+- Category, client price, cost, duration, status, and actions remain accessible.
+- Create Order, Edit, Disable/Enable, and Delete remain inside the card.
+- No giant empty area on the right.
+
+6.4 Admin mobile Orders
+
+Desired layout:
+- Compact label/value card, not a very long one-column stack.
+- Date and time readable.
+- Client and platform readable.
+- Long service text may span the card width.
+- Qty, provider, client, and revenue use a compact grid.
+- Status centered.
+- Payment centered.
+- View and Edit side-by-side and full enough for touch.
+- Void or Undo Void centered beneath them.
+- Voided rows remain faded and grouped at the bottom.
+
+6.5 Admin Investments / Finance Management
+
+The v6.0.49 and v6.0.51 desired baseline is:
+- The section title is Finance Management.
+- All ten finance summary cards are clickable and keyboard-accessible.
+- Clicking a card opens a compact square explanation modal showing its calculation, meaning, and important note.
+- The dropdown uses concise account/card names rather than long Adjustment, Correction, Refund, or Reversal labels.
+- Positive values add and negative values deduct from the selected account; zero is rejected.
+- Finance history displays the affected Account and uses green positive amounts and red negative amounts.
+- Gross revenue is labeled Gross profit.
+- Cash wallet estimate is labeled Cash wallet balance and includes capital reloads.
+- On mobile, cards, forms, modals, and history must stay inside the viewport without losing any controls.
+- Do not redesign this area beyond a reported issue because its formulas and backward compatibility are business-critical.
+
+6.6 Client View
+
+Current desired state:
+- Desktop Client top navigation remains visible while scrolling.
+- Mobile retains the hamburger navigation.
+- Client Home hero, buttons, and metrics remain inside the phone viewport.
+- Client View should not be touched while working on Admin unless explicitly requested.
+
+6.7 Modals
+
+Compact-content modals should be centered, proportional cards similar to the good "Please Confirm" example.
+
+Wide data-entry forms may remain wider if shrinking them harms usability.
+
+6.8 Toasts/notifications
+
+Action-result notices such as:
+- Service added to Recommended.
+- Service removed from Recommended.
+
+should appear horizontally centered rather than in the lower-right corner.
+
+Verify this visually because the v6.0.42 attempt may have been overridden.
+
+======================================================================
+7. KNOWN FAILURES, ROOT CAUSES, AND NON-NEGOTIABLE LESSONS
+======================================================================
+
+7.1 Do not reuse temporary extraction paths
+
+v6.0.35 failed because a fixed temp directory contained locked and partially deleted files.
+
+Always use:
+Novalyte-v<version>-<GUID>
+
+7.2 Commit message must be a single argument
+
+v6.0.34 split the commit message into pathspecs.
+
+Correct pattern in an argument array:
+@('commit', '-m', 'One complete commit message')
+
+7.3 Do not fail only on CRLF warnings
+
+Warnings saying LF will be replaced by CRLF are informational.
+
+Fatal whitespace errors are actual git diff --check findings such as trailing whitespace or an extra blank line at EOF.
+
+7.4 Ensure no extra blank line at EOF
+
+v6.0.36 rolled back because styles.css and the handover contained a new blank line at EOF.
+
+Generated text files should end with one newline, not an empty extra line.
+
+7.5 Baseline hashes must be exact
+
+v6.0.47 falsely blocked the update because mobile.css had a mistyped accepted hash.
+
+Before packaging, compute and compare hashes from the actual accepted project files.
+
+7.6 Do not stack broad responsive CSS
+
+v6.0.42 appeared correct in source markers but was overridden by older high-specificity rules.
+
+Find and remove/neutralize the conflict. Do not keep adding new blocks underneath.
+
+7.7 Admin and Client View scopes must never leak
+
+v6.0.44-v6.0.45 used broad Client scoping that broke mobile Home.
+
+Use explicit unique selectors such as a unique topbar class and page ID.
+
+7.8 Browser cache and GitHub Pages delay
+
+A successful push may not appear immediately. The user previously thought no change happened, then confirmed it was only slow deployment.
+
+Use a new v=<version> URL, close old mobile tabs when necessary, and allow GitHub Pages time to deploy.
+
+7.9 Static checks are not visual proof
+
+A marker may exist while the browser remains broken.
+
+Require a screenshot or actual phone test before calling responsive work final.
+
+7.10 Long pasted PowerShell is error-prone
+
+Earlier work had multiline prompts, parser errors, missing braces, and nested here-string issues.
+
+For significant work, package one updater ZIP and provide one short multiline launcher command.
+
+======================================================================
+8. CURRENT OPEN VERIFICATION ITEMS
+======================================================================
+
+The project is at a checkpoint, not a declaration that every item is permanently perfect.
+
+Before any future feature upgrade, perform this regression pass:
+
+8.1 Verify actual v6.0.51 deployment
+- Confirm current local HEAD.
+- Confirm origin/main.
+- Confirm admin.html references admin.js?v=6.0.51 or a later approved version.
+- Confirm no unexpected staged or unstaged edits.
+- Confirm the Finance Management dropdown shows exactly:
+  - Total capital
+  - Used for provider orders
+  - Other income
+  - Owner payouts
+  - Team payroll paid
+  - Other expense
+  - Cash wallet balance
+  - Net retained
+- Confirm the selected-account hint still changes correctly.
+
+8.2 Verify Finance Management behavior
+- Click all ten finance cards and confirm each compact explanation modal opens and closes correctly.
+- Test Tab plus Enter/Space on the cards.
+- Confirm positive amounts add and negative amounts deduct.
+- Confirm zero is rejected.
+- Confirm history shows the affected Account.
+- Confirm additions are green and deductions are red.
+- Confirm a positive and negative Capital entry changes Total capital, Available capital, and Cash wallet balance correctly.
+- Confirm Provider Cost entries affect provider costs, Available capital, Gross profit, Net retained, and Cash wallet balance.
+- Confirm Wallet Correction affects only Cash wallet balance.
+- Confirm Retained Profit Correction affects only Net retained.
+- Confirm Owner payouts, Team payroll paid, and Other expense support both deductions and reversals.
+- Do not record the same payout twice through a payout entry and a retained-profit correction.
+- Confirm legacy finance history still renders correctly.
+
+8.3 Verify Admin mobile visually
+Test at minimum:
+- #dashboard
+- #services
+- #digital-products
+- #investments
+- #orders
+- #client-view
+
+Check:
+- One panel at a time.
+- Full-width cards.
+- No large blank area.
+- No horizontal overflow.
+- Recommend stays a switch.
+- Long text wraps naturally.
+- Buttons remain visible.
+- Toasts are centered.
+- Modals fit the screen.
+- Finance cards, dropdown, signed amount field, and history remain usable.
+
+8.4 Verify Client View remains stable
+- Home hero is inside viewport.
+- Desktop navigation stays visible while scrolling.
+- Mobile hamburger works.
+- No Admin CSS affects Client View.
+- Internal provider costs and finance details remain hidden.
+
+8.5 Verify Supabase end-to-end sync
+Required final proof:
+1. Sign in on the main laptop.
+2. Wait for Shared data is up to date.
+3. Create or edit a harmless test record on laptop.
+4. Open phone Admin with the same account.
+5. Confirm the change appears.
+6. Make a harmless phone change.
+7. Confirm it appears on laptop.
+8. Add a harmless finance adjustment and confirm it synchronizes.
+9. Refresh and re-login on both devices.
+10. Confirm data persists.
+11. Remove or reverse any temporary test record if requested.
+
+8.6 Verify business regressions
+- 425 services remain available.
+- 16 digital products remain available.
+- Existing edited rates remain preserved.
+- Recommended states persist.
+- Disabled services cannot be recommended.
+- Old orders retain snapshot prices.
+- Orders filters and CSV export work.
+- Void and Undo Void work.
+- Voided orders sort to the bottom.
+- Summary totals exclude voided orders.
+- Finance calculations remain consistent with signed ledger entries.
+- Client-safe pages never expose provider cost or Finance Management data.
+
+======================================================================
+9. FUTURE PLAN AND STANDBY RULE
+======================================================================
+
+The user considers the current project fair enough for a checkpoint and intends to place Novalyte on standby after responsiveness and sync verification.
+
+Do not proactively add new features.
+
+Future work should begin only when the user requests a specific upgrade.
+
+Possible future upgrades, not automatic permission:
+- Additional mobile polish after real screenshots.
+- More reliable automated responsive tests.
+- Screenshot regression testing.
+- More explicit cloud-sync status and error messages.
+- Exact partial-payment tracking with Amount Paid and Remaining Balance fields.
+- Additional finance-ledger audit tools only if requested.
+- Full service-catalog field audit.
+- Additional analytics.
+- New business modules.
+
+Every future upgrade must follow the locked workflow:
+- Scan the actual current project.
+- Read this handover.
+- Verify Git state.
+- Define exact scope.
+- Change only requested files.
+- Update the primary handover.
+- Use one updater ZIP.
+- Verify local, GitHub, and visual results.
+
+======================================================================
+10. NEW CHAT STARTUP INSTRUCTIONS
+======================================================================
+
+When transferring to a new ChatGPT conversation:
+
+1. Upload the full project checkpoint ZIP created after this handover was added.
+2. Tell the assistant to read:
+   Documentation\NOVALYTE_FULL_PROJECT_HANDOVER_SUMMARY_v6_0_51_CHECKPOINT_20260713.txt
+3. Tell the assistant that this handover is the primary source of project context.
+4. The assistant must still inspect the actual current source and Git history.
+5. Do not start by rewriting code.
+6. First report:
+   - actual branch
+   - local HEAD
+   - origin/main HEAD
+   - working-tree state
+   - current cache version
+   - whether Supabase is enabled
+   - current mobile CSS structure
+7. If no new upgrade is requested, remain on standby.
+8. If the user reports a regression, reproduce and patch only that regression.
+9. Update this handover or create the next ordered checkpoint before producing another full project ZIP.
+
+Suggested first message in the new chat:
+
+"This is the full Novalyte v6.0.51 checkpoint. Read Documentation/NOVALYTE_FULL_PROJECT_HANDOVER_SUMMARY_v6_0_51_CHECKPOINT_20260713.txt, inspect the actual project and Git state, and preserve all locked rules. Do not change anything yet. First summarize the verified current state, Finance Management behavior, Supabase status, and remaining checks."
+
+======================================================================
+11. CHECKPOINT ACCOMPLISHMENT SUMMARY
+======================================================================
+
+Substantially implemented during the broader project:
+- Large service catalog workflow with 425 services.
+- 16 digital products restored and protected.
+- Admin service pricing and recommendation controls.
+- Service and digital-product order creation.
+- Order History with filters, financial fields, statuses, payments, export, View/Edit, Void, and Undo Void.
+- Desktop Orders alignment and readable Status control.
+- Visible action-button containers.
+- Voided order grouping/faded-state intent.
+- Compact modal presentation intent.
+- Client-safe order tracking.
+- Dashboard analytics concepts.
+- Supabase database, Auth user, RLS, admin profile, cloud configuration, and endpoint verification.
+- Client desktop navigation lock and mobile hamburger preservation.
+- Client Home mobile containment.
+- Admin mobile Services/Digital Products/Orders card-layout correction verified through v6.0.48.
+- Finance Management with signed account adjustments, clickable card guides, compact explanation modals, updated formulas, Account history, and green/red signed amounts through v6.0.49.
+- Concise Finance Management dropdown labels aligned with account/card names through v6.0.51.
+- One-ZIP, safe updater, hidden server, Git push, verification, and cleanup workflow.
+
+Latest user position:
+- Preserve all prior accomplishments and add only the recent Finance Management and dropdown-label changes to the handover.
+- Create this updated handover first inside the main Documentation folder.
+- Create a full project ZIP only after the handover exists in the main project.
+- Transfer future work to a new chat to avoid browser crashes from the long conversation.
+- Keep the project on standby after regression and cross-device verification, ready for future upgrades.
+- Continue the locked rule: nothing unrelated is changed, removed, or added.
+
+======================================================================
+12. FINAL LOCK
+======================================================================
+
+For every future Novalyte update, change, upgrade, removal, or addition:
+
+- Do exactly what the user requests.
+- Do not touch unrelated code.
+- Do not remove unrelated elements.
+- Do not add unrequested files or features.
+- Preserve data and business rules.
+- Use the terminal-first one-ZIP workflow.
+- Update the main handover before making a full-project archive.
+- Verify Git and rendered UI.
+- Be honest about what is and is not verified.
+
+Nothing more. Nothing less.
+
+
+======================================================================
+13. PATCH v6.0.49 - FINANCE MANAGEMENT AND CLICKABLE CARD GUIDES
+======================================================================
+
+User-requested scope:
+- Keep the existing Income + Investment Tracker, but rename Finance Entry to Finance Management.
+- Make each finance analytics card clickable.
+- Open a compact square explanation modal showing the card calculation, meaning, and important notes.
+- Allow signed finance amounts: positive adds to the selected account; negative deducts from it.
+- Display positive finance logs in green and negative finance logs in red.
+- Add an Account column to Finance Logs / History.
+- Support corrections for capital, provider cost, wallet, retained profit, owner payout, team payroll, other income, and other expense.
+- Preserve all unrelated Admin, Client View, Supabase, order, service, product, and mobile behavior.
+
+Implemented Finance Management adjustment types:
+- Capital Adjustment
+- Provider Cost Adjustment
+- Other Income / Wallet Credit
+- Owner Payout / Reversal
+- Team Payroll Payout / Reversal
+- Other Expense / Refund
+- Wallet Correction
+- Retained Profit Correction
+
+Signed-entry rule:
+- Positive values add to the selected account.
+- Negative values deduct from the selected account.
+- Zero is rejected.
+- Existing legacy payout/expense entries remain backward-compatible and are interpreted as deductions.
+
+Updated finance formulas:
+- Total capital = legacy capital reloads + signed capital adjustments.
+- Adjusted provider cost = non-voided order provider charges + signed provider-cost adjustments.
+- Available capital = total capital - adjusted provider cost.
+- Gross profit = client sales - adjusted provider cost.
+- Net retained = gross profit + other income + signed payouts/expenses + retained-profit corrections.
+- Cash wallet balance = total capital + paid sales - adjusted provider cost + signed income/payouts/expenses + wallet corrections.
+- Paid sales and receivables remain order-status based.
+
+Important accounting protections:
+- Do not record the same payout twice through both a payout entry and a retained-profit correction.
+- Provider-cost adjustments affect provider cost, available capital, gross profit, net retained, and wallet.
+- Wallet corrections affect only the wallet.
+- Retained-profit corrections affect only net retained.
+- Partial receivables still use the full client charge until a future Amount Paid field is implemented.
+
+UI changes:
+- Finance Entry renamed to Finance Management.
+- Amount field now says Amount (+ add / - deduct).
+- Dynamic hint explains the selected adjustment type.
+- Finance history adds an Account column.
+- Signed amounts use + or - prefixes and green/red emphasis.
+- Ten analytics cards are keyboard-accessible buttons.
+- Compact finance explanation modal follows the approved square-modal presentation.
+- Gross revenue card is correctly renamed Gross profit.
+- Cash wallet estimate is renamed Cash wallet balance and now includes capital reloads.
+
+Files approved for v6.0.49:
+- admin.html
+- index.html (shared store.js cache reference only)
+- assets/js/store.js
+- assets/js/admin.js
+- assets/css/styles.css
+- assets/css/mobile.css
+- Documentation/NOVALYTE_FULL_PROJECT_HANDOVER_SUMMARY_v6_0_48_CHECKPOINT_20260713.txt
+
+Verification required after deployment:
+- Click every finance card and confirm its explanation modal.
+- Test keyboard Tab + Enter/Space on a card.
+- Add a positive Capital Adjustment and confirm Total Capital, Available Capital, and Cash Wallet increase.
+- Add a negative Capital Adjustment and confirm the same cards decrease.
+- Add positive and negative Provider Cost Adjustments and confirm formulas respond correctly.
+- Add a negative Owner Payout, Team Payroll Payout, and Other Expense; verify red log amounts and deductions.
+- Add positive reversal entries; verify green log amounts and restored balances.
+- Confirm Wallet Correction changes only Cash Wallet Balance.
+- Confirm Retained Profit Correction changes only Net Retained.
+- Confirm Supabase sync carries finance entries to another device.
+- Confirm Client View does not expose internal finance details.
+
+The permanent workflow and scope locks in sections 1-12 remain active.
+
+
+======================================================================
+14. PATCH v6.0.51 - FINANCE DROPDOWN CARD-NAME ALIGNMENT
+======================================================================
+
+User-requested scope:
+- Simplify the Finance Management dropdown.
+- Use the same visible names as the finance cards wherever the entry directly targets a card.
+- Remove explanatory suffixes such as Adjustment, Correction, Wallet Credit, Refund, and Reversal from the dropdown labels.
+- Keep all internal entry values, formulas, signed amount behavior, hints, history, Supabase sync, and calculations unchanged.
+
+Final Finance Management dropdown labels:
+- Total capital
+- Used for provider orders
+- Other income
+- Owner payouts
+- Team payroll paid
+- Other expense
+- Cash wallet balance
+- Net retained
+
+Internal behavior remains locked:
+- The option values and stored finance entry types are unchanged for backward compatibility.
+- Positive values still add and negative values still deduct according to the selected account.
+- The dynamic hint below the form still explains the selected account behavior.
+- Existing finance history entries continue to render correctly.
+- No formula, card, order, service, product, Client View, mobile layout, or Supabase behavior is changed.
+
+Failed v6.0.50 attempt and correction:
+- v6.0.50 copied the intended three files, then stopped during automated verification.
+- The verifier incorrectly required every JavaScript object key to be quoted.
+- The existing internal `expense` key is a valid unquoted JavaScript identifier, so the verifier produced the false error: Internal finance type definition changed or is missing: expense.
+- The updater restored all three protected files before commit, so the project remained on the verified v6.0.49 baseline.
+- v6.0.51 keeps the same requested visible-label change but uses a corrected verifier that accepts both valid quoted and unquoted JavaScript property keys.
+
+Files approved for v6.0.51:
+- admin.html
+- assets/js/admin.js
+- Documentation/NOVALYTE_FULL_PROJECT_HANDOVER_SUMMARY_v6_0_48_CHECKPOINT_20260713.txt
+
+Verification required after deployment:
+- Open Finance Management and confirm the dropdown shows the eight concise labels above.
+- Confirm the verbose suffixes are no longer shown in the dropdown.
+- Confirm the selected-account hint still updates beneath the form.
+- Confirm positive and negative entries retain the v6.0.49 calculations and history behavior.
+
+The permanent workflow and scope locks in sections 1-12 remain active.
+
+
+======================================================================
+15. v6.0.51 HANDOVER CREATOR VERIFIER CORRECTION
+======================================================================
+
+A first v6.0.51 handover-and-full-backup creator stopped safely before creating or committing the new handover.
+
+Exact false error:
+- The required v6.0.51 dropdown option is missing: <option value="team-payroll">Team payroll paid</option>
+
+Cause:
+- The deployed and verified v6.0.51 application correctly preserves the existing internal option value `payroll-payout` for backward compatibility.
+- The first handover creator incorrectly checked for `team-payroll`, which is the finance card identifier used elsewhere, not the stored Finance Management entry type.
+- The visible dropdown label `Team payroll paid` was already correct.
+- The application code, calculations, stored records, Supabase sync, and v6.0.51 Git commit were not at fault.
+
+Safety result:
+- The failure happened during read-only baseline verification.
+- No handover was copied into the main project.
+- No application file was modified.
+- No Git commit or push was created by the failed checkpoint creator.
+- The project remained on the successfully deployed v6.0.51 application baseline.
+
+Corrected checkpoint rule:
+- The creator must verify `<option value="payroll-payout">Team payroll paid</option>`.
+- It must continue checking all other seven internal values and visible labels exactly.
+- It must still create and push only the new v6.0.51 handover before generating the complete project ZIP.
+- No application version bump is needed because this correction affects only the checkpoint creator, not the Novalyte application.
+
+The permanent workflow and scope locks in sections 1-14 remain active.
+
+END OF NOVALYTE FULL PROJECT HANDOVER SUMMARY
