@@ -1076,4 +1076,86 @@ For every future Novalyte update, change, upgrade, removal, or addition:
 
 Nothing more. Nothing less.
 
+
+======================================================================
+13. PATCH v6.0.49 - FINANCE MANAGEMENT AND CLICKABLE CARD GUIDES
+======================================================================
+
+User-requested scope:
+- Keep the existing Income + Investment Tracker, but rename Finance Entry to Finance Management.
+- Make each finance analytics card clickable.
+- Open a compact square explanation modal showing the card calculation, meaning, and important notes.
+- Allow signed finance amounts: positive adds to the selected account; negative deducts from it.
+- Display positive finance logs in green and negative finance logs in red.
+- Add an Account column to Finance Logs / History.
+- Support corrections for capital, provider cost, wallet, retained profit, owner payout, team payroll, other income, and other expense.
+- Preserve all unrelated Admin, Client View, Supabase, order, service, product, and mobile behavior.
+
+Implemented Finance Management adjustment types:
+- Capital Adjustment
+- Provider Cost Adjustment
+- Other Income / Wallet Credit
+- Owner Payout / Reversal
+- Team Payroll Payout / Reversal
+- Other Expense / Refund
+- Wallet Correction
+- Retained Profit Correction
+
+Signed-entry rule:
+- Positive values add to the selected account.
+- Negative values deduct from the selected account.
+- Zero is rejected.
+- Existing legacy payout/expense entries remain backward-compatible and are interpreted as deductions.
+
+Updated finance formulas:
+- Total capital = legacy capital reloads + signed capital adjustments.
+- Adjusted provider cost = non-voided order provider charges + signed provider-cost adjustments.
+- Available capital = total capital - adjusted provider cost.
+- Gross profit = client sales - adjusted provider cost.
+- Net retained = gross profit + other income + signed payouts/expenses + retained-profit corrections.
+- Cash wallet balance = total capital + paid sales - adjusted provider cost + signed income/payouts/expenses + wallet corrections.
+- Paid sales and receivables remain order-status based.
+
+Important accounting protections:
+- Do not record the same payout twice through both a payout entry and a retained-profit correction.
+- Provider-cost adjustments affect provider cost, available capital, gross profit, net retained, and wallet.
+- Wallet corrections affect only the wallet.
+- Retained-profit corrections affect only net retained.
+- Partial receivables still use the full client charge until a future Amount Paid field is implemented.
+
+UI changes:
+- Finance Entry renamed to Finance Management.
+- Amount field now says Amount (+ add / - deduct).
+- Dynamic hint explains the selected adjustment type.
+- Finance history adds an Account column.
+- Signed amounts use + or - prefixes and green/red emphasis.
+- Ten analytics cards are keyboard-accessible buttons.
+- Compact finance explanation modal follows the approved square-modal presentation.
+- Gross revenue card is correctly renamed Gross profit.
+- Cash wallet estimate is renamed Cash wallet balance and now includes capital reloads.
+
+Files approved for v6.0.49:
+- admin.html
+- index.html (shared store.js cache reference only)
+- assets/js/store.js
+- assets/js/admin.js
+- assets/css/styles.css
+- assets/css/mobile.css
+- Documentation/NOVALYTE_FULL_PROJECT_HANDOVER_SUMMARY_v6_0_48_CHECKPOINT_20260713.txt
+
+Verification required after deployment:
+- Click every finance card and confirm its explanation modal.
+- Test keyboard Tab + Enter/Space on a card.
+- Add a positive Capital Adjustment and confirm Total Capital, Available Capital, and Cash Wallet increase.
+- Add a negative Capital Adjustment and confirm the same cards decrease.
+- Add positive and negative Provider Cost Adjustments and confirm formulas respond correctly.
+- Add a negative Owner Payout, Team Payroll Payout, and Other Expense; verify red log amounts and deductions.
+- Add positive reversal entries; verify green log amounts and restored balances.
+- Confirm Wallet Correction changes only Cash Wallet Balance.
+- Confirm Retained Profit Correction changes only Net Retained.
+- Confirm Supabase sync carries finance entries to another device.
+- Confirm Client View does not expose internal finance details.
+
+The permanent workflow and scope locks in sections 1-12 remain active.
+
 END OF NOVALYTE FULL PROJECT HANDOVER SUMMARY

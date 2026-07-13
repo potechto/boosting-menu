@@ -13066,3 +13066,113 @@ body #statsGrid {
   }
 }
 /* end v6.0.46 desktop Client View navigation */
+
+/* v6.0.49 Finance Management, signed ledger, and clickable metric guides */
+.finance-metric-card {
+  appearance: none;
+  width: 100%;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.finance-metric-card:hover,
+.finance-metric-card:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(112, 225, 255, 0.5) !important;
+  background: linear-gradient(145deg, rgba(112, 225, 255, 0.08), rgba(157, 124, 255, 0.07)) !important;
+  box-shadow: 0 16px 34px rgba(2, 6, 23, 0.28), 0 0 0 3px rgba(112, 225, 255, 0.08);
+  outline: none;
+}
+
+.finance-metric-card em {
+  display: block;
+  margin-top: 8px;
+  color: rgba(147, 197, 253, 0.78);
+  font-size: 0.66rem;
+  font-style: normal;
+  letter-spacing: 0.02em;
+}
+
+.finance-entry-hint {
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid rgba(112, 225, 255, 0.2);
+  border-radius: 12px;
+  color: #bfdbfe;
+  background: rgba(15, 23, 42, 0.42);
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+.advanced-correction-box {
+  opacity: 0.9;
+}
+
+.finance-log-amount {
+  white-space: nowrap;
+}
+
+.finance-log-amount.good {
+  color: #86efac;
+}
+
+.finance-log-amount.bad {
+  color: #fca5a5;
+}
+
+.finance-metric-modal-card {
+  width: min(520px, calc(100vw - 32px)) !important;
+  max-width: 520px !important;
+  min-height: 0 !important;
+  padding: 22px !important;
+  border-radius: 22px !important;
+}
+
+.finance-metric-modal-body {
+  display: grid;
+  gap: 12px;
+}
+
+.finance-metric-modal-body section {
+  padding: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 14px;
+  background: rgba(2, 6, 23, 0.28);
+}
+
+.finance-metric-modal-body section > span {
+  display: block;
+  margin-bottom: 6px;
+  color: #93c5fd;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.finance-metric-modal-body p {
+  margin: 0;
+  color: #e5edf9;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.finance-metric-modal-body .finance-metric-note {
+  border-color: rgba(245, 158, 11, 0.24);
+  background: rgba(245, 158, 11, 0.06);
+}
+
+.finance-history-card .mini-table th:nth-child(2),
+.finance-history-card .mini-table td:nth-child(2) {
+  min-width: 190px;
+}
+
+.finance-history-card .mini-table th:nth-child(3),
+.finance-history-card .mini-table td:nth-child(3) {
+  min-width: 125px;
+}
+/* end v6.0.49 Finance Management */

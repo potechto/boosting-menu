@@ -425,6 +425,7 @@
       person: '',
       note: '',
       source: 'finance',
+      amountMode: 'legacy',
       ...entry
     };
   }
@@ -451,14 +452,23 @@
     syncRemote('finance_entries', normalized, options);
   }
 
+  function getFinanceEntrySignedAmount(entry) {
+    const normalized = normalizeFinanceEntry(entry || {});
+    const value = Number(normalized.amount) || 0;
+    if (normalized.amountMode === 'signed') return value;
+    if (['owner-payout', 'payroll-payout', 'expense'].includes(normalized.type)) return -Math.abs(value);
+    return value;
+  }
+
   function addFinanceEntry(type, amount, person = '', note = '') {
     const value = Number(amount);
-    if (!Number.isFinite(value) || value <= 0) return null;
+    if (!Number.isFinite(value) || value === 0) return null;
     const entry = normalizeFinanceEntry({
       id: uid('finance'),
       createdAt: new Date().toISOString(),
       type: type || 'expense',
       amount: value,
+      amountMode: 'signed',
       person: String(person || '').trim(),
       note: String(note || '').trim()
     });
@@ -522,22 +532,52 @@
   function getFinanceTotals() {
     const base = getTotals();
     const entries = getFinanceEntries();
-    const ownerPayout = entries.filter(item => item.type === 'owner-payout').reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
-    const payrollPayout = entries.filter(item => item.type === 'payroll-payout').reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
-    const expenses = entries.filter(item => item.type === 'expense').reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
-    const capitalIn = base.invest;
-    const paidWallet = base.paidSales - base.providerCharges - ownerPayout - payrollPayout - expenses;
-    const retainedProfit = base.revenue - ownerPayout - payrollPayout - expenses;
+    const manualEntries = entries.filter(item => item.source !== 'investment');
+    const sumSigned = types => manualEntries
+      .filter(item => types.includes(item.type))
+      .reduce((sum, item) => sum + getFinanceEntrySignedAmount(item), 0);
+
+    const capitalAdjustment = sumSigned(['capital-adjustment', 'capital-in']);
+    const providerCostAdjustment = sumSigned(['provider-cost-adjustment']);
+    const otherIncome = sumSigned(['other-income']);
+    const ownerImpact = sumSigned(['owner-payout']);
+    const payrollImpact = sumSigned(['payroll-payout']);
+    const expenseImpact = sumSigned(['expense']);
+    const walletCorrection = sumSigned(['wallet-correction']);
+    const retainedCorrection = sumSigned(['retained-correction']);
+
+    const capitalIn = base.invest + capitalAdjustment;
+    const providerCharges = base.providerCharges + providerCostAdjustment;
+    const grossProfit = base.clientSales - providerCharges;
+    const availableCapital = capitalIn - providerCharges;
+    const retainedProfit = grossProfit + otherIncome + ownerImpact + payrollImpact + expenseImpact + retainedCorrection;
+    const cashWallet = capitalIn + base.paidSales - providerCharges + otherIncome + ownerImpact + payrollImpact + expenseImpact + walletCorrection;
+
     return {
       ...base,
+      invest: capitalIn,
       capitalIn,
-      ownerPayout,
-      payrollPayout,
-      expenses,
-      paidWallet,
+      capitalAdjustment,
+      providerCharges,
+      providerCostAdjustment,
+      revenue: grossProfit,
+      grossProfit,
+      otherIncome,
+      ownerImpact,
+      payrollImpact,
+      expenseImpact,
+      ownerPayout: -ownerImpact,
+      payrollPayout: -payrollImpact,
+      expenses: -expenseImpact,
+      walletCorrection,
+      retainedCorrection,
+      paidWallet: cashWallet,
+      cashWallet,
       retainedProfit,
-      availableCapital: capitalIn - base.providerCharges,
+      availableFund: availableCapital,
+      availableCapital,
       financeEntryCount: entries.length,
+      capitalEntryCount: entries.filter(item => item.source === 'investment' || ['capital-adjustment', 'capital-in'].includes(item.type)).length,
       teamCount: getTeamMembers().length
     };
   }
@@ -936,6 +976,7 @@
     saveFinanceEntries,
     addFinanceEntry,
     removeFinanceEntry,
+    getFinanceEntrySignedAmount,
     getTeamMembers,
     saveTeamMembers,
     addTeamMember,

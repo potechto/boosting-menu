@@ -24,6 +24,7 @@
     addInvestNote: document.getElementById('addInvestNote'),
     financeEntryType: document.getElementById('financeEntryType'),
     financePerson: document.getElementById('financePerson'),
+    financeEntryHint: document.getElementById('financeEntryHint'),
     teamMemberName: document.getElementById('teamMemberName'),
     teamPayMode: document.getElementById('teamPayMode'),
     teamPayAmount: document.getElementById('teamPayAmount'),
@@ -70,6 +71,12 @@
     adminConfirmOkBtn: document.getElementById('adminConfirmOkBtn'),
     adminConfirmCancelBtn: document.getElementById('adminConfirmCancelBtn'),
     adminConfirmCloseBtn: document.getElementById('adminConfirmCloseBtn'),
+    financeMetricModal: document.getElementById('financeMetricModal'),
+    financeMetricTitle: document.getElementById('financeMetricTitle'),
+    financeMetricCalculation: document.getElementById('financeMetricCalculation'),
+    financeMetricMeaning: document.getElementById('financeMetricMeaning'),
+    financeMetricNoteSection: document.getElementById('financeMetricNoteSection'),
+    financeMetricNote: document.getElementById('financeMetricNote'),
     exportBackupBtn: document.getElementById('exportBackupBtn'),
     importBackupInput: document.getElementById('importBackupInput'),
     exportOrdersCsvBtn: document.getElementById('exportOrdersCsvBtn'),
@@ -830,13 +837,13 @@ function renderDashboardAnalytics() {
 }
 // end v6.0.15 dashboard analytics
 function renderStats() {
-    const totals = Store.getTotals();
-    const fundClass = totals.availableFund < 0 ? 'bad' : totals.availableFund < Math.max(totals.invest * 0.25, 1) ? 'warn' : 'good';
+    const totals = Store.getFinanceTotals ? Store.getFinanceTotals() : Store.getTotals();
+    const fundClass = totals.availableFund < 0 ? 'bad' : totals.availableFund < Math.max(Math.abs(totals.invest) * 0.25, 1) ? 'warn' : 'good';
     const stats = [
       { label: 'TOTAL INVEST', value: Store.formatMoney(totals.invest), className: '' },
       { label: 'TOTAL ORDERS / PROVIDER CHARGES', value: Store.formatMoney(totals.providerCharges), className: '' },
       { label: 'TOTAL CLIENT SALES', value: Store.formatMoney(totals.clientSales), className: '' },
-      { label: 'TOTAL REVENUE', value: Store.formatMoney(totals.revenue), className: 'good' },
+      { label: 'TOTAL GROSS PROFIT', value: Store.formatMoney(totals.revenue), className: totals.revenue < 0 ? 'bad' : 'good' },
       { label: 'AVAILABLE FUND ESTIMATE', value: Store.formatMoney(totals.availableFund), className: fundClass },
       { label: 'PAID SALES', value: Store.formatMoney(totals.paidSales), className: 'good' },
       { label: 'RECEIVABLES', value: Store.formatMoney(totals.receivables), className: totals.receivables ? 'warn' : '' },
@@ -856,47 +863,189 @@ function renderStats() {
     renderDashboardAnalytics(); els.investAmount.value = totals.invest || '';
   }
 
-  function financeTypeLabel(type) {
-    const labels = {
-      'capital-in': 'Add Funds / Reload',
-      'owner-payout': 'Owner Payout',
-      'payroll-payout': 'Team Payroll Payout',
-      expense: 'Other Expense'
-    };
-    return labels[type] || 'Finance Entry';
+  const FINANCE_TYPES = {
+    'capital-adjustment': {
+      label: 'Capital Adjustment',
+      account: 'Capital',
+      hint: 'Positive adds working capital. Negative withdraws or corrects capital.'
+    },
+    'provider-cost-adjustment': {
+      label: 'Provider Cost Adjustment',
+      account: 'Provider Cost',
+      hint: 'Positive adds provider cost. Negative records a provider refund or cost correction.'
+    },
+    'other-income': {
+      label: 'Other Income / Wallet Credit',
+      account: 'Income + Wallet',
+      hint: 'Positive adds non-order income to retained profit and wallet. Negative reverses it.'
+    },
+    'owner-payout': {
+      label: 'Owner Payout / Reversal',
+      account: 'Owner Payout',
+      hint: 'Use a negative amount for a payout. Use a positive amount only for a reversal or refund.'
+    },
+    'payroll-payout': {
+      label: 'Team Payroll Payout / Reversal',
+      account: 'Team Payroll',
+      hint: 'Use a negative amount for payroll paid. Use a positive amount only for a reversal or refund.'
+    },
+    expense: {
+      label: 'Other Expense / Refund',
+      account: 'Operating Expense',
+      hint: 'Use a negative amount for an expense. Use a positive amount for an expense refund.'
+    },
+    'wallet-correction': {
+      label: 'Wallet Correction',
+      account: 'Cash Wallet',
+      hint: 'Adjusts only the cash wallet balance without changing profit or capital.'
+    },
+    'retained-correction': {
+      label: 'Retained Profit Correction',
+      account: 'Net Retained',
+      hint: 'Adjusts only net retained profit without changing the wallet.'
+    },
+    'capital-in': {
+      label: 'Add Funds / Reload',
+      account: 'Capital',
+      hint: 'Legacy capital reload entry.'
+    }
+  };
+
+  const FINANCE_METRICS = {
+    'total-capital': {
+      title: 'Total capital',
+      calculation: 'Legacy capital reloads + signed Capital Adjustments.',
+      meaning: 'The working capital you placed into Novalyte for provider orders.',
+      note: 'Positive Capital Adjustments add capital; negative adjustments deduct or withdraw capital.'
+    },
+    'provider-orders': {
+      title: 'Used for provider orders',
+      calculation: 'Provider charges from all non-voided orders + signed Provider Cost Adjustments.',
+      meaning: 'The total provider cost currently assigned to active order records.',
+      note: 'A positive provider adjustment adds cost. A negative adjustment records a refund or correction.'
+    },
+    'available-capital': {
+      title: 'Available capital',
+      calculation: 'Total capital − adjusted provider costs.',
+      meaning: 'The remaining working capital available for future provider orders.',
+      note: 'This is a capital view, not the same as your complete cash-wallet balance.'
+    },
+    'gross-profit': {
+      title: 'Gross profit',
+      calculation: 'Client sales − adjusted provider costs.',
+      meaning: 'The gross margin from active order records before payouts, payroll, and other expenses.',
+      note: 'This can include unpaid or partially paid orders because it is order-based, not cash-only.'
+    },
+    'owner-payouts': {
+      title: 'Owner payouts',
+      calculation: 'Net signed Owner Payout entries, displayed as money paid out after reversals.',
+      meaning: 'The amount removed for the owner or Novalyte personal payout.',
+      note: 'Use negative entries for new payouts and positive entries only for reversals or refunds.'
+    },
+    'team-payroll': {
+      title: 'Team payroll paid',
+      calculation: 'Net signed Team Payroll Payout entries, displayed as money paid after reversals.',
+      meaning: 'The actual payroll already paid to helpers or team members.',
+      note: 'Future Team Payroll Rules are planning references; only Finance Management entries affect this total.'
+    },
+    'net-retained': {
+      title: 'Net retained',
+      calculation: 'Gross profit + other income + signed payouts/expenses + retained-profit corrections.',
+      meaning: 'The business profit retained after recorded deductions and corrections.',
+      note: 'Do not record the same payout twice through both a payout entry and a retained-profit correction.'
+    },
+    'cash-wallet': {
+      title: 'Cash wallet balance',
+      calculation: 'Total capital + paid sales − adjusted provider costs + signed income/payouts/expenses + wallet corrections.',
+      meaning: 'The estimated actual cash available across the tracked Novalyte wallet or account.',
+      note: 'This is now an actual-wallet estimate and includes capital reloads.'
+    },
+    'paid-sales': {
+      title: 'Paid sales',
+      calculation: 'Full client charge of active orders marked Paid.',
+      meaning: 'The total sales already marked as fully collected.',
+      note: 'Voided and cancelled orders are excluded.'
+    },
+    receivables: {
+      title: 'Receivables',
+      calculation: 'Full client charge of active orders marked Unpaid or Partial.',
+      meaning: 'The amount currently treated as still collectible from clients.',
+      note: 'Partial orders still use the full client charge until a future Amount Paid field is added.'
+    }
+  };
+
+  function financeTypeDefinition(type) {
+    return FINANCE_TYPES[type] || { label: 'Finance Entry', account: 'General', hint: '' };
   }
 
-  function financeAmountClass(type) {
-    return type === 'capital-in' ? 'good' : type === 'owner-payout' || type === 'payroll-payout' ? 'warn' : 'bad';
+  function financeTypeLabel(type) {
+    return financeTypeDefinition(type).label;
+  }
+
+  function financeAccountLabel(type) {
+    return financeTypeDefinition(type).account;
+  }
+
+  function financeSignedAmount(entry) {
+    if (Store.getFinanceEntrySignedAmount) return Store.getFinanceEntrySignedAmount(entry);
+    const amount = Number(entry && entry.amount) || 0;
+    return ['owner-payout', 'payroll-payout', 'expense'].includes(entry && entry.type) ? -Math.abs(amount) : amount;
+  }
+
+  function financeAmountClass(entry) {
+    const amount = financeSignedAmount(entry);
+    return amount < 0 ? 'bad' : amount > 0 ? 'good' : '';
+  }
+
+  function formatSignedMoney(value) {
+    const amount = Number(value) || 0;
+    if (amount > 0) return `+${Store.formatMoney(amount)}`;
+    if (amount < 0) return `−${Store.formatMoney(Math.abs(amount))}`;
+    return Store.formatMoney(0);
+  }
+
+  function updateFinanceEntryHint() {
+    if (!els.financeEntryHint || !els.financeEntryType) return;
+    els.financeEntryHint.textContent = financeTypeDefinition(els.financeEntryType.value).hint;
+  }
+
+  function openFinanceMetric(metricId) {
+    const metric = FINANCE_METRICS[metricId];
+    if (!metric || !els.financeMetricModal) return;
+    if (els.financeMetricTitle) els.financeMetricTitle.textContent = metric.title;
+    if (els.financeMetricCalculation) els.financeMetricCalculation.textContent = metric.calculation;
+    if (els.financeMetricMeaning) els.financeMetricMeaning.textContent = metric.meaning;
+    if (els.financeMetricNote) els.financeMetricNote.textContent = metric.note || '';
+    if (els.financeMetricNoteSection) els.financeMetricNoteSection.classList.toggle('hidden', !metric.note);
+    openModal(els.financeMetricModal);
   }
 
   function renderInvestmentAnalytics() {
     if (!els.investmentAnalyticsGrid) return;
     const totals = Store.getFinanceTotals ? Store.getFinanceTotals() : Store.getTotals();
-    const entries = Store.getFinanceEntries ? Store.getFinanceEntries() : Store.getInvestments();
     const roi = totals.capitalIn > 0 ? (totals.retainedProfit / totals.capitalIn) * 100 : 0;
-    const availableClass = totals.availableCapital < 0 ? 'bad' : totals.availableCapital < Math.max(totals.capitalIn * 0.25, 1) ? 'warn' : 'good';
+    const availableClass = totals.availableCapital < 0 ? 'bad' : totals.availableCapital < Math.max(Math.abs(totals.capitalIn) * 0.25, 1) ? 'warn' : 'good';
     const metrics = [
-      { label: 'Total capital', value: Store.formatMoney(totals.capitalIn), note: `${Store.formatNumber(Store.getInvestments().length)} capital reload logs`, className: '' },
-      { label: 'Used for provider orders', value: Store.formatMoney(totals.providerCharges), note: 'Based on non-voided order records', className: '' },
-      { label: 'Available capital', value: Store.formatMoney(totals.availableCapital), note: 'Capital minus provider charges', className: availableClass },
-      { label: 'Gross revenue', value: Store.formatMoney(totals.revenue), note: 'Client sales minus provider costs', className: totals.revenue > 0 ? 'good' : '' },
-      { label: 'Owner payouts', value: Store.formatMoney(totals.ownerPayout || 0), note: 'Self payout logs', className: totals.ownerPayout ? 'warn' : '' },
-      { label: 'Team payroll paid', value: Store.formatMoney(totals.payrollPayout || 0), note: `${Store.formatNumber(totals.teamCount || 0)} team rules saved`, className: totals.payrollPayout ? 'warn' : '' },
-      { label: 'Net retained', value: Store.formatMoney(totals.retainedProfit || 0), note: `${roi.toFixed(1)}% retained return vs capital`, className: totals.retainedProfit < 0 ? 'bad' : totals.retainedProfit > 0 ? 'good' : '' },
-      { label: 'Cash wallet estimate', value: Store.formatMoney(totals.paidWallet || 0), note: 'Paid sales minus costs and payouts', className: totals.paidWallet < 0 ? 'bad' : totals.paidWallet > 0 ? 'good' : '' },
-      { label: 'Paid sales', value: Store.formatMoney(totals.paidSales), note: `${Store.formatNumber(totals.paidCount)} fully paid records`, className: 'good' },
-      { label: 'Receivables', value: Store.formatMoney(totals.receivables), note: `${Store.formatNumber(totals.unpaidCount + totals.partialCount)} unpaid/partial records`, className: totals.receivables ? 'warn' : '' }
+      { id: 'total-capital', label: 'Total capital', value: Store.formatMoney(totals.capitalIn), note: `${Store.formatNumber(totals.capitalEntryCount || 0)} capital logs`, className: '' },
+      { id: 'provider-orders', label: 'Used for provider orders', value: Store.formatMoney(totals.providerCharges), note: 'Orders plus provider-cost adjustments', className: totals.providerCharges < 0 ? 'bad' : '' },
+      { id: 'available-capital', label: 'Available capital', value: Store.formatMoney(totals.availableCapital), note: 'Capital minus adjusted provider costs', className: availableClass },
+      { id: 'gross-profit', label: 'Gross profit', value: Store.formatMoney(totals.grossProfit), note: 'Client sales minus adjusted provider costs', className: totals.grossProfit < 0 ? 'bad' : totals.grossProfit > 0 ? 'good' : '' },
+      { id: 'owner-payouts', label: 'Owner payouts', value: Store.formatMoney(totals.ownerPayout || 0), note: 'Net payout after reversals', className: totals.ownerPayout > 0 ? 'warn' : totals.ownerPayout < 0 ? 'good' : '' },
+      { id: 'team-payroll', label: 'Team payroll paid', value: Store.formatMoney(totals.payrollPayout || 0), note: `${Store.formatNumber(totals.teamCount || 0)} team rules saved`, className: totals.payrollPayout > 0 ? 'warn' : totals.payrollPayout < 0 ? 'good' : '' },
+      { id: 'net-retained', label: 'Net retained', value: Store.formatMoney(totals.retainedProfit || 0), note: `${roi.toFixed(1)}% retained return vs capital`, className: totals.retainedProfit < 0 ? 'bad' : totals.retainedProfit > 0 ? 'good' : '' },
+      { id: 'cash-wallet', label: 'Cash wallet balance', value: Store.formatMoney(totals.cashWallet || 0), note: 'Capital + paid sales − costs and payouts', className: totals.cashWallet < 0 ? 'bad' : totals.cashWallet > 0 ? 'good' : '' },
+      { id: 'paid-sales', label: 'Paid sales', value: Store.formatMoney(totals.paidSales), note: `${Store.formatNumber(totals.paidCount)} fully paid records`, className: 'good' },
+      { id: 'receivables', label: 'Receivables', value: Store.formatMoney(totals.receivables), note: `${Store.formatNumber(totals.unpaidCount + totals.partialCount)} unpaid/partial records`, className: totals.receivables ? 'warn' : '' }
     ];
     els.investmentAnalyticsGrid.innerHTML = metrics.map(item => `
-      <article class="investment-analytics-card ${item.className}">
-        <span>${item.label}</span>
+      <button class="investment-analytics-card finance-metric-card ${item.className}" type="button" data-finance-metric="${sanitize(item.id)}" aria-label="Explain ${sanitize(item.label)}">
+        <span>${sanitize(item.label)}</span>
         <strong>${item.value}</strong>
-        <small>${item.note}</small>
-      </article>
+        <small>${sanitize(item.note)}</small>
+        <em>Tap for explanation</em>
+      </button>
     `).join('');
     if (els.investmentInsightsCard) {
-      // v5.3.8: Finance Insight card is intentionally removed from the admin UI.
       els.investmentInsightsCard.innerHTML = '';
       els.investmentInsightsCard.classList.add('hidden');
     }
@@ -906,20 +1055,24 @@ function renderStats() {
     const entries = Store.getFinanceEntries ? Store.getFinanceEntries() : Store.getInvestments().map(entry => ({ ...entry, type: 'capital-in', person: 'Novalyte Capital', source: 'investment', sourceId: entry.id }));
     if (!els.investmentsTable) return;
     if (!entries.length) {
-      els.investmentsTable.innerHTML = '<tr class="empty-table-row"><td colspan="6"><div class="empty-state">No finance logs yet.</div></td></tr>';
+      els.investmentsTable.innerHTML = '<tr class="empty-table-row"><td colspan="7"><div class="empty-state">No finance logs yet.</div></td></tr>';
       return;
     }
 
-    els.investmentsTable.innerHTML = entries.map(entry => `
+    els.investmentsTable.innerHTML = entries.map(entry => {
+      const signedAmount = financeSignedAmount(entry);
+      return `
       <tr>
         <td data-label="Date">${sanitize(dateText(entry.createdAt))}</td>
-        <td data-label="Type"><span class="status-pill ${financeAmountClass(entry.type)}">${sanitize(financeTypeLabel(entry.type))}</span></td>
+        <td data-label="Type"><span class="status-pill ${financeAmountClass(entry)}">${sanitize(financeTypeLabel(entry.type))}</span></td>
+        <td data-label="Account">${sanitize(financeAccountLabel(entry.type))}</td>
         <td data-label="Person">${sanitize(entry.person || (entry.type === 'owner-payout' ? 'Self' : '-'))}</td>
-        <td data-label="Amount"><strong>${Store.formatMoney(entry.amount)}</strong></td>
+        <td data-label="Amount"><strong class="finance-log-amount ${financeAmountClass(entry)}">${formatSignedMoney(signedAmount)}</strong></td>
         <td data-label="Note">${sanitize(entry.note || 'No note')}</td>
         <td data-label="Action"><button class="btn small danger" type="button" data-remove-finance-entry="${sanitize(entry.id)}" data-finance-source="${sanitize(entry.source || 'finance')}" data-source-id="${sanitize(entry.sourceId || '')}">Remove</button></td>
       </tr>
-    `).join('');
+    `;
+    }).join('');
   }
 
   function renderTeamMembers() {
@@ -1777,20 +1930,34 @@ function renderAll() {
       showLogin();
     });
 
+    if (els.financeEntryType) {
+      els.financeEntryType.addEventListener('change', updateFinanceEntryHint);
+      updateFinanceEntryHint();
+    }
+
+    if (els.investmentAnalyticsGrid) els.investmentAnalyticsGrid.addEventListener('click', event => {
+      const card = event.target.closest('[data-finance-metric]');
+      if (!card) return;
+      openFinanceMetric(card.dataset.financeMetric);
+    });
+
     if (els.addInvestBtn) els.addInvestBtn.addEventListener('click', () => {
-      const amount = Number(els.addInvestAmount.value) || 0;
-      const type = els.financeEntryType ? els.financeEntryType.value : 'capital-in';
+      const amount = Number(els.addInvestAmount.value);
+      const type = els.financeEntryType ? els.financeEntryType.value : 'capital-adjustment';
       const person = els.financePerson ? els.financePerson.value : '';
-      if (amount <= 0) {
-        Store.toast('Enter a valid finance amount.', 'error');
+      if (!Number.isFinite(amount) || amount === 0) {
+        Store.toast('Enter a non-zero finance amount. Use a negative value to deduct.', 'error');
         return;
       }
-      if (type === 'capital-in') Store.addInvestment(amount, els.addInvestNote.value);
-      else if (Store.addFinanceEntry) Store.addFinanceEntry(type, amount, person, els.addInvestNote.value);
+      const entry = Store.addFinanceEntry ? Store.addFinanceEntry(type, amount, person, els.addInvestNote.value) : null;
+      if (!entry) {
+        Store.toast('The finance log could not be added.', 'error');
+        return;
+      }
       els.addInvestAmount.value = '';
       els.addInvestNote.value = '';
       if (els.financePerson) els.financePerson.value = '';
-      Store.toast('Finance log added.');
+      Store.toast(amount < 0 ? 'Finance deduction recorded.' : 'Finance addition recorded.');
       renderAll();
     });
 
