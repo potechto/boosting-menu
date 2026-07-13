@@ -865,42 +865,42 @@ function renderStats() {
 
   const FINANCE_TYPES = {
     'capital-adjustment': {
-      label: 'Capital Adjustment',
+      label: 'Total capital',
       account: 'Capital',
       hint: 'Positive adds working capital. Negative withdraws or corrects capital.'
     },
     'provider-cost-adjustment': {
-      label: 'Provider Cost Adjustment',
+      label: 'Used for provider orders',
       account: 'Provider Cost',
       hint: 'Positive adds provider cost. Negative records a provider refund or cost correction.'
     },
     'other-income': {
-      label: 'Other Income / Wallet Credit',
+      label: 'Other income',
       account: 'Income + Wallet',
       hint: 'Positive adds non-order income to retained profit and wallet. Negative reverses it.'
     },
     'owner-payout': {
-      label: 'Owner Payout / Reversal',
+      label: 'Owner payouts',
       account: 'Owner Payout',
       hint: 'Use a negative amount for a payout. Use a positive amount only for a reversal or refund.'
     },
     'payroll-payout': {
-      label: 'Team Payroll Payout / Reversal',
+      label: 'Team payroll paid',
       account: 'Team Payroll',
       hint: 'Use a negative amount for payroll paid. Use a positive amount only for a reversal or refund.'
     },
     expense: {
-      label: 'Other Expense / Refund',
+      label: 'Other expense',
       account: 'Operating Expense',
       hint: 'Use a negative amount for an expense. Use a positive amount for an expense refund.'
     },
     'wallet-correction': {
-      label: 'Wallet Correction',
+      label: 'Cash wallet balance',
       account: 'Cash Wallet',
       hint: 'Adjusts only the cash wallet balance without changing profit or capital.'
     },
     'retained-correction': {
-      label: 'Retained Profit Correction',
+      label: 'Net retained',
       account: 'Net Retained',
       hint: 'Adjusts only net retained profit without changing the wallet.'
     },

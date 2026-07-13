@@ -1158,4 +1158,52 @@ Verification required after deployment:
 
 The permanent workflow and scope locks in sections 1-12 remain active.
 
+
+======================================================================
+14. PATCH v6.0.51 - FINANCE DROPDOWN CARD-NAME ALIGNMENT
+======================================================================
+
+User-requested scope:
+- Simplify the Finance Management dropdown.
+- Use the same visible names as the finance cards wherever the entry directly targets a card.
+- Remove explanatory suffixes such as Adjustment, Correction, Wallet Credit, Refund, and Reversal from the dropdown labels.
+- Keep all internal entry values, formulas, signed amount behavior, hints, history, Supabase sync, and calculations unchanged.
+
+Final Finance Management dropdown labels:
+- Total capital
+- Used for provider orders
+- Other income
+- Owner payouts
+- Team payroll paid
+- Other expense
+- Cash wallet balance
+- Net retained
+
+Internal behavior remains locked:
+- The option values and stored finance entry types are unchanged for backward compatibility.
+- Positive values still add and negative values still deduct according to the selected account.
+- The dynamic hint below the form still explains the selected account behavior.
+- Existing finance history entries continue to render correctly.
+- No formula, card, order, service, product, Client View, mobile layout, or Supabase behavior is changed.
+
+Failed v6.0.50 attempt and correction:
+- v6.0.50 copied the intended three files, then stopped during automated verification.
+- The verifier incorrectly required every JavaScript object key to be quoted.
+- The existing internal `expense` key is a valid unquoted JavaScript identifier, so the verifier produced the false error: Internal finance type definition changed or is missing: expense.
+- The updater restored all three protected files before commit, so the project remained on the verified v6.0.49 baseline.
+- v6.0.51 keeps the same requested visible-label change but uses a corrected verifier that accepts both valid quoted and unquoted JavaScript property keys.
+
+Files approved for v6.0.51:
+- admin.html
+- assets/js/admin.js
+- Documentation/NOVALYTE_FULL_PROJECT_HANDOVER_SUMMARY_v6_0_48_CHECKPOINT_20260713.txt
+
+Verification required after deployment:
+- Open Finance Management and confirm the dropdown shows the eight concise labels above.
+- Confirm the verbose suffixes are no longer shown in the dropdown.
+- Confirm the selected-account hint still updates beneath the form.
+- Confirm positive and negative entries retain the v6.0.49 calculations and history behavior.
+
+The permanent workflow and scope locks in sections 1-12 remain active.
+
 END OF NOVALYTE FULL PROJECT HANDOVER SUMMARY
